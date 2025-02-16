@@ -219,10 +219,10 @@ def _get_function(
             if category_id == 10 and subcategory_id
             else func_dict[category_id]
         )
-    except KeyError:
-        raise ValueError(
+    except KeyError as exc:
+        raise KeyError(
             f"Invalid category_id {category_id} or subcategory_id {subcategory_id}"
-        )
+        ) from exc
 
 
 def _get_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:

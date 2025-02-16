@@ -62,10 +62,10 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required relay attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required relay attribute: {exc}."
+        ) from exc
 
 
 def calculate_part_stress_lambda_b(
@@ -100,10 +100,10 @@ def calculate_part_stress_lambda_b(
                 f"calculate_part_stress_lambda_b: Invalid relay subcategory "
                 f"ID {_subcategory_id}."
             )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_part_stress_lambda_b: Invalid relay type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -126,16 +126,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
             if _subcategory_id == 1
             else PI_E[_subcategory_id][_environment_active_id - 1]
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid relay environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid relay subcategory ID "
             f"{_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -174,16 +174,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
             _environment_active_id - 1
         ]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid relay environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid relay subcategory ID "
             f"{_subcategory_id} or type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -202,15 +202,15 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid relay quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_quality_factor: Invalid relay subcategory ID "
             f"{_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -229,15 +229,15 @@ def get_part_stress_quality_factor(
 
     try:
         return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid relay quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_quality_factor: Invalid relay subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def set_default_values(
@@ -354,12 +354,12 @@ def _get_application_construction_factor(
 
     try:
         return PI_F[contact_rating_id][application_id][construction_id][_quality - 1]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"_get_application_construction_factor: Invalid relay application "
             f"ID {application_id}, contact rating ID {contact_rating_id}, construction "
             f"ID {construction_id}."
-        )
+        ) from exc
 
 
 def _set_default_quality(subcategory_id: int) -> int:

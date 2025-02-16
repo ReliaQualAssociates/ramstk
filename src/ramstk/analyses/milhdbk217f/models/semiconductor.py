@@ -128,15 +128,15 @@ def calculate_part_stress(
             )
 
         return attributes
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_part_stress: Invalid semiconductor construction "
             f"ID {_construction_id} or matching ID {_matching_id}."
-        )
-    except KeyError as err:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required semiconductor attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required semiconductor attribute: {exc}."
+        ) from exc
 
 
 def calculate_application_factor(
@@ -166,16 +166,16 @@ def calculate_application_factor(
 
     try:
         return _functions[_subcategory_id](attributes)
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_application_factor: Invalid semiconductor "
             f"application ID {_application_id}."
-        )
-    except ValueError:
+        ) from exc
+    except ValueError as exc:
         raise ValueError(
             f"calculate_application_factor: Semiconductor duty cycle {_duty_cycle} "
             f"must be a value greater than or equal to 0.0."
-        )
+        ) from exc
 
 
 def calculate_electrical_stress_factor(
@@ -200,15 +200,13 @@ def calculate_electrical_stress_factor(
     }
 
     try:
-        attributes = _functions[_subcategory_id](attributes)
-    except KeyError:
+        return _functions[_subcategory_id](attributes)
+    except KeyError as exc:
         raise KeyError(
             f"calculate_electrical_stress_factor: Invalid "
             f"semiconductor subcategory ID {_subcategory_id} or type ID "
             f"{_type_id}."
-        )
-
-    return attributes
+        ) from exc
 
 
 def calculate_junction_temperature(
@@ -245,12 +243,12 @@ def calculate_junction_temperature(
             theta_jc = THETA_JC[package_id - 1]
 
         return temperature_case + theta_jc * power_operating
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_junction_temperature: Invalid semiconductor "
             f"environment ID {environment_active_id} or package ID "
             f"{package_id}."
-        )
+        ) from exc
 
 
 def calculate_part_stress_lambda_b(
@@ -328,15 +326,15 @@ def calculate_part_stress_lambda_b(
             _lambda_b = _dic_lambdab_list[_subcategory_id][_type_id - 1]
 
         return _lambda_b
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_part_stress_lambda_b: Invalid semiconductor type ID {_type_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress_lambda_b: Invalid semiconductor "
             f"subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def calculate_power_rating_factor(
@@ -366,17 +364,17 @@ def calculate_power_rating_factor(
             attributes["piR"] = 0.0
 
         return attributes
-    except TypeError:
+    except TypeError as exc:
         raise TypeError(
             f"calculate_power_rating_factor: Semiconductor rated power "
             f"{type(_rated_power)} and rated current "
             f"{type(_rated_current)} must be numerical types."
-        )
-    except ValueError:
+        ) from exc
+    except ValueError as exc:
         raise ValueError(
             f"calculate_power_rating_factor: Semiconductor rated power "
             f"{_rated_power} must be a value greater than 0.0."
-        )
+        ) from exc
 
 
 def calculate_temperature_factor(
@@ -417,16 +415,16 @@ def calculate_temperature_factor(
                 * exp(-_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0))
             )
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_temperature_factor: Invalid semiconductor type "
             f"ID {type_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"calculate_temperature_factor: Invalid semiconductor "
             f"subcategory ID {subcategory_id}."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -444,16 +442,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid semiconductor environment "
             f"ID {_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid semiconductor subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -525,16 +523,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 _environment_active_id - 1
             ]
         return PART_COUNT_LAMBDA_B_LIST[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid semiconductor environment "
             f"ID {_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid semiconductor subcategory "
             f"ID {_subcategory_id} or type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -559,16 +557,16 @@ def get_part_count_quality_factor(
         elif _subcategory_id == 2:
             return PART_COUNT_PI_Q_HF_DIODE[0][_quality_id - 1]
         return PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality factor: Invalid semiconductor "
             f"quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_quality_factor: Invalid semiconductor "
             f"subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -591,16 +589,16 @@ def get_part_stress_quality_factor(
         if _subcategory_id == 2:
             return PART_STRESS_PI_Q_HF_DIODE[_type_id][_quality_id - 1]
         return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid semiconductor "
             f"quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_quality_factor: Invalid semiconductor "
             f"subcategory ID {_subcategory_id} or type ID {_type_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

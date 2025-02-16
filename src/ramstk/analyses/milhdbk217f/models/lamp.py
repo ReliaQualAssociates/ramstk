@@ -47,10 +47,10 @@ def calculate_part_stress(
         )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required lamp attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required lamp attribute: {exc}."
+        ) from exc
 
 
 def calculate_part_stress_lambda_b(
@@ -80,10 +80,10 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid lamp environment ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -106,16 +106,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         return PART_COUNT_LAMBDA_B[_application_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid lamp environment ID "
             f"{_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid lamp application ID "
             f"{_application_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

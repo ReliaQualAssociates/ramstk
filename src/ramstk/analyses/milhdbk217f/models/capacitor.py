@@ -72,10 +72,10 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required capacitor attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required capacitor attribute: {exc}."
+        ) from exc
 
 
 def calculate_capacitance_factor(
@@ -93,11 +93,11 @@ def calculate_capacitance_factor(
     try:
         _f0, _f1 = CAPACITANCE_FACTORS[subcategory_id]
         return _f0 * capacitance**_f1
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"calculate_capacitance_factor: Invalid capacitor subcategory "
             f"ID: {subcategory_id}."
-        )
+        ) from exc
 
 
 def calculate_part_stress_lambda_b(
@@ -126,11 +126,11 @@ def calculate_part_stress_lambda_b(
             * ((_voltage_ratio / _f1) ** _f2 + 1.0)
             * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
         )
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress_lambda_b: Invalid capacitor subcategory "
             f"ID  {_subcategory_id}."
-        )
+        ) from exc
 
 
 def calculate_series_resistance_factor(
@@ -187,11 +187,11 @@ def get_configuration_factor(configuration_id: int) -> float:
     """
     try:
         return PI_CF[configuration_id]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_configuration_factor: Invalid capacitor configuration "
             f"ID {configuration_id}."
-        )
+        ) from exc
 
 
 def get_construction_factor(construction_id: int) -> float:
@@ -204,11 +204,11 @@ def get_construction_factor(construction_id: int) -> float:
     """
     try:
         return PI_C[construction_id]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_construction_factor: Invalid capacitor construction ID "
             f"{construction_id}."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -223,11 +223,11 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid capacitor environment "
             f"ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -316,11 +316,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
             if _subcategory_id == 1
             else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
         )
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid capacitor subcategory "
             f"ID {_subcategory_id} or specification ID {_specification_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -337,11 +337,11 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid capacitor quality "
             f"ID {_quality_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -360,16 +360,16 @@ def get_part_stress_quality_factor(
 
     try:
         return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid capacitor quality "
             f"ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_quality_factor: Invalid capacitor subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def set_default_values(
@@ -421,15 +421,15 @@ def _set_default_capacitance(
             if subcategory_id == 3
             else DEFAULT_CAPACITANCE.get(subcategory_id, 1.0)
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"_set_default_capacitance: Invalid capacitor style ID {style_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"_set_default_capacitance: Invalid capacitor subcategory "
             f"ID {subcategory_id}."
-        )
+        ) from exc
 
 
 def _set_default_capacitance_factor(subcategory_id: int) -> float:
@@ -460,7 +460,7 @@ def _set_default_rated_temperature(
             if subcategory_id == 1
             else 85.0 if subcategory_id in {15, 16, 18, 19} else 125.0
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"_set_default_rated_temperature: Invalid capacitor style ID {style_id}."
-        )
+        ) from exc

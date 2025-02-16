@@ -57,10 +57,10 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required meter attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required meter attribute: {exc}."
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -77,16 +77,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_subcategory_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid meter environment ID "
             f"{_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid meter subcategory ID "
             f"{_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -125,16 +125,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
             _environment_active_id - 1
         ]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid meter environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid meter subcategory ID "
             f"{_subcategory_id} or type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -153,16 +153,16 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid meter quality ID "
             f"{_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_quality_factor: Invalid meter subcategory ID "
             f"{_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -184,8 +184,10 @@ def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> f
         elif _subcategory_id == 2:
             return PART_STRESS_LAMBDA_B[2]
         return 0.0
-    except IndexError:
-        raise IndexError(f"get_part_stress_lambda_b: Invalid meter type ID {_type_id}.")
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_stress_lambda_b: Invalid meter type ID {_type_id}."
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -203,11 +205,11 @@ def get_part_stress_quality_factor(
 
     try:
         return PART_STRESS_PI_Q[_quality_id - 1] if _subcategory_id == 2 else 1.0
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid meter quality ID "
             f"{_quality_id}."
-        )
+        ) from exc
 
 
 def get_temperature_stress_factor(
@@ -227,19 +229,19 @@ def get_temperature_stress_factor(
 
     try:
         _temperature_ratio = temperature_active / temperature_rated_max
-    except TypeError:
+    except TypeError as exc:
         _active_type = type(temperature_active)
         _max_type = type(temperature_rated_max)
         raise TypeError(
             f"get_temperature_stress_factor: Meter active temperature {_active_type} "
             f"and maximum rated temperature {_max_type} must both be non-negative "
             f"numbers."
-        )
-    except ZeroDivisionError:
+        ) from exc
+    except ZeroDivisionError as exc:
         raise ZeroDivisionError(
             "get_temperature_stress_factor: Meter maximum rated temperature cannot "
             "be zero."
-        )
+        ) from exc
 
     if 0.0 < _temperature_ratio <= 0.5:
         _pi_t = 0.5

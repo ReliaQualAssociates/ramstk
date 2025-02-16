@@ -81,10 +81,10 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required switch attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required switch attribute: {exc}."
+        ) from exc
 
 
 def calculate_load_stress_factor(
@@ -154,16 +154,16 @@ def calculate_part_stress_lambda_b(
             return _lambda_b1 + _n_elements * _lambda_b2
         elif _subcategory_id == 5:
             return PART_STRESS_LAMBDA_B_BREAKER[_application_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_part_stress_lambda_b: Invalid switch application "
             f"ID {_application_id} or quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress_lambda_b: Invalid switch construction "
             f"ID {_construction_id} or subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -180,16 +180,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid switch environment "
             f"ID {_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid switch subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -236,16 +236,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
             if _subcategory_id == 5
             else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid switch environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid switch construction ID "
             f"{_construction_id} or subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -264,15 +264,15 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid switch quality ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_quality_factor: Invalid switch subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -293,10 +293,10 @@ def get_part_stress_quality_factor(
             return PART_STRESS_PI_Q[_quality_id - 1]
         else:
             return 1.0
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid switch quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

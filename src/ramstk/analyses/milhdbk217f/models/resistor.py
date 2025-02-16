@@ -93,10 +93,10 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing required resistor attribute: {err}."
-        )
+            f"calculate_part_stress: Missing required resistor attribute: {exc}."
+        ) from exc
 
 
 # pylint: disable=too-many-locals
@@ -141,15 +141,15 @@ def calculate_part_stress_lambda_b(
             )
             ** _f5
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_part_stress_lambda_b: Invalid resistor type ID {_type_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress_lambda_b: Invalid resistor "
             f"specification ID {_specification_id} or subcategory_id {_subcategory_id}."
-        )
+        ) from exc
 
 
 def calculate_temperature_factor(
@@ -183,16 +183,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid resistor environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_id: Invalid resistor subcategory ID "
             f"{_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -268,16 +268,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 _environment_active_id - 1
             ]
         return PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid resistor environment ID "
             f"{_environment_active_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid resistor specification ID "
             f"{_specification_id} or subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -294,10 +294,10 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid resistor quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -316,16 +316,16 @@ def get_part_stress_quality_factor(
 
     try:
         return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid resistor quality "
             f"ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_quality_factor: Invalid resistor subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_resistance_factor(
@@ -393,16 +393,16 @@ def get_resistance_factor(
                 _pi_r = PI_R[subcategory_id][_index + 1]
 
         return _pi_r
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_resistance_factor: Invalid resistor family ID "
             f"{family_id} or specification ID {specification_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_resistance_factor: Invalid resistor subcategory ID "
             f"{subcategory_id}."
-        )
+        ) from exc
 
 
 def get_voltage_factor(
@@ -436,10 +436,10 @@ def get_voltage_factor(
 
     try:
         return PI_V[subcategory_id][_index]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_voltage_factor: Invalid resistor subcategory ID {subcategory_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

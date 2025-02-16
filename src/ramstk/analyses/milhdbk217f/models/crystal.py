@@ -67,10 +67,10 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid crystal environment ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -89,11 +89,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         return PART_COUNT_LAMBDA_B[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid crystal environment ID "
             f"{_environment_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -110,10 +110,10 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid crystal quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -134,10 +134,10 @@ def get_part_stress_quality_factor(
             return PART_STRESS_PI_Q[_quality_id - 1]
         else:
             return 1.0
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid crystal quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

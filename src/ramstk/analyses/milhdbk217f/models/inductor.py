@@ -80,11 +80,11 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress: Missing required inductive device attribute:"
-            f" {err}."
-        )
+            f" {exc}."
+        ) from exc
 
 
 def calculate_hot_spot_temperature(
@@ -141,11 +141,11 @@ def calculate_part_stress_lambda_b(
         _f0 = _dic_factors[_subcategory_id][_insulation_id][0]
         _f1 = _dic_factors[_subcategory_id][_insulation_id][1]
         return _f0 * exp(((_temperature_hot_spot + 273.0) / _ref_temp) ** _f1)
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress_lambda_b: Invalid inductive device subcategory ID"
             f" {_subcategory_id} or insulation ID {_insulation_id}."
-        )
+        ) from exc
 
 
 def calculate_temperature_rise_input_power_weight(
@@ -165,11 +165,11 @@ def calculate_temperature_rise_input_power_weight(
     """
     try:
         return 2.1 * (power_input / weight**0.6766)
-    except ZeroDivisionError:
+    except ZeroDivisionError as exc:
         raise ZeroDivisionError(
             "calculate_temperature_rise_input_power_weight: Inductive device weight "
             "must not be zero."
-        )
+        ) from exc
 
 
 def calculate_temperature_rise_power_loss_surface(
@@ -187,11 +187,11 @@ def calculate_temperature_rise_power_loss_surface(
     """
     try:
         return 125.0 * power_operating / area
-    except ZeroDivisionError:
+    except ZeroDivisionError as exc:
         raise ZeroDivisionError(
             "calculate_temperature_rise_power_loss_surface: Inductive device area "
             "must not be zero."
-        )
+        ) from exc
 
 
 def calculate_temperature_rise_power_loss_weight(
@@ -208,11 +208,11 @@ def calculate_temperature_rise_power_loss_weight(
     """
     try:
         return 11.5 * (power_operating / weight**0.6766)
-    except ZeroDivisionError:
+    except ZeroDivisionError as exc:
         raise ZeroDivisionError(
             "calculate_temperature_rise_power_loss_weight: Inductive device weight "
             "must not be zero."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -230,16 +230,16 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_subcategory_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid inductive device environment "
             f"ID {_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid inductive device subcategory "
             f"ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -281,16 +281,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         return PART_COUNT_LAMBDA_B[_subcategory_id][_family_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid inductive device environment "
             f"ID {_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid inductive device family "
             f"ID {_family_id} or subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -308,11 +308,11 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_quality_factor: Invalid inductive device quality "
             f"ID {_quality_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -337,16 +337,16 @@ def get_part_stress_quality_factor(
             if _subcategory_id == 1
             else PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_stress_quality_factor: Invalid inductive device quality "
             f"ID {_quality_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_quality_factor: Invalid inductive device "
             f"family ID {_family_id} or subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_temperature_rise_spec_sheet(page_number: int) -> float:
@@ -375,11 +375,11 @@ def get_temperature_rise_spec_sheet(page_number: int) -> float:
             13: 15.0,
             14: 15.0,
         }[page_number]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_temperature_rise_spec_sheet: Invalid inductive device "
             f"page number {page_number}."
-        )
+        ) from exc
 
 
 def set_default_values(

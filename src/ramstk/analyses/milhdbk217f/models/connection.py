@@ -64,10 +64,10 @@ def calculate_part_stress(
         attributes["hazard_rate_active"] *= attributes["piK"]
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
-            f"calculate_part_stress: Missing connection required attribute: {err}"
-        )
+            f"calculate_part_stress: Missing connection required attribute: {exc}"
+        ) from exc
 
 
 def calculate_part_stress_lambda_b(
@@ -133,14 +133,14 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
             return PI_E[_subcategory_id][_quality_id][_environment_id - 1]
         elif _subcategory_id in {3, 4, 5}:
             return PI_E[_subcategory_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid environment ID {_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_environment_factor: Invalid connection quality ID {_quality_id}."
-        )
+        ) from exc
 
     return 1.0
 
@@ -190,16 +190,16 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 _environment_active_id - 1
             ]
         return PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lamda_b: Invalid environment "
             f"ID {_environment_active_id} for subcategory {_subcategory_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lamda_b: Invalid connection subcategory "
             f"ID {_subcategory_id} or type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_part_count_quality_factor(
@@ -216,10 +216,11 @@ def get_part_count_quality_factor(
 
     try:
         return PART_COUNT_PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
-            f"get_part_count_quality_factor: Invalid connection quality ID {_quality_id}."
-        )
+            f"get_part_count_quality_factor: Invalid connection quality "
+            f"ID {_quality_id}."
+        ) from exc
 
 
 def get_part_stress_quality_factor(
@@ -240,10 +241,11 @@ def get_part_stress_quality_factor(
             return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
         else:
             return 1.0
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
-            f"get_part_stress_quality_factor: Invalid connection quality ID {_quality_id}."
-        )
+            f"get_part_stress_quality_factor: Invalid connection quality "
+            f"ID {_quality_id}."
+        ) from exc
 
 
 def set_default_values(
@@ -329,16 +331,16 @@ def _calculate_insert_temperature(
     try:
         _fo = INSERT_TEMP_FACTORS[contact_gauge]
         return _fo * current_operating**1.85
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"_calculate_insert_temperature: Invalid connection contact "
             f"gauge {contact_gauge}."
-        )
-    except TypeError:
+        ) from exc
+    except TypeError as exc:
         raise TypeError(
             f"_calculate_insert_temperature: Invalid type for connection operating "
             f"current: {type(current_operating)}.  Should be <class 'float'>."
-        )
+        ) from exc
 
 
 def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
@@ -359,13 +361,15 @@ def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     # material ID is the index in the list returned.
     try:
         return FACTOR_KEYS[type_id][specification_id][insert_id - 1]
-    except IndexError:
-        raise IndexError(f"_get_factor_key: Invalid connection insert ID {insert_id}.")
-    except KeyError:
+    except IndexError as exc:
+        raise IndexError(
+            f"_get_factor_key: Invalid connection insert ID " f"{insert_id}."
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"_get_factor_key: Invalid connection specification ID {specification_id} "
             f"or type ID {type_id}."
-        )
+        ) from exc
 
 
 def _get_mate_unmate_factor(n_cycles: float) -> float:

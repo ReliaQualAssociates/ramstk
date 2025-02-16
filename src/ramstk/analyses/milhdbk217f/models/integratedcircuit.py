@@ -157,14 +157,15 @@ def calculate_part_stress(
             )
 
         return attributes
-    except KeyError as err:
+    except KeyError as exc:
         raise KeyError(
             f"calculate_part_stress: Missing required integrated circuit attribute:"
-            f" {err}."
-        )
+            f" {exc}."
+        ) from exc
 
 
 # noinspection PyUnusedLocal
+# pylint: disable=unused-argument
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
@@ -195,11 +196,11 @@ def calculate_die_complexity_factor(
     """
     try:
         return ((area / 0.21) * (2.0 / feature_size) ** 2.0 * 0.64) + 0.36
-    except ZeroDivisionError:
+    except ZeroDivisionError as exc:
         raise ZeroDivisionError(
             "calculate_die_complexity_factor: Integrated circuit feature size must be "
             "greater than zero."
-        )
+        ) from exc
 
 
 def calculate_eos_hazard_rate(voltage_esd: float) -> float:
@@ -347,16 +348,16 @@ def calculate_temperature_factor(
             (-_ea / 8.617e-5)
             * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"calculate_temperature_factor: Invalid integrated circuit "
             f"family ID {family_id} or type ID {type_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"calculate_temperature_factor: Invalid integrated circuit "
             f"subcategory ID {subcategory_id}."
-        )
+        ) from exc
 
 
 def get_application_factor(
@@ -374,15 +375,15 @@ def get_application_factor(
     """
     try:
         return PI_A[type_id][application_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_application_factor: Invalid integrated circuit "
             f"application ID {application_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_application_factor: Invalid integrated circuit type ID {type_id}."
-        )
+        ) from exc
 
 
 def get_die_base_hazard_rate(type_id: int) -> float:
@@ -452,17 +453,17 @@ def get_die_complexity_factor(
         )
 
         return C1[subcategory_id][_technology - 1][_index]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_die_complexity_factor: Invalid integrated circuit "
             f"application ID {application_id}, subcategory ID "
             f"{subcategory_id}, or technology ID {technology_id}."
-        )
-    except ValueError:
+        ) from exc
+    except ValueError as exc:
         raise ValueError(
             f"get_die_complexity_factor: Invalid number of integrated "
             f"circuit elements {n_elements}."
-        )
+        ) from exc
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
@@ -478,11 +479,11 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid integrated circuit "
             f"environment ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_error_correction_factor(type_id: int) -> float:
@@ -495,11 +496,11 @@ def get_error_correction_factor(type_id: int) -> float:
     """
     try:
         return {1: 1.0, 2: 0.72, 3: 0.68}[type_id]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_error_correction_factor: Invalid integrated circuit type "
             f"ID {type_id}."
-        )
+        ) from exc
 
 
 def get_manufacturing_process_factor(manufacturing_id: int) -> float:
@@ -522,11 +523,11 @@ def get_package_type_correction_factor(package_id: int) -> float:
     """
     try:
         return PI_PT[package_id]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_package_type_correction_factor: Invalid integrated "
             f"circuit package ID {package_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -624,21 +625,21 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 _environment_id - 1
             ]
         )
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid integrated circuit environment "
             f"ID {_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid integrated circuit subcategory "
             f"ID {_subcategory_id} or technology ID {_technology_id}."
-        )
-    except ValueError:
+        ) from exc
+    except ValueError as exc:
         raise ValueError(
             f"get_part_count_lambda_b: Invalid number of integrated circuit "
             f"elements {_n_elements} for subcategory ID {_subcategory_id}."
-        )
+        ) from exc
 
 
 def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -656,10 +657,10 @@ def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
 
     try:
         return PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_quality_factor: Invalid integrated circuit quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def set_default_values(

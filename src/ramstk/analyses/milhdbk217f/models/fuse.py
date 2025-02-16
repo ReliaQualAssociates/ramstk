@@ -44,10 +44,10 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid fuse environment ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -66,13 +66,14 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         return PART_COUNT_LAMBDA_B[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid fuse environment ID {_environment_id}."
-        )
+        ) from exc
 
 
 # noinspection PyUnusedLocal
+# pylint: disable=unused-argument
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 

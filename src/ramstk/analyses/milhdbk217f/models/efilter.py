@@ -49,11 +49,11 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     try:
         return PI_E[_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_environment_factor: Invalid electronic filter environment "
             f"ID {_environment_id}."
-        )
+        ) from exc
 
 
 def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -70,10 +70,10 @@ def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
 
     try:
         return PI_Q[_quality_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_quality_factor: Invalid electronic filter quality ID {_quality_id}."
-        )
+        ) from exc
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -96,15 +96,15 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         return PART_COUNT_LAMBDA_B[_type_id][_environment_id - 1]
-    except IndexError:
+    except IndexError as exc:
         raise IndexError(
             f"get_part_count_lambda_b: Invalid electronic filter environment "
             f"ID {_environment_id}."
-        )
-    except KeyError:
+        ) from exc
+    except KeyError as exc:
         raise KeyError(
             f"get_part_count_lambda_b: Invalid electronic filter type ID {_type_id}."
-        )
+        ) from exc
 
 
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -121,10 +121,10 @@ def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> f
 
     try:
         return PART_STRESS_LAMBDA_B[_type_id]
-    except KeyError:
+    except KeyError as exc:
         raise KeyError(
             f"get_part_stress_lambda_b: Invalid electronic filter type ID {_type_id}."
-        )
+        ) from exc
 
 
 def set_default_values(
