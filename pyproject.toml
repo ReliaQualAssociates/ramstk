@@ -76,7 +76,7 @@ install = "make PREFIX={args} install"
 python = ["3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.test]
-dependencies = [
+extra-dependencies = [
 	"coveralls",
 	"coverage[toml]",
 	"matplotlib",
