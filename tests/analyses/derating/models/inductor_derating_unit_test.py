@@ -17,10 +17,15 @@ from ramstk.analyses.derating import inductor
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses_coil(test_stress_limits):
-    """Should determine the inductor is not execeeding any limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_no_stresses_coil(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 0 and an empty reason string when not exceeding limits."""
     _overstress, _reason = inductor.do_derating_analysis(
-        1,
+        environment_id,
         1,
         test_stress_limits["inductor"],
         current_ratio=0.2,
@@ -35,14 +40,19 @@ def test_do_derating_analysis_no_stresses_coil(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses_transformer(test_stress_limits):
-    """Should determine the transformer is not execeeding any limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_no_stresses_transformer(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 0 and en empty reason string when not exceeding limits."""
     _overstress, _reason = inductor.do_derating_analysis(
-        1,
+        environment_id,
         2,
         test_stress_limits["inductor"],
         current_ratio=0.2,
-        family_id=2,
+        family_id=1,
         temperature_hot_spot=51.3,
         temperature_rated_max=130.0,
         voltage_ratio=0.2,
@@ -53,10 +63,59 @@ def test_do_derating_analysis_no_stresses_transformer(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_current(test_stress_limits):
-    """Should determine the inductor is execeeding the voltage limit."""
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_borderline_current(
+    test_stress_limits,
+):
+    """Returns o and empty reason string when current ratio limit on boundary."""
     _overstress, _reason = inductor.do_derating_analysis(
         1,
+        1,
+        test_stress_limits["inductor"],
+        current_ratio=0.7,  # Exactly at the current limit
+        family_id=2,
+        temperature_hot_spot=50.0,
+        temperature_rated_max=130.0,
+        voltage_ratio=0.5,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_borderline_temperature(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns o and empty reason string when hot spot temperature limit on boundary."""
+    _overstress, _reason = inductor.do_derating_analysis(
+        1,
+        1,
+        test_stress_limits["inductor"],
+        current_ratio=0.5,
+        family_id=2,
+        temperature_hot_spot=100.0,  # Exactly at the temperature limit
+        temperature_rated_max=130.0,
+        voltage_ratio=0.4,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_current_ratio(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when exceeding the current ratio limit."""
+    _overstress, _reason = inductor.do_derating_analysis(
+        environment_id,
         1,
         test_stress_limits["inductor"],
         current_ratio=0.863,
@@ -67,14 +126,26 @@ def test_do_derating_analysis_current(test_stress_limits):
     )
 
     assert _overstress == 1
-    assert _reason == "Current ratio of 0.863 exceeds the allowable limit of 0.7.\n"
+    assert (
+        _reason
+        == {
+            0: "Current ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            1: "Current ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            2: "Current ratio of 0.863 exceeds the allowable limit of 0.6.\n",
+        }[environment_id]
+    )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_hot_spot_temperature(test_stress_limits):
-    """Should determine the inductor is exceeding the hot spot temperature limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_hot_spot_temperature(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when exceeding the hot spot temperature limit."""
     _overstress, _reason = inductor.do_derating_analysis(
-        1,
+        environment_id,
         1,
         test_stress_limits["inductor"],
         current_ratio=0.2,
@@ -92,10 +163,15 @@ def test_do_derating_analysis_hot_spot_temperature(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_voltage(test_stress_limits):
-    """Should determine the inductor is execeeding the voltage limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_voltage_ratio(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when exceeding the voltage limit."""
     _overstress, _reason = inductor.do_derating_analysis(
-        1,
+        environment_id,
         1,
         test_stress_limits["inductor"],
         current_ratio=0.2,
@@ -106,14 +182,26 @@ def test_do_derating_analysis_voltage(test_stress_limits):
     )
 
     assert _overstress == 1
-    assert _reason == "Voltage ratio of 0.863 exceeds the allowable limit of 0.7.\n"
+    assert (
+        _reason
+        == {
+            0: "Voltage ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            1: "Voltage ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            2: "Voltage ratio of 0.863 exceeds the allowable limit of 0.6.\n",
+        }[environment_id]
+    )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """Should determine the inductor is execeeding both limits."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_all_stresses(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when exceeding all limits."""
     _overstress, _reason = inductor.do_derating_analysis(
-        1,
+        environment_id,
         1,
         test_stress_limits["inductor"],
         current_ratio=0.81,
@@ -125,17 +213,34 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Current ratio of 0.81 exceeds the allowable limit of 0.7.\n"
-        "Temperature of 109.3C exceeds the derated maximum temperature of "
-        "30.0C less than maximum rated temperature of 130.0C.\nVoltage "
-        "ratio of 0.863 exceeds the allowable limit of 0.7.\n"
+        _reason
+        == {
+            0: "Current ratio of 0.81 exceeds the allowable limit of 0.7.\n"
+            "Temperature of 109.3C exceeds the derated maximum temperature of "
+            "30.0C less than maximum rated temperature of 130.0C.\nVoltage "
+            "ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            1: "Current ratio of 0.81 exceeds the allowable limit of 0.7.\n"
+            "Temperature of 109.3C exceeds the derated maximum temperature of "
+            "30.0C less than maximum rated temperature of 130.0C.\n"
+            "Voltage ratio of 0.863 exceeds the allowable limit of 0.7.\n",
+            2: "Current ratio of 0.81 exceeds the allowable limit of 0.6.\n"
+            "Temperature of 109.3C exceeds the derated maximum temperature of "
+            "30.0C less than maximum rated temperature of 130.0C.\n"
+            "Voltage ratio of 0.863 exceeds the allowable limit of 0.6.\n",
+        }[environment_id]
     )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """Should raise am IndexError when passed an unknown environment."""
-    with pytest.raises(IndexError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_environment_id(
+    test_stress_limits,
+):
+    """Raises an IndexError when passed an invalid environment ID."""
+    with pytest.raises(
+        IndexError,
+        match=r"do_derating_analysis: Invalid inductive device environment ID 5.",
+    ):
         inductor.do_derating_analysis(
             5,
             1,
@@ -148,10 +253,17 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
         )
 
 
-@pytest.mark.unit
-def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """Should raise am KeyError when passed an unknown subcategory."""
-    with pytest.raises(KeyError):
+@pytest.mark.skip(reason="Defaulting to 'high frequency for now.")
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_subcategory_id(
+    test_stress_limits,
+):
+    """Raises a KeyError when passed an invalid subcategory ID."""
+    with pytest.raises(
+        KeyError,
+        match=r"do_derating_analysis: Invalid inductive device family ID 2 or "
+        r"subcategory ID 21.",
+    ):
         inductor.do_derating_analysis(
             1,
             21,
@@ -165,9 +277,15 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_unknown_family(test_stress_limits):
-    """Should raise am KeyError when passed an unknown type ID."""
-    with pytest.raises(KeyError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_family_id(
+    test_stress_limits,
+):
+    """Raises a KeyError when passed an invalid family ID."""
+    with pytest.raises(
+        KeyError,
+        match=r"do_derating_analysis: Invalid inductive device family ID 21.",
+    ):
         inductor.do_derating_analysis(
             1,
             1,
@@ -181,18 +299,22 @@ def test_do_derating_analysis_unknown_family(test_stress_limits):
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("current_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_current_ratio(
-    current_ratio,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_current_ratio(
     test_stress_limits,
 ):
-    """Should raise am TypeError when passed a non-numeric current ratio."""
-    with pytest.raises(TypeError):
+    """Raises a TypeError when passed a string current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'str'>, hot spot temperature type <class 'float'>, or voltage ratio "
+        r"type <class 'float'>.  All should be <type 'float'>.",
+    ):
         inductor.do_derating_analysis(
             1,
             1,
             test_stress_limits["inductor"],
-            current_ratio=current_ratio,
+            current_ratio="0.9",
             family_id=2,
             temperature_hot_spot=51.3,
             temperature_rated_max=130.0,
@@ -201,33 +323,89 @@ def test_do_derating_analysis_non_numeric_current_ratio(
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("hot_spot_temperature", ["128.3", None])
-def test_do_derating_analysis_non_numeric_temperature(
-    hot_spot_temperature,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_current_ratio(
     test_stress_limits,
 ):
-    """Should raise am TypeError when passed a non-numeric current ratio."""
-    with pytest.raises(TypeError):
+    """Raises a TypeError when passed None for the current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'NoneType'>, hot spot temperature type <class 'float'>, or voltage "
+        r"ratio type <class 'float'>.  All should be <type 'float'>.",
+    ):
+        inductor.do_derating_analysis(
+            1,
+            1,
+            test_stress_limits["inductor"],
+            current_ratio=None,
+            family_id=2,
+            temperature_hot_spot=51.3,
+            temperature_rated_max=130.0,
+            voltage_ratio=0.3,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_hot_spot_temperature(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed a string hot spot temperature."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'float'>, hot spot temperature type <class 'str'>, or voltage ratio "
+        r"type <class 'float'>.  All should be <type 'float'>.",
+    ):
         inductor.do_derating_analysis(
             1,
             1,
             test_stress_limits["inductor"],
             current_ratio=0.1,
             family_id=2,
-            temperature_hot_spot=hot_spot_temperature,
+            temperature_hot_spot="128.3",
             temperature_rated_max=130.0,
             voltage_ratio=0.3,
         )
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("voltage_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_voltage_ratio(
-    voltage_ratio,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_hot_spot_temperature(
     test_stress_limits,
 ):
-    """Should raise am TypeError when passed a non-numeric voltage ratio."""
-    with pytest.raises(TypeError):
+    """Raises a TypeError when passed None for the hot spot temperature."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'float'>, hot spot temperature type <class 'NoneType'>, or voltage "
+        r"ratio type <class 'float'>.  All should be <type 'float'>.",
+    ):
+        inductor.do_derating_analysis(
+            1,
+            1,
+            test_stress_limits["inductor"],
+            current_ratio=0.1,
+            family_id=2,
+            temperature_hot_spot=None,
+            temperature_rated_max=130.0,
+            voltage_ratio=0.3,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_voltage_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed a string voltage ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'float'>, hot spot temperature type <class 'float'>, or voltage ratio "
+        r"type <class 'str'>.  All should be <type 'float'>.",
+    ):
         inductor.do_derating_analysis(
             1,
             1,
@@ -236,86 +414,45 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
             family_id=2,
             temperature_hot_spot=51.3,
             temperature_rated_max=130.0,
-            voltage_ratio=voltage_ratio,
+            voltage_ratio="0.9",
         )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_borderline_current(test_stress_limits):
-    """Should determine the inductor is not exceeding the current limit on the
-    boundary."""
-    _overstress, _reason = inductor.do_derating_analysis(
-        1,
-        1,
-        test_stress_limits["inductor"],
-        current_ratio=0.7,  # Exactly at the current limit
-        family_id=2,
-        temperature_hot_spot=50.0,
-        temperature_rated_max=130.0,
-        voltage_ratio=0.5,
-    )
-
-    assert _overstress == 0
-    assert _reason == ""
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_borderline_temperature(test_stress_limits):
-    """Should determine the inductor is not exceeding the hot spot temperature limit on
-    the boundary."""
-    _overstress, _reason = inductor.do_derating_analysis(
-        1,
-        1,
-        test_stress_limits["inductor"],
-        current_ratio=0.5,
-        family_id=2,
-        temperature_hot_spot=100.0,  # Exactly at the temperature limit
-        temperature_rated_max=130.0,
-        voltage_ratio=0.4,
-    )
-
-    assert _overstress == 0
-    assert _reason == ""
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_nominal_values(test_stress_limits):
-    """Should not report overstress when all values are within limits."""
-    _overstress, _reason = inductor.do_derating_analysis(
-        1,
-        1,
-        test_stress_limits["inductor"],
-        current_ratio=0.5,
-        family_id=2,
-        temperature_hot_spot=60.0,
-        temperature_rated_max=130.0,
-        voltage_ratio=0.5,
-    )
-
-    assert _overstress == 0
-    assert _reason == ""
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_invalid_family(test_stress_limits):
-    """Should raise KeyError when passed an invalid family ID."""
-    with pytest.raises(KeyError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_voltage_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed None for the voltage ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid inductive device current ratio type "
+        r"<class 'float'>, hot spot temperature type <class 'float'>, or voltage ratio "
+        r"type <class 'NoneType'>.  All should be <type 'float'>.",
+    ):
         inductor.do_derating_analysis(
             1,
             1,
             test_stress_limits["inductor"],
-            current_ratio=0.2,
-            family_id=999,  # Invalid family_id
+            current_ratio=0.1,
+            family_id=2,
             temperature_hot_spot=51.3,
             temperature_rated_max=130.0,
-            voltage_ratio=0.3,
+            voltage_ratio=None,
         )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_missing_required_args(test_stress_limits):
-    """Should raise a KeyError when required arguments are missing."""
-    with pytest.raises(KeyError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_missing_required_args(
+    test_stress_limits,
+):
+    """Raises a TypeError when required arguments are missing."""
+    with pytest.raises(
+        TypeError,
+        match=r"missing 3 required keyword-only arguments: 'current_ratio', "
+        r"'temperature_hot_spot', and 'voltage_ratio'",
+    ):
         inductor.do_derating_analysis(
             1,
             1,

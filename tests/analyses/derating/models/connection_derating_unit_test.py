@@ -17,10 +17,15 @@ from ramstk.analyses.derating import connection
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the connection is not execeeding any limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_no_stresses(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 0 and an empty reason string when not exceeding limits."""
     _overstress, _reason = connection.do_derating_analysis(
-        1,
+        environment_id,
         test_stress_limits["connection"],
         current_ratio=0.5,
     )
@@ -30,10 +35,15 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_current(test_stress_limits):
-    """should determine the connection is execeeding the voltage limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_current(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when exceeding the current limit."""
     _overstress, _reason = connection.do_derating_analysis(
-        1,
+        environment_id,
         test_stress_limits["connection"],
         current_ratio=1.5,
     )
@@ -43,9 +53,14 @@ def test_do_derating_analysis_current(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
-    with pytest.raises(IndexError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_environment_id(
+    test_stress_limits,
+):
+    """Raises am IndexError when passed an invalid environment ID."""
+    with pytest.raises(
+        IndexError, match="do_derating_analysis: Invalid connection environment ID 5."
+    ):
         connection.do_derating_analysis(
             5,
             test_stress_limits["connection"],
@@ -54,15 +69,36 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("current_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_current_ratio(
-    current_ratio,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_current_ratio(
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric voltage ratio."""
-    with pytest.raises(TypeError):
+    """Raises a TypeError when passed a string current ratio."""
+    with pytest.raises(
+        TypeError,
+        match="do_derating_analysis: Invalid connection current ratio type <class "
+        "'str'>.  Should be <type 'float'>.",
+    ):
         connection.do_derating_analysis(
             1,
             test_stress_limits["connection"],
-            current_ratio=current_ratio,
+            current_ratio="0.9",
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_current_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed NOne for the current ratio."""
+    with pytest.raises(
+        TypeError,
+        match="do_derating_analysis: Invalid connection current ratio type "
+        "<class 'NoneType'>.  Should be <type 'float'>.",
+    ):
+        connection.do_derating_analysis(
+            1,
+            test_stress_limits["connection"],
+            current_ratio=None,
         )

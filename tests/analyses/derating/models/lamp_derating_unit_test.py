@@ -17,10 +17,15 @@ from ramstk.analyses.derating import lamp
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the lamp is not execeeding any limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_no_stresses(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 0 and an empty reason string when the lamp is not exceeding any limit."""
     _overstress, _reason = lamp.do_derating_analysis(
-        1,
+        environment_id,
         4,
         test_stress_limits["miscellaneous"],
         current_ratio=0.05,
@@ -31,23 +36,40 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_current(test_stress_limits):
-    """should determine the lamp is execeeding the current limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_current(
+    environment_id,
+    test_stress_limits,
+):
+    """Returns 1 and the reason string when the lamp is exceeding the current limit."""
     _overstress, _reason = lamp.do_derating_analysis(
-        1,
+        environment_id,
         4,
         test_stress_limits["miscellaneous"],
         current_ratio=0.95,
     )
 
     assert _overstress == 1
-    assert _reason == "Current ratio of 0.95 exceeds the allowable limit of 0.1.\n"
+    assert (
+        _reason
+        == {
+            0: "Current ratio of 0.95 exceeds the allowable limit of 0.2.\n",
+            1: "Current ratio of 0.95 exceeds the allowable limit of 0.1.\n",
+            2: "Current ratio of 0.95 exceeds the allowable limit of 0.1.\n",
+        }[environment_id]
+    )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
-    with pytest.raises(IndexError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_environment_id(
+    test_stress_limits,
+):
+    """Raises an IndexError when passed an invalid environment ID."""
+    with pytest.raises(
+        IndexError, match=r"do_derating_analysis: Invalid lamp environment ID 5."
+    ):
         lamp.do_derating_analysis(
             5,
             4,
@@ -57,9 +79,14 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """should raise am KeyError when passed an unknown subcategory."""
-    with pytest.raises(KeyError):
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_subcategory_id(
+    test_stress_limits,
+):
+    """Raises a KeyError when passed an invalid subcategory ID."""
+    with pytest.raises(
+        KeyError, match=r"do_derating_analysis: Invalid lamp subcategory ID 21."
+    ):
         lamp.do_derating_analysis(
             1,
             21,
@@ -69,16 +96,38 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("current_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_current_ratio(
-    current_ratio,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_current_ratio(
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
-    with pytest.raises(TypeError):
+    """Raises a TypeError when passed a string current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid lamp current ratio type <class 'str'>.  "
+        r"Should be <type 'float'>.",
+    ):
         lamp.do_derating_analysis(
             1,
             4,
             test_stress_limits["miscellaneous"],
-            current_ratio=current_ratio,
+            current_ratio="0.9",
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_current_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed None for the current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid lamp current ratio type "
+        r"<class 'NoneType'>.  Should be <type 'float'>.",
+    ):
+        lamp.do_derating_analysis(
+            1,
+            4,
+            test_stress_limits["miscellaneous"],
+            current_ratio=None,
         )
