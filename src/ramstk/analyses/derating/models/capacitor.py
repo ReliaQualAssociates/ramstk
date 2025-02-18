@@ -7,7 +7,7 @@
 """Capacitor derating analysis functions."""
 
 # Standard Library Imports
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.analyses.derating.derating_utils import (
@@ -20,99 +20,124 @@ from ramstk.analyses.derating.derating_utils import (
 def do_derating_analysis(
     environment_id: int,
     subcategory_id: int,
-    stress_limits: Dict[str, Dict[str, List[float]]],
-    **kwargs,
+    stress_limits: Dict[str | None, Dict[str, List[float]]],
+    *,
+    specification_id: int,
+    temperature_case: float,
+    temperature_rated_max: float,
+    voltage_ratio: float,
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for capacitors.
 
     :param environment_id: the index for the environment the capacitor is operating in;
         0=protected, 1=normal, 2=severe.
-    :param subcategory_id: the subcategory ID of the capacitor to check derating.
+    :param subcategory_id: the subcategory ID of the capacitor being checked for
+        overstress.
     :param stress_limits: the dict containing the stress derating limits for capacitors.
+    :param specification_id: the specification ID of the capacitor being checked for
+        overstress.
+    :param temperature_case: the operating case temperature of the capacitor being
+        checked for overstress.
+    :param temperature_rated_max: the rated maximum temperature of the capacitor being
+        checked for overstress.
+    :param voltage_ratio: the operating to rated voltage ratio of the capacitor being
+        checked for overstress.
     :return: _overstress, _reason
-    :rtype: tuple :raise: IndexError if an unknown environment ID is passed. :raise:
-        KeyError if an unknown subcategory ID, quality ID, or type ID are passed.
-        :raise: TypeError if a non-numeric value is passed for the current ratio, power
-        ratio, junction temperature, or voltage ratio.
+    :rtype: tuple
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: TypeError when passed a non-numeric case temperature or voltage ratio.
     """
     _overstress: int = 0
     _reason: str = ""
 
-    _subcategory = _do_resolve_subcategory(
-        subcategory_id, kwargs.get("specification_id")
+    _subcategory = _get_subcategory_name(
+        subcategory_id,
+        specification_id,
     )
 
-    # Check temperature limits
-    _overstress, _reason = do_check_temperature_limit(
-        kwargs["temperature_case"],
-        kwargs["temperature_rated_max"],
-        stress_limits[_subcategory]["temperature"][environment_id],
-    )
+    try:
+        # Check temperature limits
+        _overstress, _reason = do_check_temperature_limit(
+            temperature_case,
+            temperature_rated_max,
+            stress_limits[_subcategory]["temperature"][environment_id],
+        )
 
-    # Check voltage limits
-    _overstress, _reason = do_update_overstress_status(
-        _overstress,
-        _reason,
-        do_check_voltage_limit(
-            kwargs["voltage_ratio"],
-            stress_limits[_subcategory]["voltage"][environment_id],
-        ),
-    )
+        # Check voltage limits
+        _overstress, _reason = do_update_overstress_status(
+            _overstress,
+            _reason,
+            do_check_voltage_limit(
+                voltage_ratio,
+                stress_limits[_subcategory]["voltage"][environment_id],
+            ),
+        )
 
-    return _overstress, _reason
+        return _overstress, _reason
+    except IndexError as exc:
+        raise IndexError(
+            f"do_derating_analysis: Invalid capacitor environment ID "
+            f"{environment_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"_do_derating_analysis: Invalid capacitor specification ID "
+            f"{specification_id} or subcategory ID {subcategory_id}."
+        ) from exc
+    except TypeError as exc:
+        raise TypeError(
+            f"do_derating_analysis: Invalid capacitor case temperature type "
+            f"{type(temperature_case)} or voltage ratio type {type(voltage_ratio)}.  "
+            f"Both should be <class 'float'>."
+        ) from exc
 
 
-def _do_resolve_subcategory(
-    subcategory_id: int, specification_id: Optional[int]
+def _get_subcategory_name(
+    subcategory_id: int,
+    specification_id: int,
 ) -> str:
-    """Resolve the capacitor subcategory based on subcategory and specification ID."""
-    _subcategory = {
-        1: "paper",
-        2: "paper",
-        3: "plastic",
-        4: "metallized",
-        5: "metallized",
-        6: "metallized",
-        7: "mica",
-        8: "mica_button",
-        9: "glass",
-        10: "ceramic_fixed",
-        11: {
-            1: "temp_comp_ceramic",
-            2: "ceramic_chip",
-        },
-        12: {
-            1: "tantalum_solid",
-            2: "tantalum_chip",
-        },
-        13: "tantalum_wet",
-        14: "aluminum",
-        15: "aluminum_dry",
-        16: "ceramic_variable",
-        17: "piston",
-        18: "trimmer",
-        19: "vacuum",
-    }
+    """Retrieve the capacitor subcategory string name.
 
-    # Explicit check for subcategory_id to make sure it's in the dictionary.
-    if subcategory_id not in _subcategory:
-        raise KeyError(f"Unknown subcategory_id: {subcategory_id}")
-
-    # Fetch the subcategory (can be a string or a dict).
-    _resolved_subcategory = _subcategory[subcategory_id]
-
-    # If the subcategory is a nested dictionary, resolve using specification_id.
-    if isinstance(_resolved_subcategory, dict):
-        if specification_id is None:
-            raise ValueError(
-                f"Missing specification_id for subcategory_id {subcategory_id}"
-            )
-        if specification_id not in _resolved_subcategory:
-            raise ValueError(
-                f"Unknown specification_id {specification_id} for subcategory_id"
-                f" {subcategory_id}"
-            )
-        return _resolved_subcategory[specification_id]
-
-    # Return the resolved subcategory for non-nested cases.
-    return _resolved_subcategory
+    :param subcategory_id: the subcategory ID of the capacitor being checked for
+        overstress.
+    :param specification_id: the specification ID of the capacitor being checked for
+        overstress.
+    :return: the selected name of the capacitor subcategory or empty string if passed an
+        invalid specification ID or subcategory ID.
+    :rtype: str
+    """
+    if subcategory_id in [11, 12]:
+        return (
+            {  # type: ignore[union-attr]
+                11: {
+                    1: "temp_comp_ceramic",
+                    2: "ceramic_chip",
+                },
+                12: {
+                    1: "tantalum_solid",
+                    2: "tantalum_chip",
+                },
+            }
+            .get(subcategory_id)
+            .get(specification_id, "")
+        )
+    else:
+        return {
+            1: "paper",
+            2: "paper",
+            3: "plastic",
+            4: "metallized",
+            5: "metallized",
+            6: "metallized",
+            7: "mica",
+            8: "mica_button",
+            9: "glass",
+            10: "ceramic_fixed",
+            13: "tantalum_wet",
+            14: "aluminum",
+            15: "aluminum_dry",
+            16: "ceramic_variable",
+            17: "piston",
+            18: "trimmer",
+            19: "vacuum",
+        }.get(subcategory_id, "")

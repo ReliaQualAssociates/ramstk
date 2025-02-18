@@ -395,7 +395,7 @@ ignored-classes = [
 ]
 
 [tool.pylint.design]
-max-args = 6
+max-args = 12
 max-positional-arguments = 6
 
 [tool.docformatter]

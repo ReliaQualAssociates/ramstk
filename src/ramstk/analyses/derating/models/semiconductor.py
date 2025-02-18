@@ -23,7 +23,13 @@ def do_derating_analysis(
     environment_id: int,
     subcategory_id: int,
     stress_limits: Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]],
-    **kwargs,
+    *,
+    current_ratio: float,
+    power_ratio: float,
+    quality_id: int,
+    temperature_junction: float,
+    type_id: int,
+    voltage_ratio: float,
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for semiconductors.
 
@@ -33,71 +39,101 @@ def do_derating_analysis(
     :param stress_limits: the dict containing the stress derating limits for
         semiconductors.
     :return: _overstress, _reason
-    :rtype: tuple :raise: IndexError if an unknown environment ID is passed. :raise:
-        KeyError if an unknown subcategory ID, quality ID, or type ID are passed.
-        :raise: TypeError if a non-numeric value is passed for the current ratio, power
+    :rtype: tuple
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: KeyError when passed an invalid quality ID, subcategory ID, or type ID.
+    :raises: TypeError if a non-numeric value is passed for the current ratio, power
         ratio, junction temperature, or voltage ratio.
     """
     _overstress: int = 0
     _reason: str = ""
 
     _subcategory = _get_semiconductor_subcategory(subcategory_id)
-    _type = _get_semiconductor_type(subcategory_id, kwargs.get("type_id", 0))
-    _quality = _get_semiconductor_quality(kwargs.get("quality_id", 1))
+    _type = _get_semiconductor_type(subcategory_id, type_id)
+    _quality = _get_semiconductor_quality(quality_id)
 
-    # Check current limit.
-    _overstress, _reason = do_update_overstress_status(
-        _overstress,
-        _reason,
-        do_check_current_limit(
-            kwargs["current_ratio"],
-            stress_limits[_subcategory][_type][_quality]["current"][environment_id],
-        ),
-    )
-
-    # Check power limit for specific subcategories and types.
-    if (
-        _subcategory == "diode"
-        and _type in ["schottky", "regulator", "suppressor"]
-        or _subcategory == "transistor"
-    ):
+    try:
+        # Check current limit.
         _overstress, _reason = do_update_overstress_status(
             _overstress,
             _reason,
-            do_check_power_limit(
-                kwargs["power_ratio"],
-                stress_limits[_subcategory][_type][_quality]["power"][environment_id],
+            do_check_current_limit(
+                current_ratio,
+                stress_limits[_subcategory][_type][_quality]["current"][environment_id],
             ),
         )
 
-        # Check junction temperature limit.
-        _overstress, _reason = do_update_overstress_status(
-            _overstress,
-            _reason,
-            do_check_temperature_limit(
-                kwargs["temperature_junction"],
-                stress_limits[_subcategory][_type][_quality]["temperature"][
-                    environment_id
-                ],
-                0.0,
-            ),
-        )
+        # Check power limit for specific subcategories and types.
+        if (
+            _subcategory == "diode"
+            and _type in ["schottky", "regulator", "suppressor"]
+            or _subcategory == "transistor"
+        ):
+            _overstress, _reason = do_update_overstress_status(
+                _overstress,
+                _reason,
+                do_check_power_limit(
+                    power_ratio,
+                    stress_limits[_subcategory][_type][_quality]["power"][
+                        environment_id
+                    ],
+                ),
+            )
 
-        # Check voltage limit.
-        _overstress, _reason = do_update_overstress_status(
-            _overstress,
-            _reason,
-            do_check_voltage_limit(
-                kwargs["voltage_ratio"],
-                stress_limits[_subcategory][_type][_quality]["voltage"][environment_id],
-            ),
-        )
+            # Check junction temperature limit.
+            _overstress, _reason = do_update_overstress_status(
+                _overstress,
+                _reason,
+                do_check_temperature_limit(
+                    temperature_junction,
+                    stress_limits[_subcategory][_type][_quality]["temperature"][
+                        environment_id
+                    ],
+                    0.0,
+                ),
+            )
 
-    return _overstress, _reason
+            # Check voltage limit.
+            _overstress, _reason = do_update_overstress_status(
+                _overstress,
+                _reason,
+                do_check_voltage_limit(
+                    voltage_ratio,
+                    stress_limits[_subcategory][_type][_quality]["voltage"][
+                        environment_id
+                    ],
+                ),
+            )
+
+        return _overstress, _reason
+    except IndexError as exc:
+        raise IndexError(
+            f"do_derating_analysis: Invalid semiconductor environment ID "
+            f"{environment_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"do_derating_analysis: Invalid semiconductor quality ID {quality_id}, "
+            f"subcategory ID {subcategory_id}, or type ID {type_id}."
+        ) from exc
+    except TypeError as exc:
+        raise TypeError(
+            f"do_derating_analysis: Invalid semiconductor current ratio type "
+            f"{type(current_ratio)}, power ratio type {type(power_ratio)}, junction "
+            f"temperature type {type(temperature_junction)}, or voltage ratio type "
+            f"{type(voltage_ratio)}.  All should be <type 'float'>."
+        ) from exc
 
 
 def _get_semiconductor_subcategory(subcategory_id: int) -> str:
-    """Return the semiconductor subcategory based on the subcategory ID."""
+    """Retrieve the semiconductor subcategory based on the subcategory ID.
+
+    :param subcategory_id: the subcategory ID of the semiconductor being checked for
+        overstress.
+    :return: the selected semiconductor subcategory name or an empty string when passed
+        an invalid subcategory ID.
+    :rtype: str
+    """
     _subcategories = {
         1: "diode",
         3: "transistor",
@@ -109,16 +145,19 @@ def _get_semiconductor_subcategory(subcategory_id: int) -> str:
         10: "thyristor",
     }
 
-    _subcategory = _subcategories.get(subcategory_id)
-
-    if _subcategory is None:
-        raise KeyError(f"Unknown subcategory_id: {subcategory_id}")
-
-    return _subcategory
+    return _subcategories.get(subcategory_id, "")
 
 
 def _get_semiconductor_type(subcategory_id: int, type_id: int) -> str:
-    """Return the semiconductor type based on the subcategory ID and type ID."""
+    """Retrieve the semiconductor type based on the subcategory ID and type ID.
+
+    :param subcategory_id: the subcategory ID of the semiconductor being checked for
+        overstress.
+    :param type_id: the type ID of the semiconductor being checked for overstress.
+    :return: the selected semiconductor type name or an empty string when passed an
+        invalid subcategory ID or type ID.
+    :rtype: str
+    """
     _type_mapping = {
         1: {
             1: "general_purpose",
@@ -137,15 +176,21 @@ def _get_semiconductor_type(subcategory_id: int, type_id: int) -> str:
         9: "fet",
     }
     _type = _type_mapping.get(subcategory_id, "")
-    return _type.get(type_id, "") if isinstance(_type, dict) else _type
+    return _type.get(type_id, "") if isinstance(_type, dict) else _type  # type: ignore
 
 
 def _get_semiconductor_quality(quality_id: int) -> str:
-    """Return the semiconductor quality based on the quality ID."""
+    """Retrieve the semiconductor quality based on the quality ID.
+
+    :param quality_id: the quality ID of the semiconductor being checked for overstress.
+    :return: the selected semiconductor quality name or an empty string when passed an
+        invalid quality ID.
+    :rtype: str
+    """
     return {
         1: "jantx",
         2: "jantx",
         3: "military",
         4: "commercial",
         5: "commercial",
-    }[quality_id]
+    }.get(quality_id, "")
