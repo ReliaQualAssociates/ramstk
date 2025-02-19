@@ -13,6 +13,9 @@ def do_derating_analysis(
     temperature_rated_max: float,
     voltage_ratio: float,
 ) -> Tuple[int, str]: ...
+def _get_subcategory_name(
+    subcategory_id: int,
+) -> str: ...
 def _get_stress_limit(
     subcategory: str,
     environment_id: int,

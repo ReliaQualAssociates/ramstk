@@ -106,7 +106,7 @@ def _get_subcategory_name(
         invalid specification ID or subcategory ID.
     :rtype: str
     """
-    if subcategory_id in [11, 12]:
+    if subcategory_id in {11, 12}:
         return (
             {  # type: ignore[union-attr]
                 11: {

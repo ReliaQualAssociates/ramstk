@@ -58,25 +58,9 @@ def do_derating_analysis(
     _overstress: int = 0
     _reason: str = ""
 
-    try:
-        _subcategory = {
-            1: "fixed_composition",
-            2: "fixed_film",
-            3: "fixed_film_power",
-            4: "fixed_film_network",
-            5: "fixed_wirewound",
-            6: "fixed_wirewound_power",
-            7: "fixed_wirewound_chassis",
-            8: "thermistor",
-            9: "variable_wirewound",
-            10: "variable_wirewound_precision",
-            11: "variable_wirewound",
-            12: "variable_wirewound_power",
-            13: "variable_non_wirewound",
-            14: "variable_composition",
-            15: "variable_film",
-        }[subcategory_id]
+    _subcategory = _get_subcategory_name(subcategory_id)
 
+    try:
         # Check power limits.
         _power_limit = _get_stress_limit(
             _subcategory, environment_id, power_rated, stress_limits, "power"
@@ -135,11 +119,6 @@ def do_derating_analysis(
             f"do_derating_analysis: Invalid resistor environment ID "
             f"{environment_id}."
         ) from exc
-    except KeyError as exc:
-        raise KeyError(
-            f"do_derating_analysis: Invalid resistor subcategory ID "
-            f"{subcategory_id}."
-        ) from exc
     except TypeError as exc:
         raise TypeError(
             f"do_derating_analysis: Invalid resistor power ratio type "
@@ -148,6 +127,42 @@ def do_derating_analysis(
             f"{type(temperature_knee)}, rated temperature type "
             f"{type(temperature_rated_max)}, or voltage ratio type "
             f"{type(voltage_ratio)}.  All should be <type 'float'>."
+        ) from exc
+
+
+def _get_subcategory_name(
+    subcategory_id: int,
+) -> str:
+    """Retrieve the resistor subcategory nome.
+
+    :param subcategory_id: the subcategory ID of the resistor being checked for
+        overstress.
+    :return: the selected subcategory name.
+    :rtype: str
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
+    _subcategory_names = {
+        1: "fixed_composition",
+        2: "fixed_film",
+        3: "fixed_film_power",
+        4: "fixed_film_network",
+        5: "fixed_wirewound",
+        6: "fixed_wirewound_power",
+        7: "fixed_wirewound_chassis",
+        8: "thermistor",
+        9: "variable_wirewound",
+        10: "variable_wirewound_precision",
+        11: "variable_wirewound",
+        12: "variable_wirewound_power",
+        13: "variable_non_wirewound",
+        14: "variable_composition",
+        15: "variable_film",
+    }[subcategory_id]
+    try:
+        return _subcategory_names[subcategory_id]
+    except KeyError as exc:
+        raise KeyError(
+            f"_get_subcategory_name: Invalid resistor subcategory ID {subcategory_id}."
         ) from exc
 
 
