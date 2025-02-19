@@ -379,7 +379,7 @@ def test_do_derating_analysis_invalid_subcategory_id(
 ):
     """Raises a KeyError when passed an invalid subcategory ID."""
     with pytest.raises(
-        KeyError, match=r"do_derating_analysis: Invalid resistor subcategory ID 21."
+        KeyError, match=r"_get_subcategory_name: Invalid resistor subcategory ID 21."
     ):
         resistor.do_derating_analysis(
             1,

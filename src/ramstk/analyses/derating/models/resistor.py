@@ -157,7 +157,7 @@ def _get_subcategory_name(
         13: "variable_non_wirewound",
         14: "variable_composition",
         15: "variable_film",
-    }[subcategory_id]
+    }
     try:
         return _subcategory_names[subcategory_id]
     except KeyError as exc:
