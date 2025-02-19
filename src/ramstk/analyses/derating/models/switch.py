@@ -25,7 +25,7 @@ def do_derating_analysis(
     current_ratio: float,
     power_ratio: float,
 ) -> Tuple[int, str]:
-    """Check actual stresses against derating criteria for switchs.
+    """Check actual stresses against derating criteria for switches.
 
     :param environment_id: the index for the environment the switch is operating in;
         0=protected, 1=normal, 2=severe.
@@ -82,7 +82,7 @@ def do_derating_analysis(
             f"do_derating_analysis: Invalid switch current ratio type "
             f"{type(current_ratio)} or power ratio type {type(power_ratio)}.  Both "
             f"should be <type 'float'>."
-        )
+        ) from exc
 
 
 def _get_switch_application(application_id: int) -> str:

@@ -38,6 +38,16 @@ def do_derating_analysis(
     :param subcategory_id: the subcategory ID of the semiconductor to check derating.
     :param stress_limits: the dict containing the stress derating limits for
         semiconductors.
+    :param current_ratio: the operating to rated current ratio for the semiconductor
+        being checked for overstress.
+    :param power_ratio: the operating to rated power ratio for the semiconductor being
+        checked for overstress.
+    :param quality_id: the quality ID of the semiconductor being checked for overstress.
+    :param temperature_junction: the junction temperature of the semiconductor being
+        checked for overstress.
+    :param type_id: the type ID of the semiconductor being checked for overstress.
+    :param voltage_ratio: the operating to rated voltage ratio of the semiconductor
+        being checked for overstress.
     :return: _overstress, _reason
     :rtype: tuple
     :raises: IndexError when passed an invalid environment ID.
