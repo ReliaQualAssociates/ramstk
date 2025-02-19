@@ -16,6 +16,7 @@
 *.xcf
 0
 tags
+sqlite
 
 # Python specific directories and files to ignore
 build/

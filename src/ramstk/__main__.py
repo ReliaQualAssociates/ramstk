@@ -199,7 +199,8 @@ def do_initialize_databases(
 
     _program_db.dic_views["fmea"] = RAMSTKFMEAView()
     _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView(
-        hr_multiplier=configuration.RAMSTK_HR_MULTIPLIER
+        hr_multiplier=configuration.RAMSTK_HR_MULTIPLIER,
+        stress_limits=configuration.RAMSTK_STRESS_LIMITS,
     )
     _program_db.dic_views["pof"] = RAMSTKPoFView()
     _program_db.dic_views["usage_profile"] = RAMSTKUsageProfileView()

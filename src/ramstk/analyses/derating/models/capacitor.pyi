@@ -5,14 +5,13 @@ def do_derating_analysis(
     environment_id: int,
     subcategory_id: int,
     stress_limits: Dict[str, Dict[str, List[float]]],
-    **kwargs,
+    *,
+    specification_id: int,
+    temperature_case: float,
+    temperature_rated_max: float,
+    voltage_ratio: float,
 ) -> Tuple[int, str]: ...
-def _do_check_temperature_limit(
-    case_temperature: float, max_rated_temperature: float, temperature_limit: float
-) -> Tuple[int, str]: ...
-def _do_check_voltage_limit(
-    voltage_ratio: float, voltage_limit: float
-) -> Tuple[int, str]: ...
-def _do_resolve_subcategory(
-    subcategory_id: int, specification_id: Optional[int]
+def _get_subcategory_name(
+    subcategory_id: int,
+    specification_id: Optional[int],
 ) -> str: ...

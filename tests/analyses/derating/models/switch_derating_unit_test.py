@@ -16,10 +16,15 @@ from ramstk.analyses.derating import switch
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """Should determine the switch is not execeeding any limit."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_no_stresses(
+    environment_id,
+    test_stress_limits,
+):
+    """Return 0 and an empty reason string when not exceeding any limit."""
     _overstress, _reason = switch.do_derating_analysis(
-        1,
+        environment_id,
         test_stress_limits["switch"],
         application_id=2,
         current_ratio=0.3,
@@ -31,117 +36,11 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_current(test_stress_limits):
-    """Should determine the switch is execeeding the current limit."""
-    _overstress, _reason = switch.do_derating_analysis(
-        1,
-        test_stress_limits["switch"],
-        application_id=2,
-        current_ratio=0.86,
-        power_ratio=0.2,
-    )
-
-    assert _overstress == 1
-    assert _reason == "Current ratio of 0.86 exceeds the allowable limit of 0.4.\n"
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_power(test_stress_limits):
-    """Should determine the switch is execeeding the power limit."""
-    _overstress, _reason = switch.do_derating_analysis(
-        1,
-        test_stress_limits["switch"],
-        application_id=2,
-        current_ratio=0.1,
-        power_ratio=0.92,
-    )
-
-    assert _overstress == 1
-    assert _reason == "Power ratio of 0.92 exceeds the allowable limit of 0.6.\n"
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """Should determine the switch is execeeding both limits."""
-    _overstress, _reason = switch.do_derating_analysis(
-        1,
-        test_stress_limits["switch"],
-        application_id=2,
-        current_ratio=0.86,
-        power_ratio=0.92,
-    )
-
-    assert _overstress == 1
-    assert (
-        _reason == "Current ratio of 0.86 exceeds the allowable limit of 0.4.\nPower "
-        "ratio of 0.92 exceeds the allowable limit of 0.6.\n"
-    )
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """Should raise am IndexError when passed an unknown environment."""
-    with pytest.raises(IndexError):
-        switch.do_derating_analysis(
-            5,
-            test_stress_limits["switch"],
-            application_id=2,
-            current_ratio=0.1,
-            power_ratio=0.2,
-        )
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_unknown_application(test_stress_limits):
-    """Should raise am KeyError when passed an unknown application ID."""
-    with pytest.raises(KeyError):
-        switch.do_derating_analysis(
-            1,
-            test_stress_limits["switch"],
-            application_id=21,
-            current_ratio=0.1,
-            power_ratio=0.2,
-        )
-
-
-@pytest.mark.unit
-@pytest.mark.parametrize("current_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_current_ratio(
-    current_ratio,
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_borderline_current_ratio(
     test_stress_limits,
 ):
-    """Should raise am TypeError when passed a non-numeric current ratio."""
-    with pytest.raises(TypeError):
-        switch.do_derating_analysis(
-            1,
-            test_stress_limits["switch"],
-            application_id=2,
-            current_ratio=current_ratio,
-            power_ratio=0.2,
-        )
-
-
-@pytest.mark.unit
-@pytest.mark.parametrize("power_ratio", ["0.9", None])
-def test_do_derating_analysis_non_numeric_power_ratio(
-    power_ratio,
-    test_stress_limits,
-):
-    """Should raise am TypeError when passed a non-numeric power ratio."""
-    with pytest.raises(TypeError):
-        switch.do_derating_analysis(
-            1,
-            test_stress_limits["switch"],
-            application_id=2,
-            current_ratio=0.1,
-            power_ratio=power_ratio,
-        )
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_borderline_current(test_stress_limits):
-    """Should determine the switch is not exceeding the current limit at the
-    boundary."""
+    """Return 0 and an empty reason string when the current ratio is at the boundary."""
     _overstress, _reason = switch.do_derating_analysis(
         1,
         test_stress_limits["switch"],
@@ -155,8 +54,12 @@ def test_do_derating_analysis_borderline_current(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_borderline_power(test_stress_limits):
-    """Should determine the switch is not exceeding the power limit at the boundary."""
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_borderline_power_ratio(
+    test_stress_limits,
+):
+    """Return 0 and an empty reason string when the power ratio limit is at the
+    boundary."""
     _overstress, _reason = switch.do_derating_analysis(
         1,
         test_stress_limits["switch"],
@@ -170,25 +73,218 @@ def test_do_derating_analysis_borderline_power(test_stress_limits):
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_all_stresses_below_limits(test_stress_limits):
-    """Should determine the switch is not exceeding any limit when all ratios are below
-    limits."""
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_current_ratio(
+    environment_id,
+    test_stress_limits,
+):
+    """Return 1 and the reason string when exceeding the current ratio limit."""
     _overstress, _reason = switch.do_derating_analysis(
-        1,
+        environment_id,
         test_stress_limits["switch"],
         application_id=2,
-        current_ratio=0.2,
-        power_ratio=0.4,
+        current_ratio=0.86,
+        power_ratio=0.2,
     )
 
-    assert _overstress == 0
-    assert _reason == ""
+    assert _overstress == 1
+    assert (
+        _reason
+        == {
+            0: "Current ratio of 0.86 exceeds the allowable limit of 0.5.\n",
+            1: "Current ratio of 0.86 exceeds the allowable limit of 0.4.\n",
+            2: "Current ratio of 0.86 exceeds the allowable limit of 0.3.\n",
+        }[environment_id]
+    )
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_missing_required_args(test_stress_limits):
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_power_ratio(
+    environment_id,
+    test_stress_limits,
+):
+    """Return 1 and the reason string when exceeding the power ratio limit."""
+    _overstress, _reason = switch.do_derating_analysis(
+        environment_id,
+        test_stress_limits["switch"],
+        application_id=2,
+        current_ratio=0.1,
+        power_ratio=0.92,
+    )
+
+    assert _overstress == 1
+    assert (
+        _reason
+        == {
+            0: "Power ratio of 0.92 exceeds the allowable limit of 0.7.\n",
+            1: "Power ratio of 0.92 exceeds the allowable limit of 0.6.\n",
+            2: "Power ratio of 0.92 exceeds the allowable limit of 0.5.\n",
+        }[environment_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("environment_id", [0, 1, 2])
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_all_stresses(
+    environment_id,
+    test_stress_limits,
+):
+    """Return 1 and the reason string when exceeding both limits."""
+    _overstress, _reason = switch.do_derating_analysis(
+        environment_id,
+        test_stress_limits["switch"],
+        application_id=2,
+        current_ratio=0.86,
+        power_ratio=0.92,
+    )
+
+    assert _overstress == 1
+    assert (
+        _reason
+        == {
+            0: "Current ratio of 0.86 exceeds the allowable limit of 0.5.\nPower "
+            "ratio of 0.92 exceeds the allowable limit of 0.7.\n",
+            1: "Current ratio of 0.86 exceeds the allowable limit of 0.4.\nPower "
+            "ratio of 0.92 exceeds the allowable limit of 0.6.\n",
+            2: "Current ratio of 0.86 exceeds the allowable limit of 0.3.\nPower "
+            "ratio of 0.92 exceeds the allowable limit of 0.5.\n",
+        }[environment_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_environment_id(
+    test_stress_limits,
+):
+    """Raises an IndexError when passed an invalid environment ID."""
+    with pytest.raises(
+        IndexError, match=r"do_derating_analysis: Invalid switch environment ID 5."
+    ):
+        switch.do_derating_analysis(
+            5,
+            test_stress_limits["switch"],
+            application_id=2,
+            current_ratio=0.1,
+            power_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_invalid_application_id(
+    test_stress_limits,
+):
+    """Raises a KeyError when passed an invalid application ID."""
+    with pytest.raises(
+        KeyError, match=r"do_derating_analysis: Invalid switch application ID 21."
+    ):
+        switch.do_derating_analysis(
+            1,
+            test_stress_limits["switch"],
+            application_id=21,
+            current_ratio=0.1,
+            power_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_current_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed a string current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid switch current ratio type "
+        r"<class 'str'> or power ratio type <class 'float'>.  Both should be "
+        r"<type 'float'>.",
+    ):
+        switch.do_derating_analysis(
+            1,
+            test_stress_limits["switch"],
+            application_id=2,
+            current_ratio="0.9",
+            power_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_current_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed None for the current ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid switch current ratio type "
+        r"<class 'NoneType'> or power ratio type <class 'float'>.  Both should be "
+        r"<type 'float'>.",
+    ):
+        switch.do_derating_analysis(
+            1,
+            test_stress_limits["switch"],
+            application_id=2,
+            current_ratio=None,
+            power_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_string_power_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed a string power ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid switch current ratio type "
+        r"<class 'float'> or power ratio type <class 'str'>.  Both should be "
+        r"<type 'float'>.",
+    ):
+        switch.do_derating_analysis(
+            1,
+            test_stress_limits["switch"],
+            application_id=2,
+            current_ratio=0.1,
+            power_ratio="0.9",
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_none_power_ratio(
+    test_stress_limits,
+):
+    """Raises a TypeError when passed None for the power ratio."""
+    with pytest.raises(
+        TypeError,
+        match=r"do_derating_analysis: Invalid switch current ratio type "
+        r"<class 'float'> or power ratio type <class 'NoneType'>.  Both should be "
+        r"<type 'float'>.",
+    ):
+        switch.do_derating_analysis(
+            1,
+            test_stress_limits["switch"],
+            application_id=2,
+            current_ratio=0.1,
+            power_ratio=None,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_stress_limits")
+def test_do_derating_analysis_missing_required_args(
+    test_stress_limits,
+):
     """Should raise KeyError when required arguments are missing."""
-    with pytest.raises(KeyError):
+    with pytest.raises(
+        TypeError, match=r"missing 1 required keyword-only argument: 'current_ratio'"
+    ):
         switch.do_derating_analysis(
             1,
             test_stress_limits["switch"],
@@ -196,20 +292,3 @@ def test_do_derating_analysis_missing_required_args(test_stress_limits):
             # Missing current_ratio
             power_ratio=0.2,
         )
-
-
-@pytest.mark.unit
-def test_do_derating_analysis_different_application_types(test_stress_limits):
-    """Should determine the switch is not exceeding limits for different application
-    types."""
-    for app_id in [1, 2, 3]:
-        _overstress, _reason = switch.do_derating_analysis(
-            1,
-            test_stress_limits["switch"],
-            application_id=app_id,
-            current_ratio=0.3 / app_id,
-            power_ratio=0.4,
-        )
-
-        assert _overstress == 0
-        assert _reason == ""

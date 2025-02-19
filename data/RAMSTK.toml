@@ -67,6 +67,7 @@ stakeholderfg = "#000000"
 validationbg = "#FFFFFF"
 validationfg = "#000000"
 
+# Default derating values are taken from NAVSEA SD-18.
 [stress]
     # Derating values for hermetically packaged ICs.
     [stress.integrated_circuit.digital.mos.hermetic]
@@ -307,6 +308,7 @@ validationfg = "#000000"
     [stress.resistor.fixed.film.power]
         power = [0.55, 0.55, 0.55]
         temperature = [0.55, 0.55, 0.55]
+        voltage = [0.55, 0.55, 0.55]
     [stress.resistor.fixed.film.network]
         power = [0.55, 0.55, 0.55]
         temperature = [0.55, 0.55, 0.55]

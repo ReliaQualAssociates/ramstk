@@ -5,17 +5,14 @@ def do_derating_analysis(
     environment_id: int,
     subcategory_id: int,
     stress_limits: Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]],
-    **kwargs,
+    *,
+    current_ratio: float,
+    power_ratio: float,
+    quality_id: int,
+    temperature_junction: float,
+    type_id: int,
+    voltage_ratio: float,
 ) -> Tuple[int, str]: ...
-def _do_check_current_limit(
-    current_ratio: float, current_limit: float
-) -> Tuple[int, str]: ...
-def _do_check_power_limit(
-    power_ratio: float, power_limit: float
-) -> Tuple[int, str]: ...
-def _do_check_temperature_limit(
-    junction_temperature: float, temperature_limit: float
-) -> Tuple[int, str]: ...
-def _do_check_voltage_limit(
-    voltage_ratio: float, voltage_limit: float
-) -> Tuple[int, str]: ...
+def _get_semiconductor_subcategory(subcategory_id: int) -> str: ...
+def _get_semiconductor_type(subcategory_id: int, type_id: int) -> str: ...
+def _get_semiconductor_quality(quality_id: int) -> str: ...
