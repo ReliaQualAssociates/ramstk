@@ -29,9 +29,11 @@ import toml
 import xlwt
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+from ramstk.logger import RAMSTKLogManager
 from ramstk.models.db import BaseDatabase, RAMSTKCommonDB
 
 _ = gettext.gettext
@@ -2112,6 +2114,38 @@ def test_record_model(mock_dao):
     dut = mock_dao.do_select(node_id=0)
 
     yield dut
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="session")
+def test_suite_logger():
+    """Get a table model instance for each test function."""
+    # Standard Library Imports
+    import platform
+    from datetime import datetime
+
+    # Remove the old test suite log.
+    if os.path.exists(f"{TMP_DIR}/test_suite_log.log"):
+        os.remove(f"{TMP_DIR}/test_suite_log.log")
+
+    # Create the device under test (dut).
+    dut = RAMSTKLogManager(f"{TMP_DIR}/test_suite_log.log")
+    dut.do_create_logger("DEBUG", "DEBUG", False)
+    dut.do_create_logger("ERROR", "ERROR", False)
+
+    _log_header = f"Test suite run on: {platform.platform()} at {datetime.now()}\n"
+    dut.do_log_debug("DEBUG", _log_header)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    assert pub.unsubscribe(dut.do_log_debug, "do_log_debug_msg")
+    assert pub.unsubscribe(dut.do_log_info, "do_log_info_msg")
+    assert pub.unsubscribe(dut.do_log_warning, "do_log_warning_msg")
+    assert pub.unsubscribe(dut.do_log_error, "do_log_error_msg")
+    assert pub.unsubscribe(dut.do_log_critical, "do_log_critical_msg")
 
     # Delete the device under test.
     del dut
