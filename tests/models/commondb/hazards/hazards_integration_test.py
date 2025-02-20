@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKHazardsRecord
-from ramstk.models.dbtables import RAMSTKHazardsTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectHazards(SystemTestSelectMethods):
     """Class for testing Hazards table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectHazards(SystemTestSelectMethods):
     _tag = "hazards"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateHazards:
     """Class for testing Hazards table do_update() and do_update_all() methods."""
 
@@ -207,7 +208,10 @@ class TestUpdateHazards:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_hazards")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterHazards(SystemTestGetterSetterMethods):
     """Class for testing Hazards table getter and setter methods."""
 

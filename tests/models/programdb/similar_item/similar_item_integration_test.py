@@ -16,16 +16,18 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKSimilarItemTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
     SystemTestSelectMethods,
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectSimilarItem(SystemTestSelectMethods):
     """Class for testing Similar Item table do_select() and do_select_all() methods."""
 
@@ -38,7 +40,10 @@ class TestSelectSimilarItem(SystemTestSelectMethods):
 
 
 @pytest.mark.usefixtures(
-    "test_attributes", "integration_test_table_model", "test_hardware_table_model"
+    "test_attributes",
+    "integration_test_table_model",
+    "test_hardware_table_model",
+    "test_suite_logger",
 )
 class TestInsertSimilarItem:
     """Class for testing the Similar Item do_insert() method."""
@@ -101,7 +106,10 @@ class TestInsertSimilarItem:
         assert integration_test_table_model.tree.get_node(10) is None
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteSimilarItem(SystemTestDeleteMethods):
     """Class for testing Similar Item table do_delete() method."""
 
@@ -113,7 +121,10 @@ class TestDeleteSimilarItem(SystemTestDeleteMethods):
     _tag = "similar_item"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateSimilarItem:
     """Class for testing SimilarItem update() and update_all() methods."""
 
@@ -335,7 +346,10 @@ class TestUpdateSimilarItem:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterSimilarItem(SystemTestGetterSetterMethods):
     """Class for testing Similar Item table getter and setter methods."""
 
@@ -347,7 +361,11 @@ class TestGetterSetterSimilarItem(SystemTestGetterSetterMethods):
     _test_id = 1
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSimilarItemAnalysisMethods:
     """Class for Similar Item analytical methods test suite."""
 

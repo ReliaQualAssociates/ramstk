@@ -22,7 +22,6 @@ from ramstk.models.dbrecords import (
     RAMSTKMechanismRecord,
     RAMSTKModeRecord,
 )
-from ramstk.models.dbviews import RAMSTKFMEAView
 
 TEST_IDS = {
     "mode": "6",
@@ -40,6 +39,7 @@ TEST_IDS = {
     "test_cause_table_model",
     "test_control_table_model",
     "test_action_table_model",
+    "test_suite_logger",
 )
 class TestSelectFMEA:
     """Class for testing do_select() and do_select_all() methods."""
@@ -249,6 +249,7 @@ class TestSelectFMEA:
     "test_cause_table_model",
     "test_control_table_model",
     "test_action_table_model",
+    "test_suite_logger",
 )
 class TestInsertFMEA:
     """Class for testing the FMEA do_insert() method."""
@@ -405,6 +406,7 @@ class TestInsertFMEA:
     "test_cause_table_model",
     "test_control_table_model",
     "test_action_table_model",
+    "test_suite_logger",
 )
 class TestDeleteFMEA:
     """Class for testing the FMEA do_delete() method."""

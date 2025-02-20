@@ -9,8 +9,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Program Information integrations."""
 
-# Standard Library Imports
-from datetime import date
 
 # Third Party Imports
 import pytest
@@ -19,16 +17,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKProgramInfoRecord
-from ramstk.models.dbtables import RAMSTKProgramInfoTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectProgramInfo(SystemTestSelectMethods):
     """Class for testing ProgramInfo table do_select() and do_select_all() methods."""
 
@@ -40,7 +36,10 @@ class TestSelectProgramInfo(SystemTestSelectMethods):
     _tag = "preference"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateProgramInfo:
     """Class for testing ProgramInfo table do_update() and do_update_all() methods."""
 
@@ -232,7 +231,10 @@ class TestUpdateProgramInfo:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterProgramInfo(SystemTestGetterSetterMethods):
     """Class for testing Program Information table getter and setter methods."""
 

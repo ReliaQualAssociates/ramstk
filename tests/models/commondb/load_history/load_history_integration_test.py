@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKLoadHistoryRecord
-from ramstk.models.dbtables import RAMSTKLoadHistoryTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectLoadHistory(SystemTestSelectMethods):
     """Class for testing Load History table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectLoadHistory(SystemTestSelectMethods):
     _tag = "load_history"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateLoadHistory:
     """Class for testing Load History table do_update() and do_update_all() methods."""
 
@@ -188,7 +189,10 @@ class TestUpdateLoadHistory:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_load_history")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterLoadHistory(SystemTestGetterSetterMethods):
     """Class for testing Load History table getter and setter methods."""
 

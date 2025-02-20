@@ -28,7 +28,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectProgramStatus(SystemTestSelectMethods):
     """Class for testing Prog Status table do_select() and do_select_all() methods."""
 
@@ -40,7 +44,11 @@ class TestSelectProgramStatus(SystemTestSelectMethods):
     _tag = "program_status"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertProgramStatus(SystemTestInsertMethods):
     """Class for testing Program Status table do_insert() method."""
 
@@ -100,7 +108,10 @@ class TestInsertProgramStatus(SystemTestInsertMethods):
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteProgramStatus(SystemTestDeleteMethods):
     """Class for testing Program Status table do_delete() method."""
 
@@ -116,7 +127,10 @@ class TestDeleteProgramStatus(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateProgramStatus:
     """Class for testing Prog Status table do_update() and do_update_all() methods."""
 
@@ -299,9 +313,12 @@ class TestUpdateProgramStatus:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterProgramStatus(SystemTestGetterSetterMethods):
-    """Class for testing ProgramS tatus table getter and setter methods."""
+    """Class for testing ProgramStatus table getter and setter methods."""
 
     __test__ = True
 

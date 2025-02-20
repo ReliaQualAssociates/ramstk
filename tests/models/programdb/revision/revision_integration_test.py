@@ -25,7 +25,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectRevision(SystemTestSelectMethods):
     """Class for testing Revision table do_select() and do_select_all() methods."""
 
@@ -37,7 +41,11 @@ class TestSelectRevision(SystemTestSelectMethods):
     _tag = "revision"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertRevision(SystemTestInsertMethods):
     """Class for testing Revision table do_insert() method."""
 
@@ -84,8 +92,8 @@ class TestInsertRevision(SystemTestInsertMethods):
             "do_log_debug_msg",
         )
 
-        DUT = RAMSTKRevisionTable()
-        DUT.do_insert(attributes=test_attributes)
+        dut = RAMSTKRevisionTable()
+        dut.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(
             self.on_fail_insert_no_database,
@@ -93,7 +101,10 @@ class TestInsertRevision(SystemTestInsertMethods):
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteRevision(SystemTestDeleteMethods):
     """Class for testing Revisions table do_delete() method."""
 
@@ -109,7 +120,10 @@ class TestDeleteRevision(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateRevision:
     """Class for testing Revision table do_update() and do_update_all() methods."""
 
@@ -295,7 +309,10 @@ class TestUpdateRevision:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterRevision(SystemTestGetterSetterMethods):
     """Class for testing Revision table getter and setter methods."""
 

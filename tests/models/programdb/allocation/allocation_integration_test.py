@@ -16,17 +16,19 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKAllocationRecord
-from ramstk.models.dbtables import RAMSTKAllocationTable, RAMSTKHardwareTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
     SystemTestSelectMethods,
     SystemTestUpdateMethods,
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectAllocation(SystemTestSelectMethods):
     """Class for testing Allocation table do_select() and do_select_all() methods."""
 
@@ -39,7 +41,10 @@ class TestSelectAllocation(SystemTestSelectMethods):
 
 
 @pytest.mark.usefixtures(
-    "test_attributes", "integration_test_table_model", "test_hardware_table_model"
+    "test_attributes",
+    "integration_test_table_model",
+    "test_hardware_table_model",
+    "test_suite_logger",
 )
 class TestInsertAllocation:
     """Class for testing the Allocation do_insert() method."""
@@ -108,7 +113,10 @@ class TestInsertAllocation:
         assert integration_test_table_model.tree.get_node(10) is None
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteAllocation(SystemTestDeleteMethods):
     """Class for testing Allocation table do_delete() method."""
 
@@ -120,7 +128,10 @@ class TestDeleteAllocation(SystemTestDeleteMethods):
     _tag = "allocation"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateAllocation(SystemTestUpdateMethods):
     """Class for testing Allocation update() and update_all() methods."""
 
@@ -135,7 +146,10 @@ class TestUpdateAllocation(SystemTestUpdateMethods):
     _update_value_obj = 0.9832
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterAllocation(SystemTestGetterSetterMethods):
     """Class for testing Allocation table getter and setter methods."""
 
@@ -147,7 +161,11 @@ class TestGetterSetterAllocation(SystemTestGetterSetterMethods):
     _test_id = 1
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestAnalysisAllocation:
     """Class for testing Allocation analytical methods."""
 

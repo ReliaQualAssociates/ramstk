@@ -15,7 +15,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKOpStressRecord
-from ramstk.models.dbtables import RAMSTKOpStressTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -24,7 +23,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectOpStress(SystemTestSelectMethods):
     """Class for testing OpStress table do_select() and do_select_all() methods."""
 
@@ -36,7 +39,11 @@ class TestSelectOpStress(SystemTestSelectMethods):
     _tag = "opstress"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertOpStress(SystemTestInsertMethods):
     """Class for testing Operating Stress table do_insert() method."""
 
@@ -57,7 +64,10 @@ class TestInsertOpStress(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteOpStress(SystemTestDeleteMethods):
     """Class for testing Operating Stress table do_delete() method."""
 
@@ -73,7 +83,10 @@ class TestDeleteOpStress(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateOpStress:
     """Class for testing Opstress table do_update() and do_update_all() methods."""
 
@@ -229,7 +242,10 @@ class TestUpdateOpStress:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterOpStress(SystemTestGetterSetterMethods):
     """Class for testing Operating Stress table getter and setter methods."""
 

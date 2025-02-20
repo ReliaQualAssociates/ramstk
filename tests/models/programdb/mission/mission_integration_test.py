@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMissionRecord
-from ramstk.models.dbtables import RAMSTKMissionTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMission(SystemTestSelectMethods):
     """Class for testing Mission table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectMission(SystemTestSelectMethods):
     _tag = "mission"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMission(SystemTestInsertMethods):
     """Class for testing Mission table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertMission(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMission(SystemTestDeleteMethods):
     """Class for testing Mission table do_delete() method."""
 
@@ -74,7 +84,10 @@ class TestDeleteMission(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMission:
     """Class for testing Mission table do_update() and do_update_all() methods."""
 
@@ -210,7 +223,10 @@ class TestUpdateMission:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMission(SystemTestGetterSetterMethods):
     """Class for testing Mission table getter and setter methods."""
 

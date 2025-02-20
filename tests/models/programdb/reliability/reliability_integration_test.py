@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKReliabilityRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKReliabilityTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectReliability(SystemTestSelectMethods):
     """Class for testing Reliability table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectReliability(SystemTestSelectMethods):
     _tag = "reliability"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertReliability(SystemTestInsertMethods):
     """Class for testing Reliability table do_insert() method."""
 
@@ -128,7 +135,10 @@ class TestInsertReliability(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteReliability(SystemTestDeleteMethods):
     """Class for testing Reliability table do_delete() method."""
 
@@ -149,7 +159,10 @@ class TestDeleteReliability(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateReliability:
     """Class for testing Reliability table do_update() and do_update_all() methods."""
 
@@ -355,7 +368,10 @@ class TestUpdateReliability:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterReliability(SystemTestGetterSetterMethods):
     """Class for testing Reliability table getter and setter methods."""
 

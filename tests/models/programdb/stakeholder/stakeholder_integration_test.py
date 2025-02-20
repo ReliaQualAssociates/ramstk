@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKStakeholderRecord
-from ramstk.models.dbtables import RAMSTKStakeholderTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectStakeholder(SystemTestSelectMethods):
     """Class for testing Stakeholder table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectStakeholder(SystemTestSelectMethods):
     _tag = "stakeholder"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertStakeholder(SystemTestInsertMethods):
     """Class for testing Stakeholder table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertStakeholder(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteStakeholder(SystemTestDeleteMethods):
     """Class for testing Stakeholder table do_delete() method."""
 
@@ -74,7 +84,10 @@ class TestDeleteStakeholder(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateStakeholder:
     """Class for testing Stakeholder table do_update() and do_update_all() methods."""
 
@@ -271,7 +284,10 @@ class TestUpdateStakeholder:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterStakeholder(SystemTestGetterSetterMethods):
     """Class for testing Stakeholder table getter and setter methods."""
 
@@ -283,7 +299,10 @@ class TestGetterSetterStakeholder(SystemTestGetterSetterMethods):
     _test_id = 1
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestAnalysisStakeholder:
     """Class for testing Stakeholder analytical methods."""
 

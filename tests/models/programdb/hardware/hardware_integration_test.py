@@ -96,7 +96,11 @@ def test_viewmodel():
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectHardware(SystemTestSelectMethods):
     """Class for testing Hardware table do_select() and do_select_all() methods."""
 
@@ -108,7 +112,11 @@ class TestSelectHardware(SystemTestSelectMethods):
     _tag = "hardware"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertHardware(SystemTestInsertMethods):
     """Class for testing Hardware table do_insert() method."""
 
@@ -119,7 +127,10 @@ class TestInsertHardware(SystemTestInsertMethods):
     _tag = "hardware"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteHardware(SystemTestDeleteMethods):
     """Class for testing Hardware table do_delete() method."""
 
@@ -131,7 +142,10 @@ class TestDeleteHardware(SystemTestDeleteMethods):
     _tag = "hardware"
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures(
+    "test_tablemodel",
+    "test_suite_logger",
+)
 class TestUpdateHardware(SystemTestUpdateMethods):
     """Class for testing Hardware table update() and update_all() methods."""
 
@@ -150,7 +164,10 @@ class TestUpdateHardware(SystemTestUpdateMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterHardware(SystemTestGetterSetterMethods):
     """Class for testing Hardware table getter and setter methods."""
 
@@ -171,6 +188,7 @@ class TestGetterSetterHardware(SystemTestGetterSetterMethods):
     "test_milhdbk217f",
     "test_nswc",
     "test_reliability",
+    "test_suite_logger",
 )
 class TestSelectHardwareBoM:
     """Class for testing Hardware BoM select_all() and select() methods."""
@@ -354,6 +372,7 @@ class TestSelectHardwareBoM:
     "test_milhdbk217f",
     "test_nswc",
     "test_reliability",
+    "test_suite_logger",
 )
 class TestInsertHardwareBoM:
     """Class for testing the Hardware BoM insert() method."""
@@ -417,6 +436,7 @@ class TestInsertHardwareBoM:
     "test_milhdbk217f",
     "test_nswc",
     "test_reliability",
+    "test_suite_logger",
 )
 class TestDeleteHardwareBoM:
     """Class for testing the Hardware BoM do_delete() method."""
@@ -473,6 +493,7 @@ class TestDeleteHardwareBoM:
     "test_nswc",
     "test_reliability",
     "test_toml_user_configuration",
+    "test_suite_logger",
 )
 class TestHardwareBoMAnalyses:
     """Class for testing Hardware BoM analytical methods."""

@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKTestMethodRecord
-from ramstk.models.dbtables import RAMSTKTestMethodTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectTestMethod(SystemTestSelectMethods):
     """Class for testing Test Method table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectTestMethod(SystemTestSelectMethods):
     _tag = "test_method"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertTestMethod(SystemTestInsertMethods):
     """Class for testing Test Method table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertTestMethod(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteTestMethod(SystemTestDeleteMethods):
     """Class for testing Test Method table do_delete() method."""
 
@@ -74,7 +84,10 @@ class TestDeleteTestMethod(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateTestMethod:
     """Class for testing Test Method table do_update() and do_update_all() methods."""
 
@@ -256,7 +269,10 @@ class TestUpdateTestMethod:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterTestMethod(SystemTestGetterSetterMethods):
     """Class for testing Test Method table getter and setter methods."""
 

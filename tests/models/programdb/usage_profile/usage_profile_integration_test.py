@@ -20,7 +20,6 @@ from ramstk.models.dbrecords import (
     RAMSTKMissionPhaseRecord,
     RAMSTKMissionRecord,
 )
-from ramstk.models.dbviews import RAMSTKUsageProfileView
 
 
 @pytest.mark.usefixtures(
@@ -28,6 +27,7 @@ from ramstk.models.dbviews import RAMSTKUsageProfileView
     "test_mission_table_model",
     "test_mission_phase_table_model",
     "test_environment_table_model",
+    "test_suite_logger",
 )
 class TestSelectUsageProfile:
     """Class for testing Usage Profile do_select() and do_select_all() methods."""
@@ -163,6 +163,7 @@ class TestSelectUsageProfile:
     "test_mission_table_model",
     "test_mission_phase_table_model",
     "test_environment_table_model",
+    "test_suite_logger",
 )
 class TestInsertUsageProfile:
     """Class for testing the Usage Profile on_insert() method."""
@@ -310,6 +311,7 @@ class TestInsertUsageProfile:
     "test_mission_table_model",
     "test_mission_phase_table_model",
     "test_environment_table_model",
+    "test_suite_logger",
 )
 class TestDeleteUsageProfile:
     """Class for testing the Usage Profile do_delete() method."""

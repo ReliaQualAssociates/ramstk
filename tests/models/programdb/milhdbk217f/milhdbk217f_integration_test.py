@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMilHdbk217FRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKMILHDBK217FTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMILHDBK217F(SystemTestSelectMethods):
     """Class for testing MILHDBK217F table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectMILHDBK217F(SystemTestSelectMethods):
     _tag = "milhdbk217f"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMILHDBK217F(SystemTestInsertMethods):
     """Class for testing MILHDBK217F table do_insert() method."""
 
@@ -137,7 +144,10 @@ class TestInsertMILHDBK217F(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMILHDBK217F(SystemTestDeleteMethods):
     """Class for testing MILHDBK217F table do_delete() method."""
 
@@ -158,7 +168,10 @@ class TestDeleteMILHDBK217F(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMILHDBK217F:
     """Class for testing MILHDBK217F table do_update() and do_update_all() methods."""
 
@@ -315,7 +328,10 @@ class TestUpdateMILHDBK217F:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMILHDBK217F(SystemTestGetterSetterMethods):
     """Class for testing MILHDBK217F table getter and setter methods."""
 

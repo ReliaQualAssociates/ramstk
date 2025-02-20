@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKTypeRecord
-from ramstk.models.dbtables import RAMSTKTypeTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectType(SystemTestSelectMethods):
     """Class for testing Type table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectType(SystemTestSelectMethods):
     _tag = "type"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateType:
     """Class for testing Type table do_update() and do_update_all() methods."""
 
@@ -171,7 +172,10 @@ class TestUpdateType:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_type")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterType(SystemTestGetterSetterMethods):
     """Class for testing Type table getter and setter methods."""
 

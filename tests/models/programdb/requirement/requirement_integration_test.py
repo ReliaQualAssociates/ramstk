@@ -9,8 +9,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Requirement module integrations."""
 
-# Standard Library Imports
-from datetime import date
 
 # Third Party Imports
 import pytest
@@ -19,7 +17,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKRequirementRecord
-from ramstk.models.dbtables import RAMSTKRequirementTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -28,7 +25,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectRequirement(SystemTestSelectMethods):
     """Class for testing Requirement table do_select() and do_select_all() methods."""
 
@@ -40,7 +41,11 @@ class TestSelectRequirement(SystemTestSelectMethods):
     _tag = "requirement"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertRequirement(SystemTestInsertMethods):
     """Class for testing Requirement table do_insert() method."""
 
@@ -51,7 +56,10 @@ class TestInsertRequirement(SystemTestInsertMethods):
     _tag = "requirement"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteRequirement(SystemTestDeleteMethods):
     """Class for testing Requirement table do_delete() method."""
 
@@ -63,7 +71,10 @@ class TestDeleteRequirement(SystemTestDeleteMethods):
     _tag = "requirement"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateRequirement:
     """Class for testing Requirement table do_update() and do_update_all() methods."""
 
@@ -249,7 +260,10 @@ class TestUpdateRequirement:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterRequirement(SystemTestGetterSetterMethods):
     """Class for testing Requirement table getter and setter methods."""
 

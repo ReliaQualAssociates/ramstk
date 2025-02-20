@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSubCategoryRecord
-from ramstk.models.dbtables import RAMSTKSubCategoryTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectSubcategory(SystemTestSelectMethods):
     """Class for testing Subcategory table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectSubcategory(SystemTestSelectMethods):
     _tag = "subcategory"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateSubcategory:
     """Class for testing Subcategory table do_update() and do_update_all() methods."""
 
@@ -188,7 +189,10 @@ class TestUpdateSubcategory:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_subcategory")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterSubcategory(SystemTestGetterSetterMethods):
     """Class for testing Subcategory table getter and setter methods."""
 

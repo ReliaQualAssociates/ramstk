@@ -66,6 +66,7 @@ def on_fail_read_license(error_message):
     "test_license_file",
     "test_toml_site_configuration",
     "test_toml_user_configuration",
+    "test_suite_logger",
 )
 class TestCommonManager:
     """Class for testing functions to load common variables."""

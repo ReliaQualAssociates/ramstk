@@ -10,12 +10,9 @@
 
 # Third Party Imports
 import pytest
-from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKActionRecord
-from ramstk.models.dbtables import RAMSTKActionTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +22,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectAction(SystemTestSelectMethods):
     """Class for testing Action table do_select() and do_select_all() methods."""
 
@@ -37,7 +38,11 @@ class TestSelectAction(SystemTestSelectMethods):
     _tag = "action"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertAction(SystemTestInsertMethods):
     """Class for testing Action table do_insert() method."""
 
@@ -58,7 +63,10 @@ class TestInsertAction(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteAction(SystemTestDeleteMethods):
     """Class for testing Action table do_delete() method."""
 
@@ -75,7 +83,10 @@ class TestDeleteAction(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateAction(SystemTestUpdateMethods):
     """Class for testing Action table do_update() and do_update_all() methods."""
 
@@ -89,7 +100,10 @@ class TestUpdateAction(SystemTestUpdateMethods):
     _update_value_obj = "Get a clue"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterAction(SystemTestGetterSetterMethods):
     """Class for testing Action table getter and setter methods."""
 

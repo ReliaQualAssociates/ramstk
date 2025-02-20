@@ -44,6 +44,7 @@ def test_datamanager():
     "test_program_dao",
     "test_toml_user_configuration",
     "test_bald_dao",
+    "test_suite_logger",
 )
 class TestProgramManager:
     """Test class for the RAMSTK Program Manager."""

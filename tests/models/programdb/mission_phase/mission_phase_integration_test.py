@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMissionPhaseRecord
-from ramstk.models.dbtables import RAMSTKMissionPhaseTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -27,7 +26,11 @@ from tests import (
 _test_name = "Big test mission phase"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMissionPhase(SystemTestSelectMethods):
     """Class for testing Mission Phase do_select() and do_select_all() methods."""
 
@@ -39,7 +42,11 @@ class TestSelectMissionPhase(SystemTestSelectMethods):
     _tag = "mission_phase"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMissionPhase(SystemTestInsertMethods):
     """Class for testing Mission Phase table do_insert() method."""
 
@@ -60,7 +67,10 @@ class TestInsertMissionPhase(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMissionPhase(SystemTestDeleteMethods):
     """Class for testing Mission Phase table do_delete() method."""
 
@@ -76,7 +86,10 @@ class TestDeleteMissionPhase(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMissionPhase:
     """Class for testing Mission Phase do_update() and do_update_all() methods."""
 
@@ -243,7 +256,10 @@ class TestUpdateMissionPhase:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMissionPhase(SystemTestGetterSetterMethods):
     """Class for testing Mission Phase table getter and setter methods."""
 

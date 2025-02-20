@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKGroupRecord
-from ramstk.models.dbtables import RAMSTKGroupTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectGroup(SystemTestSelectMethods):
     """Class for testing Group table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectGroup(SystemTestSelectMethods):
     _tag = "group"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateGroup:
     """Class for testing Group table do_update() and do_update_all() methods."""
 
@@ -193,7 +194,10 @@ class TestUpdateGroup:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_group")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterGroup(SystemTestGetterSetterMethods):
     """Class for testing Group table getter and setter methods."""
 

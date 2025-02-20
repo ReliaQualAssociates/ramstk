@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFailureDefinitionRecord
-from ramstk.models.dbtables import RAMSTKFailureDefinitionTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectFailureDefinition(SystemTestSelectMethods):
     """Class for testing Failure Definition do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectFailureDefinition(SystemTestSelectMethods):
     _tag = "definition"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertFailureDefinition(SystemTestInsertMethods):
     """Class for testing Failure Definition table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertFailureDefinition(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteFailureDefinition(SystemTestDeleteMethods):
     """Class for testing Failure Definition table do_delete() method."""
 
@@ -74,7 +84,10 @@ class TestDeleteFailureDefinition(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateFailureDefinition:
     """Class for testing Failure Definition update() and update_all() methods."""
 
@@ -223,7 +236,10 @@ class TestUpdateFailureDefinition:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterFailureDefinition(SystemTestGetterSetterMethods):
     """Class for testing Failure Definition table getter and setter methods."""
 
