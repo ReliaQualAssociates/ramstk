@@ -15,16 +15,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKRPNRecord
-from ramstk.models.dbtables import RAMSTKRPNTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectRPN(SystemTestSelectMethods):
     """Class for testing RPN table do_select() and do_select_all() methods."""
 
@@ -35,7 +33,10 @@ class TestSelectRPN(SystemTestSelectMethods):
     _tag = "rpn"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateRPN:
     """Class for testing RPN table do_update() and do_update_all() methods."""
 
@@ -170,7 +171,10 @@ class TestUpdateRPN:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_rpn")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterRPN(SystemTestGetterSetterMethods):
     """Class for testing RPN table getter and setter methods."""
 

@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKHazardRecord
-from ramstk.models.dbtables import RAMSTKHazardTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectHazard(SystemTestSelectMethods):
     """Class for testing Hazard table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectHazard(SystemTestSelectMethods):
     _tag = "hazard"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertHazard(SystemTestInsertMethods):
     """Class for testing Hazard table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertHazard(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteHazard(SystemTestDeleteMethods):
     """Class for testing Hazard table do_delete() method."""
 
@@ -75,7 +85,10 @@ class TestDeleteHazard(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateHazard:
     """Class for testing Hazard table do_update() and do_update_all() methods."""
 
@@ -219,7 +232,10 @@ class TestUpdateHazard:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterHazard(SystemTestGetterSetterMethods):
     """Class for testing Hazard table getter and setter methods."""
 
@@ -231,7 +247,10 @@ class TestGetterSetterHazard(SystemTestGetterSetterMethods):
     _test_id = 1
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestHazardAnalysisMethods:
     """Class for testing Hazard analytical methods."""
 

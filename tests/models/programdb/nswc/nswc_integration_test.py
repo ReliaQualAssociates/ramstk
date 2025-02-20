@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKNSWCRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKNSWCTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectNSWC(SystemTestSelectMethods):
     """Class for testing NSWC table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectNSWC(SystemTestSelectMethods):
     _tag = "nswc"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertNSWC(SystemTestInsertMethods):
     """Class for testing NSWC table do_insert() method."""
 
@@ -116,7 +123,10 @@ class TestInsertNSWC(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteNSWC(SystemTestDeleteMethods):
     """Class for testing NSWC table do_delete() method."""
 
@@ -137,7 +147,10 @@ class TestDeleteNSWC(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateNSWC:
     """Class for testing NSWC table do_update() and do_update_all() methods."""
 
@@ -294,7 +307,10 @@ class TestUpdateNSWC:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterNSWC(SystemTestGetterSetterMethods):
     """Class for testing NSWC table getter and setter methods."""
 

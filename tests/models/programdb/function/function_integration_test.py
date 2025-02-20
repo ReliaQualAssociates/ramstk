@@ -10,13 +10,9 @@
 
 # Third Party Imports
 import pytest
-import treelib
-from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFunctionRecord
-from ramstk.models.dbtables import RAMSTKFunctionTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -26,7 +22,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectFunction(SystemTestSelectMethods):
     """Class for testing Function table do_select() and do_select_all() methods."""
 
@@ -38,7 +38,11 @@ class TestSelectFunction(SystemTestSelectMethods):
     _tag = "function"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertFunction(SystemTestInsertMethods):
     """Class for testing Function table do_insert() method."""
 
@@ -49,7 +53,10 @@ class TestInsertFunction(SystemTestInsertMethods):
     _tag = "function"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteFunction(SystemTestDeleteMethods):
     """Class for testing Function table do_delete() method."""
 
@@ -61,7 +68,10 @@ class TestDeleteFunction(SystemTestDeleteMethods):
     _tag = "function"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateFunction(SystemTestUpdateMethods):
     """Class for testing Function table do_update() and do_update_all() methods."""
 
@@ -75,7 +85,10 @@ class TestUpdateFunction(SystemTestUpdateMethods):
     _update_value_obj = "Test Function"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterFunction(SystemTestGetterSetterMethods):
     """Class for testing Function table getter and setter methods."""
 

@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKManufacturerRecord
-from ramstk.models.dbtables import RAMSTKManufacturerTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectManufacturer(SystemTestSelectMethods):
     """Class for testing Manufacturer table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectManufacturer(SystemTestSelectMethods):
     _tag = "manufacturer"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateManufacturer:
     """Class for testing Manufacturer table do_update() and do_update_all() methods."""
 
@@ -207,7 +208,10 @@ class TestUpdateManufacturer:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_manufacturer")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterManufacturer(SystemTestGetterSetterMethods):
     """Class for testing Manufacturer table getter and setter methods."""
 

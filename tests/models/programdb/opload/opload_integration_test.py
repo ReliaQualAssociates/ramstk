@@ -15,7 +15,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKOpLoadRecord
-from ramstk.models.dbtables import RAMSTKOpLoadTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -24,7 +23,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectOpLoad(SystemTestSelectMethods):
     """Class for testing OpLoad table do_select() and do_select_all() methods."""
 
@@ -36,7 +39,11 @@ class TestSelectOpLoad(SystemTestSelectMethods):
     _tag = "opload"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertOpLoad(SystemTestInsertMethods):
     """Class for testing Operating Load table do_insert() method."""
 
@@ -57,7 +64,10 @@ class TestInsertOpLoad(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteOpLoad(SystemTestDeleteMethods):
     """Class for testing Operating Load table do_delete() method."""
 
@@ -73,7 +83,10 @@ class TestDeleteOpLoad(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateOpLoad:
     """Class for testing OpLoad table do_update() and do_update_all() methods."""
 
@@ -248,7 +261,10 @@ class TestUpdateOpLoad:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterOpLoad(SystemTestGetterSetterMethods):
     """Class for testing Operating Load table getter and setter methods."""
 

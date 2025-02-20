@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKStakeholdersRecord
-from ramstk.models.dbtables import RAMSTKStakeholdersTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectStakeholders(SystemTestSelectMethods):
     """Class for testing Stakeholders table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectStakeholders(SystemTestSelectMethods):
     _tag = "stakeholders"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateStakeholders:
     """Class for testing Stakeholders table do_update() and do_update_all() methods."""
 
@@ -176,7 +177,10 @@ class TestUpdateStakeholders:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_stakeholders")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterStakeholders(SystemTestGetterSetterMethods):
     """Class for testing Stakeholders table getter and setter methods."""
 

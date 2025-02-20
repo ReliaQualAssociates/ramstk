@@ -20,13 +20,6 @@ from ramstk.models.dbrecords import (
     RAMSTKOpStressRecord,
     RAMSTKTestMethodRecord,
 )
-from ramstk.models.dbtables import (
-    RAMSTKMechanismTable,
-    RAMSTKOpLoadTable,
-    RAMSTKOpStressTable,
-    RAMSTKTestMethodTable,
-)
-from ramstk.models.dbviews import RAMSTKPoFView
 
 
 @pytest.mark.usefixtures(
@@ -35,6 +28,7 @@ from ramstk.models.dbviews import RAMSTKPoFView
     "test_opload_table_model",
     "test_opstress_table_model",
     "test_test_method_table_model",
+    "test_suite_logger",
 )
 class TestSelectPoF:
     """Class for testing PoF on_select_all() methods."""
@@ -225,6 +219,7 @@ class TestSelectPoF:
     "test_opload_table_model",
     "test_opstress_table_model",
     "test_test_method_table_model",
+    "test_suite_logger",
 )
 class TestInsertPoF:
     """Class for testing the PoF do_insert() method."""
@@ -386,6 +381,7 @@ class TestInsertPoF:
     "test_opload_table_model",
     "test_opstress_table_model",
     "test_test_method_table_model",
+    "test_suite_logger",
 )
 class TestDeletePoF:
     """Class for testing the PoF do_delete() method."""

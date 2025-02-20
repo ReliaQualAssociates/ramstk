@@ -445,3 +445,7 @@ select = [
 ignore = [
 	"PLR2004",	# Magic value used in comparison.
 ]
+
+[tool.ruff.lint.pylint]
+max-args = 12
+max-positional-args = 6

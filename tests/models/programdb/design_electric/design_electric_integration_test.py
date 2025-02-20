@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKDesignElectricRecord
-from ramstk.models.dbtables import RAMSTKDesignElectricTable, RAMSTKHardwareTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectDesignElectric(SystemTestSelectMethods):
     """Class for testing Design Electric do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectDesignElectric(SystemTestSelectMethods):
     _tag = "design_electric"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertDesignElectric(SystemTestInsertMethods):
     """Class for testing Design Electric table do_insert() method."""
 
@@ -131,7 +138,10 @@ class TestInsertDesignElectric(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteDesignElectric(SystemTestDeleteMethods):
     """Class for testing Design Electric table do_delete() method."""
 
@@ -147,17 +157,15 @@ class TestDeleteDesignElectric(SystemTestDeleteMethods):
         pass
 
     @pytest.mark.skip(reason="Design Electric records are deleted by database.")
-    def test_do_delete_with_child(self, integration_test_table_model):
-        """Should not run because Design Electric are deleted by database."""
-        pass
-
-    @pytest.mark.skip(reason="Design Electric records are deleted by database.")
     def test_do_delete_non_existent_id(self):
         """Should not run because Design Electric are deleted by database."""
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateDesignElectric:
     """Class for testing Design Electric update() and update_all() methods."""
 
@@ -318,7 +326,10 @@ class TestUpdateDesignElectric:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterDesignElectric(SystemTestGetterSetterMethods):
     """Class for testing Design Electric table getter and setter methods."""
 
@@ -330,7 +341,11 @@ class TestGetterSetterDesignElectric(SystemTestGetterSetterMethods):
     _test_id = 8
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDesignElectricAnalysisMethods:
     """Class for testing Design Electric analytical methods."""
 

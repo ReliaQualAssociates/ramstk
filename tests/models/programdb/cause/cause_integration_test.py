@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKCauseRecord
-from ramstk.models.dbtables import RAMSTKCauseTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectCause(SystemTestSelectMethods):
     """Class for testing Cause table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectCause(SystemTestSelectMethods):
     _tag = "cause"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertCause(SystemTestInsertMethods):
     """Class for testing Cause table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertCause(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteCause(SystemTestDeleteMethods):
     """Class for testing Cause table do_delete() method."""
 
@@ -75,7 +85,10 @@ class TestDeleteCause(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateCause:
     """Class for testing Cause table do_update() and do_update_all() methods."""
 
@@ -241,7 +254,10 @@ class TestUpdateCause:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterCause(SystemTestGetterSetterMethods):
     """Class for testing Cause table getter and setter methods."""
 
@@ -253,7 +269,11 @@ class TestGetterSetterCause(SystemTestGetterSetterMethods):
     _test_id = 3
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestCauseAnalysisMethods:
     """Class for testing Cause analytical methods."""
 

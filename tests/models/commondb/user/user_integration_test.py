@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKUserRecord
-from ramstk.models.dbtables import RAMSTKUserTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectUser(SystemTestSelectMethods):
     """Class for testing User table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectUser(SystemTestSelectMethods):
     _tag = "user"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateUser:
     """Class for testing User table do_update() and do_update_all() methods."""
 
@@ -172,7 +173,10 @@ class TestUpdateUser:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_user")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterUser(SystemTestGetterSetterMethods):
     """Class for testing User table getter and setter methods."""
 

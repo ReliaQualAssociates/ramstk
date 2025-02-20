@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKStatusRecord
-from ramstk.models.dbtables import RAMSTKStatusTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectStatus(SystemTestSelectMethods):
     """Class for testing Status table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectStatus(SystemTestSelectMethods):
     _tag = "status"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateStatus:
     """Class for testing Status table do_update() and do_update_all() methods."""
 
@@ -176,7 +177,10 @@ class TestUpdateStatus:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_status")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterStatus(SystemTestGetterSetterMethods):
     """Class for testing Status table getter and setter methods."""
 

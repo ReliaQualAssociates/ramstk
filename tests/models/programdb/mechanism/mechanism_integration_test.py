@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMechanismRecord
-from ramstk.models.dbtables import RAMSTKMechanismTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMechanism(SystemTestSelectMethods):
     """Class for testing Mechanism table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectMechanism(SystemTestSelectMethods):
     _tag = "mechanism"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMechanism(SystemTestInsertMethods):
     """Class for testing Mechanism table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertMechanism(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMechanism(SystemTestDeleteMethods):
     """Class for testing Mechanism table do_delete() method."""
 
@@ -75,7 +85,10 @@ class TestDeleteMechanism(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMechanism:
     """Class for testing Mechanism table do_update() and do_update_all() methods."""
 
@@ -240,7 +253,10 @@ class TestUpdateMechanism:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMechanism(SystemTestGetterSetterMethods):
     """Class for testing Mechanism table getter and setter methods."""
 
@@ -252,7 +268,11 @@ class TestGetterSetterMechanism(SystemTestGetterSetterMethods):
     _test_id = 4
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestMechanismAnalysisMethods:
     """Class for testing Mechanism analytical methods."""
 

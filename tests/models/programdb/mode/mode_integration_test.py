@@ -15,7 +15,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKModeRecord
-from ramstk.models.dbtables import RAMSTKModeTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -24,7 +23,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMode(SystemTestSelectMethods):
     """Class for testing failure Mode table do_select() and do_select_all() methods."""
 
@@ -36,7 +39,11 @@ class TestSelectMode(SystemTestSelectMethods):
     _tag = "mode"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMode(SystemTestInsertMethods):
     """Class for testing failure Mode table do_insert() method."""
 
@@ -57,7 +64,10 @@ class TestInsertMode(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMode(SystemTestDeleteMethods):
     """Class for testing failure Mode table do_delete() method."""
 
@@ -73,7 +83,10 @@ class TestDeleteMode(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMode:
     """Class for testing failure Mode table do_update() and do_update_all() methods."""
 
@@ -229,7 +242,10 @@ class TestUpdateMode:
         )
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMode(SystemTestGetterSetterMethods):
     """Class for testing failure Mode table getter and setter methods."""
 
@@ -241,7 +257,11 @@ class TestGetterSetterMode(SystemTestGetterSetterMethods):
     _test_id = 4
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestModeAnalysisMethods:
     """Class for testing failure Mode table model analytical methods."""
 

@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKConditionRecord
-from ramstk.models.dbtables import RAMSTKConditionTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectCondition(SystemTestSelectMethods):
     """Class for testing Condition table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectCondition(SystemTestSelectMethods):
     _tag = "condition"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateCondition:
     """Class for testing Condition table do_update() and do_update_all() methods."""
 
@@ -203,7 +204,10 @@ class TestUpdateCondition:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_condition")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterCondition(SystemTestGetterSetterMethods):
     """Class for testing Condition table getter and setter methods."""
 

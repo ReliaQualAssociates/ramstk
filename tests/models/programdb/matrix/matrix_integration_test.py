@@ -10,12 +10,9 @@
 
 # Third Party Imports
 import pytest
-from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMatrixRecord
-from ramstk.models.dbtables import RAMSTKMatrixTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +22,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectMatrix(SystemTestSelectMethods):
     """Class for testing Matrix table do_select() and do_select_all() methods."""
 
@@ -37,7 +38,11 @@ class TestSelectMatrix(SystemTestSelectMethods):
     _tag = "matrix"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertMatrix(SystemTestInsertMethods):
     """Class for testing Matrix table do_insert() method."""
 
@@ -58,7 +63,10 @@ class TestInsertMatrix(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteMatrix(SystemTestDeleteMethods):
     """Class for testing Matrix table do_delete() method."""
 
@@ -75,7 +83,10 @@ class TestDeleteMatrix(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateMatrix(SystemTestUpdateMethods):
     """Class for testing Matrix table do_update() and do_update_all() methods."""
 
@@ -89,7 +100,10 @@ class TestUpdateMatrix(SystemTestUpdateMethods):
     _update_value_obj = "Get a clue"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterMatrix(SystemTestGetterSetterMethods):
     """Class for testing Matrix table getter and setter methods."""
 

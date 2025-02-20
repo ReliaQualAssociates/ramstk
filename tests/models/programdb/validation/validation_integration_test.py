@@ -20,7 +20,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKValidationRecord
-from ramstk.models.dbtables import RAMSTKValidationTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -29,7 +28,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectValidation(SystemTestSelectMethods):
     """Class for testing Validation table do_select() and do_select_all() methods."""
 

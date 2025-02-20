@@ -16,7 +16,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKControlRecord
-from ramstk.models.dbtables import RAMSTKControlTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -25,7 +24,11 @@ from tests import (
 )
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestSelectControl(SystemTestSelectMethods):
     """Class for testing Control table do_select() and do_select_all() methods."""
 
@@ -37,7 +40,11 @@ class TestSelectControl(SystemTestSelectMethods):
     _tag = "control"
 
 
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestInsertControl(SystemTestInsertMethods):
     """Class for testing Control table do_insert() method."""
 
@@ -58,7 +65,10 @@ class TestInsertControl(SystemTestInsertMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestDeleteControl(SystemTestDeleteMethods):
     """Class for testing Control table do_delete() method."""
 
@@ -75,7 +85,10 @@ class TestDeleteControl(SystemTestDeleteMethods):
         pass
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateControl:
     """Class for testing Control update() and update_all() methods."""
 
@@ -241,7 +254,10 @@ class TestUpdateControl:
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterControl(SystemTestGetterSetterMethods):
     """Class for testing Control table getter and setter methods."""
 

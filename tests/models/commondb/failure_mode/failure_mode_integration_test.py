@@ -16,16 +16,14 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFailureModeRecord
-from ramstk.models.dbtables import RAMSTKFailureModeTable
-from tests import (
-    SystemTestDeleteMethods,
-    SystemTestGetterSetterMethods,
-    SystemTestInsertMethods,
-    SystemTestSelectMethods,
+from tests import SystemTestGetterSetterMethods, SystemTestSelectMethods
+
+
+@pytest.mark.usefixtures(
+    "test_attributes",
+    "integration_test_table_model",
+    "test_suite_logger",
 )
-
-
-@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class TestSelectFailureMode(SystemTestSelectMethods):
     """Class for testing Failure Mode table do_select() and do_select_all() methods."""
 
@@ -36,7 +34,10 @@ class TestSelectFailureMode(SystemTestSelectMethods):
     _tag = "failure_mode"
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestUpdateFailureMode:
     """Class for testing Failure Mode table do_update() and do_update_all() methods."""
 
@@ -213,7 +214,10 @@ class TestUpdateFailureMode:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_failure_mode")
 
 
-@pytest.mark.usefixtures("integration_test_table_model")
+@pytest.mark.usefixtures(
+    "integration_test_table_model",
+    "test_suite_logger",
+)
 class TestGetterSetterFailureMode(SystemTestGetterSetterMethods):
     """Class for testing Failure Mode table getter and setter methods."""
 
