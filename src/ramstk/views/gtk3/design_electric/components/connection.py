@@ -293,7 +293,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         _model = self.cmbInsert.get_model()
         _model.clear()
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -468,7 +468,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         _type_id = int(combo.get_active())
-        _specifications = self._dic_specificationget(_type_id, [])
+        _specifications = self._dic_specification.get(_type_id, [])
         self.cmbSpecification.do_load_combo(entries=_specifications, signal="changed")
 
     def _get_quality_list(self) -> List[List[str]]:

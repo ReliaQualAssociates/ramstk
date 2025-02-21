@@ -308,7 +308,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbType.do_load_combo(
-            self._get_type_list,
+            self._get_type_list(),
             signal="changed",
         )
 
@@ -435,7 +435,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                         "The junction-case thermal resistance of the semiconductor."
                     ),
                 },
-                "\u03B8<sub>JC</sub>:",
+                "\u03b8<sub>JC</sub>:",
                 "gfloat",
             ],
         }

@@ -1171,7 +1171,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
 
         if category_id > 0:
             _subcategories = SortedDict(self.dicSubcategories[category_id])
-            _subcategory = [[_subcategories[_key]] for _key in _subcategories]
+            _subcategory = [[_subcategories[_key]][0] for _key in _subcategories]
             self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
 
     def _do_set_comp_ref_des(self, comp_ref_des: str) -> None:
