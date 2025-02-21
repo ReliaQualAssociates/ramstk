@@ -229,7 +229,6 @@ class HardwareModuleView(RAMSTKModuleView):
                 "hardware_id": self.dic_pkeys["hardware_id"],
                 "parent_id": self.dic_pkeys["hardware_id"],
                 "part": 0,
-                "record_id": self.dic_pkeys["record_id"],
             },
         )
 
@@ -263,7 +262,6 @@ class HardwareModuleView(RAMSTKModuleView):
                 "hardware_id": self.dic_pkeys["hardware_id"],
                 "parent_id": self.dic_pkeys["hardware_id"],
                 "part": 1,
-                "record_id": self.dic_pkeys["record_id"],
             },
         )
 

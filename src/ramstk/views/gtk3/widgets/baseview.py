@@ -154,7 +154,6 @@ class RAMSTKBaseView(Gtk.HBox):
             "revision_id": 0,
             f"{self._tag}_id": 0,
             "parent_id": 0,
-            "record_id": 0,
         }
 
         # Initialize public list attributes.
