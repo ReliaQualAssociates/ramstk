@@ -321,13 +321,15 @@ class HardwareModuleView(RAMSTKModuleView):
         """
         for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES:
             self._pnlPanel.lst_categories.append(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES[_key]
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES[_key][0]
             )
             self._pnlPanel.dic_subcategories[_key] = [""]
 
             for _subkey in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key]:
                 self._pnlPanel.dic_subcategories[_key].append(
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][_subkey]
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][_subkey][
+                        0
+                    ]
                 )
 
         for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS:

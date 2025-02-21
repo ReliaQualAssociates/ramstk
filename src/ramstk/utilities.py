@@ -81,7 +81,7 @@ def file_exists(_file: str) -> bool:
 
 
 def none_to_default(
-    field: None, default: Union[bool, float, int, str]
+    field: Union[None, bool, float, int, str], default: Union[bool, float, int, str]
 ) -> Union[bool, float, int, str]:
     """Convert None values into default values.
 
