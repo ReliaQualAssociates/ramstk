@@ -37,12 +37,12 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiC: displays the construction factor for the capacitor.
     """
 
-    _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = (
-        "\u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>"
-        "\u03C0<sub>E</sub></span>"
+        "\u03bb<sub>b</sub>\u03c0<sub>CV</sub>\u03c0<sub>Q</sub>"
+        "\u03c0<sub>E</sub></span>"
     )
-    _function_2 = "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+    _function_2 = "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>"
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
@@ -58,18 +58,18 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         10: _lambda_p + _function_1,
         11: _lambda_p + _function_1,
         12: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>SR</sub>\u03C0<sub"
-        ">Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>CV</sub>\u03c0<sub>SR</sub>\u03c0<sub"
+        ">Q</sub>\u03c0<sub>E</sub></span>",
         13: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>C</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>CV</sub>\u03c0<sub>C</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span>",
         14: _lambda_p + _function_1,
         15: _lambda_p + _function_1,
         16: _lambda_p + _function_2,
         17: _lambda_p + _function_2,
         18: _lambda_p + _function_2,
         19: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>CF</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
+        + "\u03bb<sub>b</sub>\u03c0<sub>CF</sub>\u03c0<sub>Q</sub>\u03c0<sub>E"
         "</sub></span>",
     }
 
@@ -128,7 +128,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the capacitor."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -140,7 +140,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the capacitor."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -152,7 +152,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the capacitor."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_cv": [
                 17,
@@ -164,7 +164,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The capacitance factor for the capacitor."),
                 },
-                "\u03C0<sub>CV</sub>:",
+                "\u03c0<sub>CV</sub>:",
             ],
             "pi_cf": [
                 15,
@@ -176,7 +176,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The configuration factor for the capacitor."),
                 },
-                "\u03C0<sub>CF</sub>:",
+                "\u03c0<sub>CF</sub>:",
             ],
             "pi_c": [
                 13,
@@ -188,7 +188,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The construction factor for the capacitor."),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
         }
 

@@ -480,7 +480,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Active Failure Intensity [\u03BB(t)]:"),
+                _("Active Failure Intensity [\u03bb(t)]:"),
                 "gfloat",
             ],
             "hr_active_variance": [
@@ -514,7 +514,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Dormant \u03BB(t):"),
+                _("Dormant \u03bb(t):"),
                 "gfloat",
             ],
             "hr_dormant_variance": [
@@ -548,7 +548,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Software \u03BB(t):"),
+                _("Software \u03bb(t):"),
                 "gfloat",
             ],
             "hazard_rate_logistics": [
@@ -566,7 +566,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Logistics \u03BB(t):"),
+                _("Logistics \u03bb(t):"),
                 "gfloat",
             ],
             "hr_logistics_variance": [
@@ -600,7 +600,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Mission \u03BB(t):"),
+                _("Mission \u03bb(t):"),
                 "gfloat",
             ],
             "hr_mission_variance": [
@@ -634,7 +634,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Percent \u03BB(t):"),
+                _("Percent \u03bb(t):"),
                 "gfloat",
             ],
             "mtbf_logistics": [

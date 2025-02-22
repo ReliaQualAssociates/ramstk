@@ -32,12 +32,12 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub"
-        ">CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>L</sub>\u03c0<sub>C</sub>\u03c0<sub"
+        ">CYC</sub>\u03c0<sub>F</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub"
         "></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span> ",
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span> ",
     }
 
     # Define private list class attributes.
@@ -95,7 +95,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the relay."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -107,7 +107,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the relay."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -119,7 +119,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the relay."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_c": [
                 13,
@@ -131,7 +131,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The contact form factor for the relay."),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
             "pi_cyc": [
                 18,
@@ -143,7 +143,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The cycling factor for the relay."),
                 },
-                "\u03C0<sub>CYC</sub>:",
+                "\u03c0<sub>CYC</sub>:",
             ],
             "pi_f": [
                 20,
@@ -157,7 +157,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The application and construction factor for the relay."
                     ),
                 },
-                "\u03C0<sub>F</sub>:",
+                "\u03c0<sub>F</sub>:",
             ],
             "pi_l": [
                 23,
@@ -169,7 +169,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The load stress factor for the relay."),
                 },
-                "\u03C0<sub>L</sub>:",
+                "\u03c0<sub>L</sub>:",
             ],
         }
 

@@ -109,7 +109,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("Active Temperature (\u00B0C):"),
+                _("Active Temperature (\u00b0C):"),
                 "gfloat",
             ],
             "environment_dormant_id": [
@@ -137,7 +137,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The ambient temperature in the storage environment."),
                     "width": 125,
                 },
-                _("Dormant Temperature (\u00B0C):"),
+                _("Dormant Temperature (\u00b0C):"),
                 "gfloat",
             ],
             "mission_time": [
@@ -274,12 +274,12 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 25.0,
                 {
                     "tooltip": _(
-                        "The minimum rated temperature (in \u00B0C) of the hardware "
+                        "The minimum rated temperature (in \u00b0C) of the hardware "
                         "item."
                     ),
                     "width": 125,
                 },
-                _("Minimum Rated Temperature (\u00B0C):"),
+                _("Minimum Rated Temperature (\u00b0C):"),
                 "gfloat",
             ],
             "temperature_knee": [
@@ -291,12 +291,12 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 25.0,
                 {
                     "tooltip": _(
-                        "The break temperature (in \u00B0C) of the hardware item "
+                        "The break temperature (in \u00b0C) of the hardware item "
                         "beyond which it must be derated."
                     ),
                     "width": 125,
                 },
-                _("Knee Temperature (\u00B0C):"),
+                _("Knee Temperature (\u00b0C):"),
                 "gfloat",
             ],
             "temperature_rated_max": [
@@ -308,12 +308,12 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 25.0,
                 {
                     "tooltip": _(
-                        "The maximum rated temperature (in \u00B0C) of the hardware "
+                        "The maximum rated temperature (in \u00b0C) of the hardware "
                         "item."
                     ),
                     "width": 125,
                 },
-                _("Maximum Rated Temperature (\u00B0C):"),
+                _("Maximum Rated Temperature (\u00b0C):"),
                 "gfloat",
             ],
             "current_rated": [

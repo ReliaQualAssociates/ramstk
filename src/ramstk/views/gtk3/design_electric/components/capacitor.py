@@ -8,14 +8,14 @@
 """Capacitor Input Panel."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
-CAPACITOR_QUALITY_DICT = {
+CAPACITOR_QUALITY_DICT: Dict[int, List[Union[str, List[str]]]] = {
     1: [["MIL-SPEC"], [_("Lower")]],
     2: [
         ["M"],
@@ -104,7 +104,7 @@ CAPACITOR_QUALITY_DICT = {
     18: [["MIL-SPEC"], [_("Lower")]],
     19: [["MIL-SPEC"], [_("Lower")]],
 }
-CAPACITOR_SPECIFICATION_DICT = {
+CAPACITOR_SPECIFICATION_DICT: Dict[int, List[List[str]]] = {
     1: [["MIL-C-25"], ["MIL-C-12889"]],
     2: [["MIL-C-11693"]],
     3: [["MIL-C-14157"], ["MIL-C-19978"]],
@@ -125,7 +125,7 @@ CAPACITOR_SPECIFICATION_DICT = {
     18: [["MIL-C-92"]],
     19: [["MIL-C-23183"]],
 }
-CAPACITOR_STYLE_DICT = {
+CAPACITOR_STYLE_DICT: Dict[int, List[List[List[str]]]] = {
     1: [
         [
             ["CP4"],
@@ -157,12 +157,6 @@ CAPACITOR_STYLE_DICT = {
         ],
         [["CA"]],
     ],
-    2: [
-        [_("Characteristic E")],
-        [_("Characteristic K")],
-        [_("Characteristic P")],
-        [_("Characteristic W")],
-    ],
     3: [
         [["CPV07"], ["CPV09"], ["CPV17"]],
         [
@@ -191,14 +185,6 @@ CAPACITOR_STYLE_DICT = {
             [_("Characteristic 59")],
         ],
     ],
-    5: [
-        [_("Characteristic M")],
-        [_("Characteristic N")],
-        [_("Characteristic Q")],
-        [_("Characteristic R")],
-        [_("Characteristic S")],
-    ],
-    6: [["CRH"]],
     7: [
         [
             [_("Temperature Range M")],
@@ -208,7 +194,6 @@ CAPACITOR_STYLE_DICT = {
         ],
         [[_("Temperature Range O")], [_("Temperature Range P")]],
     ],
-    8: [["CB50"], [_("Other")]],
     9: [
         [[_("Temperature Range C")], [_("Temperature Range D")]],
         [[_("All")]],
@@ -319,7 +304,6 @@ CAPACITOR_STYLE_DICT = {
         ],
         [["CDR"]],
     ],
-    12: [["CSR"]],
     13: [
         [
             ["CL10"],
@@ -366,6 +350,24 @@ CAPACITOR_STYLE_DICT = {
         ],
         [["CLR"]],
     ],
+}
+CAPACITOR_STYLE_DICT2: Dict[int, List[List[str]]] = {
+    2: [
+        [_("Characteristic E")],
+        [_("Characteristic K")],
+        [_("Characteristic P")],
+        [_("Characteristic W")],
+    ],
+    5: [
+        [_("Characteristic M")],
+        [_("Characteristic N")],
+        [_("Characteristic Q")],
+        [_("Characteristic R")],
+        [_("Characteristic S")],
+    ],
+    6: [["CRH"]],
+    8: [["CB50"], [_("Other")]],
+    12: [["CSR"]],
     14: [
         [_("Style 16")],
         [_("Style 17")],
@@ -427,15 +429,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a
     Capacitor assessment input view are:
 
-    :cvar dict _dic_quality: dictionary of MIL-HDBK-217 capacitor quality
-        levels.  Key is capacitor subcategory ID; values are lists of quality
-        levels.
-    :cvar dict _dic_specifications: dictionary of capacitor MIL-SPECs.  Key is
-        capacitor subcategory ID; values are lists of specifications.
-    :cvar dict _dic_styles: dictionary of capacitor styles defined in the
-        MIL-SPECs.  Key is capacitor subcategory ID; values are lists of
-        styles.
-
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
     :ivar _lst_widgets: the list of widgets to display in the panel.  These
@@ -454,9 +447,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dictionary class attributes.
-    _dic_quality: Dict[int, object] = CAPACITOR_QUALITY_DICT
-    _dic_specifications: Dict[int, List[Any]] = CAPACITOR_SPECIFICATION_DICT
-    _dic_styles: Dict[int, List[Any]] = CAPACITOR_STYLE_DICT
 
     # Define private list class attributes.
 
@@ -547,7 +537,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbSpecification.do_load_combo(
-            self._dic_specifications.get(self.subcategory_id, [[""]]),
+            CAPACITOR_SPECIFICATION_DICT.get(self.subcategory_id, [[""]]),
             signal="changed",
         )
         self.cmbStyle.do_load_combo(
@@ -654,7 +644,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 {
                     "tooltip": _("The equivalent series resistance of the capacitor."),
                 },
-                _("Equivalent Series Resistance (\u03A9):"),
+                _("Equivalent Series Resistance (\u03a9):"),
                 "gfloat",
             ],
         }
@@ -671,17 +661,16 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _get_quality_list(self) -> List[Any]:
+    def _get_quality_list(self) -> List[Union[str, List[str]]]:
         """Return the list of quality levels based on subcategory.
 
         :return: list of capacitor quality levels.
         :rtype: list
         """
-        _default_quality_list = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
         return (
-            _default_quality_list
+            ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
             if self._hazard_rate_method_id == 1
-            else self._dic_quality.get(self.subcategory_id, [[""]])
+            else CAPACITOR_QUALITY_DICT.get(self.subcategory_id, [[""]])
         )
 
     def _get_style_list(self, combo: RAMSTKComboBox) -> List[List[str]]:
@@ -694,20 +683,20 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         # Determine the styles based on the subcategory and active specification index
         try:
-            _subcategory_styles = self._dic_styles.get(self.subcategory_id, [])
-
             if self.subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
                 # Get the active index from the combo box
                 _active_index = int(combo.get_active()) - 1
                 # Select styles based on the active index
-                _styles = (
-                    _subcategory_styles[_active_index]
-                    if 0 <= _active_index < len(_subcategory_styles)
+                _styles: List[List[str]] = (
+                    CAPACITOR_STYLE_DICT[self.subcategory_id][_active_index]
+                    if 0
+                    <= _active_index
+                    < len(CAPACITOR_STYLE_DICT[self.subcategory_id])
                     else []
                 )
             else:
                 # Use default styles for the subcategory
-                _styles = _subcategory_styles
+                _styles = CAPACITOR_STYLE_DICT2[self.subcategory_id]
 
         except (KeyError, ValueError, IndexError):
             # Handle any errors that occur (e.g., invalid index)

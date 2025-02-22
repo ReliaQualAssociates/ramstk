@@ -48,20 +48,20 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0"
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>K</sub>\u03c0<sub>P</sub>\u03c0"
         "<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0"
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>K</sub>\u03c0<sub>P</sub>\u03c0"
         "<sub>E</sub></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + "
-        "N<sub>2</sub>(\u03C0<sub>C</sub> + "
-        "13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        5: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        3: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>P</sub>\u03c0<sub>E</sub></span>",
+        4: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>[N<sub>1</sub>\u03c0<sub>C</sub> + "
+        "N<sub>2</sub>(\u03c0<sub>C</sub> + "
+        "13)]\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
+        5: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
     }
 
     # Define private list class attributes.
@@ -119,7 +119,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the connection."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -131,7 +131,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the connection."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -143,7 +143,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the connection."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_c": [
                 13,
@@ -155,7 +155,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The mating/unmating factor for the connection."),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
             "pi_k": [
                 22,
@@ -167,7 +167,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The active pins factor for the connection."),
                 },
-                "\u03C0<sub>K</sub>:",
+                "\u03c0<sub>K</sub>:",
             ],
             "pi_p": [
                 28,
@@ -179,7 +179,7 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The complexity factor for the connection."),
                 },
-                "\u03C0<sub>P</sub>:",
+                "\u03c0<sub>P</sub>:",
             ],
         }
 
