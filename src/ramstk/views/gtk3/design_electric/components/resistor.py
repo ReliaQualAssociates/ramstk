@@ -287,9 +287,9 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The resistance (in \u03A9) of the resistor."),
+                    "tooltip": _("The resistance (in \u03a9) of the resistor."),
                 },
-                _("Resistance (\u03A9):"),
+                _("Resistance (\u03a9):"),
                 "gfloat",
             ],
             "specification_id": [
@@ -477,7 +477,8 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 8: [self.cmbType],
                 9: [self.txtNElements],
                 10: [
-                    self.cmbConstruction.self.txtNElements,
+                    self.cmbConstruction,
+                    self.txtNElements,
                 ],
                 11: [self.txtNElements],
                 12: [

@@ -192,9 +192,9 @@ def _get_stress_limit(
         "fixed_wirewound",
     }:
         return (
-            stress_limits[subcategory]["high_power"][limit_type][environment_id]  # type: ignore[call-overload]
+            stress_limits[subcategory]["high_power"][limit_type][environment_id]  # type: ignore[call-overload] # noqa: E501
             if rated_power >= 0.5
-            else stress_limits[subcategory]["low_power"][limit_type][environment_id]  # type: ignore[call-overload]
+            else stress_limits[subcategory]["low_power"][limit_type][environment_id]  # type: ignore[call-overload] # noqa: E501
         )
     else:
-        return stress_limits[subcategory][limit_type][environment_id]  # type: ignore[index, return-value]
+        return stress_limits[subcategory][limit_type][environment_id]  # type: ignore[index, return-value] # noqa: E501

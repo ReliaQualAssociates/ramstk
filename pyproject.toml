@@ -192,6 +192,14 @@ stylecheck = [
 	"run-pydocstyle",
 ]
 typecheck = "mypy --config-file ./pyproject.toml {args}"
+all = [
+	"format",
+	"lint",
+	"stylecheck",
+	"typecheck",
+	"maintain",
+	"security",
+]
 
 [tool.hatch.envs.docs]
 dependencies = [

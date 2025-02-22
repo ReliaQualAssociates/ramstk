@@ -46,10 +46,10 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiA: displays the application factor for the integrated circuit.
     """
 
-    _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
-    _function_1 = "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-    _function_2 = "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>"
-    _function_3 = "\u03BB<sub>CYC</sub>)" + _function_2
+    _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
+    _function_1 = "(C<sub>1</sub>\u03c0<sub>T</sub> + C<sub>2</sub>\u03c0<sub>E</sub>)"
+    _function_2 = "\u03c0<sub>Q</sub>\u03c0<sub>L</sub></span>"
+    _function_3 = "\u03bb<sub>CYC</sub>)" + _function_2
 
     # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
@@ -61,13 +61,13 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         6: _lambda_p + _function_1 + _function_3,
         7: _lambda_p + _function_1 + _function_3,
         8: _lambda_p + _function_1 + _function_3,
-        9: _lambda_p + "(C<sub>1</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub> + "
-        "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>L</sub>\u03C0<sub>Q</sub"
+        9: _lambda_p + "(C<sub>1</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub> + "
+        "C<sub>2</sub>\u03c0<sub>E</sub>)\u03c0<sub>L</sub>\u03c0<sub>Q</sub"
         "></span>",
         10: _lambda_p
-        + "\u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub"
-        ">CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub"
-        ">\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span> ",
+        + "\u03bb<sub>BD</sub>\u03c0<sub>MFG</sub>\u03c0<sub>T</sub>\u03c0<sub"
+        ">CD</sub> + \u03bb<sub>BP</sub>\u03c0<sub>E</sub>\u03c0<sub>Q</sub"
+        ">\u03c0<sub>PT</sub> + \u03bb<sub>EOS</sub></span> ",
     }
 
     # Define private class list class attributes.
@@ -134,7 +134,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the integrated circuit."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -146,7 +146,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the integrated circuit."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -158,7 +158,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the integrated circuit."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "C1": [
                 6,
@@ -186,7 +186,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The temperature correction factor for the integrated circuit."
                     ),
                 },
-                "\u03C0<sub>T</sub>:",
+                "\u03c0<sub>T</sub>:",
             ],
             "C2": [
                 7,
@@ -210,7 +210,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The learning factor for the integrated circuit."),
                 },
-                "\u03C0<sub>L</sub>:",
+                "\u03c0<sub>L</sub>:",
             ],
             "lambdaCYC": [
                 10,
@@ -225,7 +225,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "circuit."
                     ),
                 },
-                "\u03BB<sub>CYC</sub>:",
+                "\u03bb<sub>CYC</sub>:",
             ],
             "lambdaBD": [
                 8,
@@ -239,7 +239,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The die base hazard rate for the integrated circuit."
                     ),
                 },
-                "\u03BB<sub>BD</sub>:",
+                "\u03bb<sub>BD</sub>:",
             ],
             "pi_mfg": [
                 25,
@@ -254,7 +254,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "integrated circuit."
                     ),
                 },
-                "\u03C0<sub>MFG</sub>:",
+                "\u03c0<sub>MFG</sub>:",
             ],
             "pi_cd": [
                 14,
@@ -269,7 +269,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "circuit."
                     ),
                 },
-                "\u03C0<sub>CD</sub>:",
+                "\u03c0<sub>CD</sub>:",
             ],
             "lambdaBP": [
                 9,
@@ -283,7 +283,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The package base hazard rate for the integrated circuit."
                     ),
                 },
-                "\u03BB<sub>BP</sub>:",
+                "\u03bb<sub>BP</sub>:",
             ],
             "pi_pt": [
                 29,
@@ -295,7 +295,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The package type factor for the integrated circuit."),
                 },
-                "\u03C0<sub>PT</sub>:",
+                "\u03c0<sub>PT</sub>:",
             ],
             "lambdaEOS": [
                 11,
@@ -310,7 +310,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "circuit."
                     ),
                 },
-                "\u03BB<sub>EOS</sub>:",
+                "\u03bb<sub>EOS</sub>:",
             ],
             "pi_a": [
                 12,
@@ -322,7 +322,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The application factor for the integrated circuit."),
                 },
-                "\u03C0<sub>A</sub>:",
+                "\u03c0<sub>A</sub>:",
             ],
         }
 

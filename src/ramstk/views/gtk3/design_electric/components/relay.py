@@ -183,7 +183,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     _dic_application: Dict[int, List[List[str]]] = RELAY_APPLICATION_DICT
     _dic_construction: Dict[int, Dict[int, List[List[str]]]] = RELAY_CONSTRUCTION_DICT
     _dic_quality: Dict[int, List[List[str]]] = RELAY_QUALITY_DICT
-    _dic_pc_types: Dict[int, List[List[str]]] = RELAY_TYPE_DICT
+    _dic_types: Dict[int, List[List[str]]] = RELAY_TYPE_DICT
 
     # Define private list class attributes.
     _lst_technology: List[List[str]] = RELAY_TECHNOLOGY_LIST
@@ -451,12 +451,12 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if index == 4:
             self.cmbApplication.do_load_combo(
-                self._get_application_list,
+                self._get_application_list(),
                 signal="changed",
             )
         elif index == 5:
             self.cmbConstruction.do_load_combo(
-                self._get_construction_list,
+                self._get_construction_list(),
                 signal="changed",
             )
 

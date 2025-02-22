@@ -134,8 +134,8 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 1:
             _model_text = (
-                '<span foreground="blue">\u03BB<sub>p</sub> = '
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
+                '<span foreground="blue">\u03bb<sub>p</sub> = '
+                "\u03bb<sub>b</sub>\u03c0<sub>Q</sub></span>"
             )
         elif self._hazard_rate_method_id == 2:
             _model_text = self._dic_part_stress.get(self.subcategory_id, "No Model")

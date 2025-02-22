@@ -33,14 +33,14 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E"
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
+        3: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>E</sub></span>",
+        4: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>U</sub>\u03c0<sub>A</sub>\u03c0<sub>E"
         "</sub></span> ",
     }
 
@@ -97,7 +97,7 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -109,7 +109,7 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -121,7 +121,7 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_u": [
                 35,
@@ -133,7 +133,7 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The utilization factor."),
                 },
-                "\u03C0<sub>U</sub>:",
+                "\u03c0<sub>U</sub>:",
             ],
             "pi_a": [
                 12,
@@ -145,7 +145,7 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The application factor."),
                 },
-                "\u03C0<sub>A</sub>:",
+                "\u03c0<sub>A</sub>:",
             ],
         }
 

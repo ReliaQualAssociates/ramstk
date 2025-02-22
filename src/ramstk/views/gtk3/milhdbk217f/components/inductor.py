@@ -37,11 +37,11 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0"
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>C</sub>\u03c0<sub>Q</sub>\u03c0"
         "<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
     }
 
     # Define private list attributes.
@@ -97,7 +97,7 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the inductive device."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -109,7 +109,7 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the inductive device."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -121,7 +121,7 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the inductive device."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_c": [
                 13,
@@ -133,7 +133,7 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The construction factor for the inductive device."),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
         }
 

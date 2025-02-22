@@ -31,11 +31,11 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span> ",
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>A</sub>\u03c0<sub>F</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span>",
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>E</sub></span> ",
     }
 
     # Define private class list class attributes.
@@ -92,7 +92,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the meter."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -104,7 +104,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the meter."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -116,7 +116,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the meter."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_a": [
                 12,
@@ -128,7 +128,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The application factor for the meter."),
                 },
-                "\u03C0<sub>A</sub>:",
+                "\u03c0<sub>A</sub>:",
             ],
             "pi_f": [
                 20,
@@ -140,7 +140,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The function factor for the meter."),
                 },
-                "\u03C0<sub>F</sub>:",
+                "\u03c0<sub>F</sub>:",
             ],
             "pi_t": [
                 33,
@@ -154,7 +154,7 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The temperature stress factor for the elapsed time meter."
                     ),
                 },
-                "\u03C0<sub>T</sub>:",
+                "\u03c0<sub>T</sub>:",
             ],
         }
 

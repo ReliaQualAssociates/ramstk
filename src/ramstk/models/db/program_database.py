@@ -119,7 +119,7 @@ class RAMSTKProgramDB(BaseDatabase):
             pub.sendMessage("succeed_connect_program_database", dao=self)
             pub.sendMessage(
                 "request_retrieve_revisions",
-                attributes={"revision_id": None},
+                attributes={},
             )
         except DataAccessError as _error:
             pub.sendMessage("fail_connect_program_database", error_message=_error.msg)

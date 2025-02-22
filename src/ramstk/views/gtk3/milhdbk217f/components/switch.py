@@ -33,21 +33,21 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub"
-        ">C</sub>\u03C0<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub"
+        1: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>CYC</sub>\u03c0<sub>L</sub>\u03c0<sub"
+        ">C</sub>\u03c0<sub>E</sub></span>",
+        2: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>CYC</sub>\u03c0<sub>L</sub>\u03c0<sub"
         ">E</sub></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub"
+        3: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>CYC</sub>\u03c0<sub>L</sub>\u03c0<sub"
         ">E</sub></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = (\u03BB<sub>b1</sub> '
-        "+ \u03C0<sub>N</sub>\u03BB<sub>b2</sub>)\u03C0<sub>CYC</sub>\u03C0"
-        "<sub>L</sub>\u03C0<sub>E</sub></span>",
-        5: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span> ",
+        4: '<span foreground="blue">\u03bb<sub>p</sub> = (\u03bb<sub>b1</sub> '
+        "+ \u03c0<sub>N</sub>\u03bb<sub>b2</sub>)\u03c0<sub>CYC</sub>\u03c0"
+        "<sub>L</sub>\u03c0<sub>E</sub></span>",
+        5: '<span foreground="blue">\u03bb<sub>p</sub> = '
+        "\u03bb<sub>b</sub>\u03c0<sub>C</sub>\u03c0<sub>U</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span> ",
     }
 
     # Define private list class attributes.
@@ -106,7 +106,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the switch."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -118,7 +118,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the switch."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -130,7 +130,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the switch."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_cyc": [
                 18,
@@ -142,7 +142,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The cycling factor for the switch."),
                 },
-                "\u03C0<sub>CYC</sub>:",
+                "\u03c0<sub>CYC</sub>:",
             ],
             "pi_l": [
                 23,
@@ -154,7 +154,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The load stress factor for the switch."),
                 },
-                "\u03C0<sub>L</sub>:",
+                "\u03c0<sub>L</sub>:",
             ],
             "pi_c": [
                 13,
@@ -168,7 +168,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The number of active contacts factor for the switch."
                     ),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
             "pi_n": [
                 26,
@@ -183,7 +183,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "the configuration factor for a circuit breaker."
                     ),
                 },
-                "\u03C0<sub>N</sub>:",
+                "\u03c0<sub>N</sub>:",
             ],
             "pi_u": [
                 35,
@@ -195,7 +195,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The use factor for the switch."),
                 },
-                "\u03C0<sub>U</sub>:",
+                "\u03c0<sub>U</sub>:",
             ],
         }
 

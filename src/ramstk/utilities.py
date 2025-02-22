@@ -14,7 +14,7 @@ import os.path
 import site
 import warnings
 from datetime import datetime
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -81,7 +81,7 @@ def file_exists(_file: str) -> bool:
 
 
 def none_to_default(
-    field: None, default: Union[bool, float, int, str]
+    field: Optional[Union[bool, float, int, str]], default: Union[bool, float, int, str]
 ) -> Union[bool, float, int, str]:
     """Convert None values into default values.
 

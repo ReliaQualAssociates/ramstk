@@ -33,10 +33,10 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     ) -> None:
         """Create RAMSTK ComboBox widgets.
 
-        :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
-        display.  Default is 0. :keyword bool simple: indicates whether to make a simple
-        (one item) or     complex (n_item) RAMSTKComboBox.  Default is True. :keyword
-        int n_items: the number of items (columns) to add for a     non-simple
+        :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to display.
+        Default is 0. :keyword bool simple: indicates whether to make a simple (one
+        item) or complex (n_item) RAMSTKComboBox.  Default is True. :keyword int
+        n_items: the number of items (columns) to add for a     non-simple
         RAMSTKComboBox.
         """
         RAMSTKWidget.__init__(self)

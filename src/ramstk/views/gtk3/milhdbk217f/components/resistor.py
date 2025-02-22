@@ -31,14 +31,14 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiC: displays the construction class factor for the resistor.
     """
 
-    _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = (
-        "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>"
-        "\u03C0<sub>E</sub></span>"
+        "\u03bb<sub>b</sub>\u03c0<sub>R</sub>\u03c0<sub>Q</sub>"
+        "\u03c0<sub>E</sub></span>"
     )
     _function_2 = (
-        "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>"
-        "\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "\u03bb<sub>b</sub>\u03c0<sub>TAPS</sub>\u03c0<sub>R</sub>"
+        "\u03c0<sub>V</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>"
     )
 
     # Define private dict class attributes.
@@ -47,21 +47,21 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         2: _lambda_p + _function_1,
         3: _lambda_p + _function_1,
         4: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>NR</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>NR</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span>",
         5: _lambda_p + _function_1,
         6: _lambda_p + _function_1,
         7: _lambda_p + _function_1,
-        8: _lambda_p + "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        8: _lambda_p + "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         9: _lambda_p + _function_2,
         10: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>C</sub>\u03C0<sub"
-        ">R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
+        + "\u03bb<sub>b</sub>\u03c0<sub>TAPS</sub>\u03c0<sub>C</sub>\u03c0<sub"
+        ">R</sub>\u03c0<sub>V</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub"
         "></span>",
         11: _lambda_p + _function_2,
         12: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
+        + "\u03bb<sub>b</sub>\u03c0<sub>TAPS</sub>\u03c0<sub>R</sub>\u03c0<sub"
+        ">V</sub>\u03c0<sub>C</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub"
         "></span>",
         13: _lambda_p + _function_2,
         14: _lambda_p + _function_2,
@@ -126,7 +126,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the resistor."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -138,7 +138,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the resistor."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -150,7 +150,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the resistor."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_r": [
                 31,
@@ -162,7 +162,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The resistance factor for the resistor."),
                 },
-                "\u03C0<sub>R</sub>:",
+                "\u03c0<sub>R</sub>:",
             ],
             "pi_t": [
                 33,
@@ -174,7 +174,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The temperature factor for the resistor."),
                 },
-                "\u03C0<sub>T</sub>:",
+                "\u03c0<sub>T</sub>:",
             ],
             "pi_nr": [
                 27,
@@ -188,7 +188,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The number of resistors factor for the resistor network."
                     ),
                 },
-                "\u03C0<sub>NR</sub>:",
+                "\u03c0<sub>NR</sub>:",
             ],
             "pi_taps": [
                 34,
@@ -200,7 +200,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The potentiometer taps factor for the resistor."),
                 },
-                "\u03C0<sub>TAPS</sub>:",
+                "\u03c0<sub>TAPS</sub>:",
             ],
             "pi_v": [
                 36,
@@ -212,7 +212,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The voltage factor for the resistor."),
                 },
-                "\u03C0<sub>V</sub>:",
+                "\u03c0<sub>V</sub>:",
             ],
             "pi_c": [
                 13,
@@ -224,7 +224,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The construction class factor for the resistor."),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
         }
 

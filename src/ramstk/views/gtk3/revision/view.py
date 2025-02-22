@@ -92,6 +92,7 @@ class RevisionModuleView(RAMSTKModuleView):
         self._pnlPanel = RevisionTreePanel()
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys.pop("parent_id")
 
         # Initialize public list attributes.
 
@@ -209,6 +210,7 @@ class RevisionWorkView(RAMSTKWorkView):
         self._pnlGeneralData: RAMSTKPanel = RevisionGeneralDataPanel()
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys.pop("parent_id")
 
         # Initialize public list attributes.
 

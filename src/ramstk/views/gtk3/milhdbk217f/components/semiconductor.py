@@ -34,45 +34,45 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiS: displays the electrical stress factor for the semiconductor.
     """
 
-    _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = (
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>"
-        "\u03C0<sub>E</sub></span>"
+        "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>Q</sub>"
+        "\u03c0<sub>E</sub></span>"
     )
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>S</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>S</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span>",
         2: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>R"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub>\u03c0<sub>R"
+        "</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         3: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>R"
-        "</sub>\u03C0<sub>S</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub>\u03c0<sub>R"
+        "</sub>\u03c0<sub>S</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         4: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub>\u03c0<sub>Q"
+        "</sub>\u03c0<sub>E</sub></span>",
         5: _lambda_p + _function_1,
         6: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>R</sub>\u03c0<sub>S"
+        "</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         7: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>M"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub>\u03c0<sub>M"
+        "</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         8: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>M"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>A</sub>\u03c0<sub>M"
+        "</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         9: _lambda_p + _function_1,
         10: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>R</sub>\u03c0<sub>S"
+        "</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>",
         11: _lambda_p + _function_1,
         12: _lambda_p + _function_1,
         13: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I"
-        "</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span> ",
+        + "\u03bb<sub>b</sub>\u03c0<sub>T</sub>\u03c0<sub>Q</sub>\u03c0<sub>I"
+        "</sub>\u03c0<sub>A</sub>\u03c0<sub>P</sub>\u03c0<sub>E</sub></span> ",
     }
 
     # Define private list class attributes.
@@ -135,7 +135,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The base hazard rate for the semiconductor."),
                 },
-                "\u03BB<sub>b</sub>:",
+                "\u03bb<sub>b</sub>:",
             ],
             "pi_q": [
                 30,
@@ -147,7 +147,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The quality factor for the semiconductor."),
                 },
-                "\u03C0<sub>Q</sub>:",
+                "\u03c0<sub>Q</sub>:",
             ],
             "pi_e": [
                 19,
@@ -159,7 +159,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The environment factor for the semiconductor."),
                 },
-                "\u03C0<sub>E</sub>:",
+                "\u03c0<sub>E</sub>:",
             ],
             "pi_t": [
                 33,
@@ -171,7 +171,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The temperature factor for the semiconductor."),
                 },
-                "\u03C0<sub>T</sub>:",
+                "\u03c0<sub>T</sub>:",
             ],
             "pi_a": [
                 12,
@@ -183,7 +183,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The application factor for the semiconductor."),
                 },
-                "\u03C0<sub>A</sub>:",
+                "\u03c0<sub>A</sub>:",
             ],
             "pi_c": [
                 13,
@@ -197,7 +197,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                         "The contact construction factor for the semiconductor."
                     ),
                 },
-                "\u03C0<sub>C</sub>:",
+                "\u03c0<sub>C</sub>:",
             ],
             "pi_r": [
                 31,
@@ -209,7 +209,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The power rating factor for the semiconductor."),
                 },
-                "\u03C0<sub>R</sub>:",
+                "\u03c0<sub>R</sub>:",
             ],
             "pi_m": [
                 24,
@@ -221,7 +221,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The matching network factor for the semiconductor."),
                 },
-                "\u03C0<sub>M</sub>:",
+                "\u03c0<sub>M</sub>:",
             ],
             "pi_i": [
                 21,
@@ -233,7 +233,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The forward current factor for the semiconductor."),
                 },
-                "\u03C0<sub>I</sub>:",
+                "\u03c0<sub>I</sub>:",
             ],
             "pi_p": [
                 28,
@@ -245,7 +245,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The power degradation factor for the semiconductor."),
                 },
-                "\u03C0<sub>P</sub>:",
+                "\u03c0<sub>P</sub>:",
             ],
             "pi_s": [
                 31,
@@ -257,7 +257,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The electrical stress factor for the semiconductor."),
                 },
-                "\u03C0<sub>S</sub>:",
+                "\u03c0<sub>S</sub>:",
             ],
         }
 

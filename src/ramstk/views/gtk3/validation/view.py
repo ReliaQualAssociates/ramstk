@@ -98,6 +98,7 @@ class ValidationModuleView(RAMSTKModuleView):
         self._pnlPanel = ValidationTreePanel()
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys.pop("parent_id")
 
         # Initialize public list attributes.
 
@@ -254,6 +255,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         # self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys.pop("parent_id")
 
         # Initialize public list attributes.
 
