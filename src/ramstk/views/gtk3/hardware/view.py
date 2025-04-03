@@ -57,7 +57,7 @@ from ramstk.views.gtk3.reliability import (
     ReliabilityInputPanel,
     ReliabilityResultsPanel,
 )
-from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKModuleView, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import (
@@ -314,28 +314,15 @@ class HardwareModuleView(RAMSTKModuleView):
         self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __do_load_lists(self) -> None:
-        """Load the pick lists associated with Hardware.
-
-        :return: None
-        :rtype: None
-        """
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES:
-            self._pnlPanel.lst_categories.append(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES[_key][0]
-            )
-            self._pnlPanel.dic_subcategories[_key] = [""]
-
-            for _subkey in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key]:
-                self._pnlPanel.dic_subcategories[_key].append(
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][_subkey][
-                        0
-                    ]
-                )
-
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS:
-            self._pnlPanel.lst_manufacturers.append(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS[_key][0]
-            )
+        """Load the pick lists associated with Hardware."""
+        self._pnlPanel.do_load_categories(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES,
+        )
+        self._pnlPanel.do_load_manufacturers(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS
+        )
+        self._pnlPanel.do_load_cost_types()
 
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
@@ -345,41 +332,39 @@ class HardwareModuleView(RAMSTKModuleView):
         super().make_ui()
 
         self._pnlPanel.dic_icons = self._dic_icons
-
         self.__do_load_lists()
-        self._pnlPanel.do_load_comboboxes()
 
-        self._pnlPanel.do_set_cell_callbacks(
-            "mvw_editing_hardware",
-            [
-                "alt_part_number",
-                "cage_code",
-                "cost",
-                "description",
-                "duty_cycle",
-                "figure_number",
-                "lcn",
-                "manufacturer_id",
-                "mission_time",
-                "name",
-                "nsn",
-                "page_number",
-                "part",
-                "part_number",
-                "quantity",
-                "ref_des",
-                "remarks",
-                "repairable",
-                "specification_number",
-                "tagged_part",
-                "year_of_manufacture",
-            ],
-        )
-        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
-            self._pnlPanel.tvwTreeView.connect(
-                "button_press_event", super().on_button_press
-            )
-        )
+        # self._pnlPanel.do_set_cell_callbacks(
+        #    "mvw_editing_hardware",
+        #    [
+        #        "alt_part_number",
+        #        "cage_code",
+        #        "cost",
+        #        "description",
+        #        "duty_cycle",
+        #        "figure_number",
+        #        "lcn",
+        #        "manufacturer_id",
+        #        "mission_time",
+        #        "name",
+        #        "nsn",
+        #        "page_number",
+        #        "part",
+        #        "part_number",
+        #        "quantity",
+        #        "ref_des",
+        #       "remarks",
+        #        "repairable",
+        #        "specification_number",
+        #        "tagged_part",
+        #        "year_of_manufacture",
+        #    ],
+        # )
+        # self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+        #    self._pnlPanel.tvwTreeView.connect(
+        #        "button_press_event", super().on_button_press
+        #    )
+        # )
 
 
 class HardwareGeneralDataView(RAMSTKWorkView):
@@ -388,8 +373,6 @@ class HardwareGeneralDataView(RAMSTKWorkView):
     The Hardware Work View displays all the general data attributes for the
     selected Hardware.  The attributes of a Hardware General Data Work View
     are:
-
-    :cvar _module: the name of the module.
 
     :ivar _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -446,9 +429,9 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._pnlGeneralData: RAMSTKPanel = HardwareGeneralDataPanel()
-        self._pnlLogistics: RAMSTKPanel = HardwareLogisticsPanel()
-        self._pnlMiscellaneous: RAMSTKPanel = HardwareMiscellaneousPanel()
+        self._pnlGeneralData: RAMSTKBasePanel = HardwareGeneralDataPanel()
+        self._pnlLogistics: RAMSTKBasePanel = HardwareLogisticsPanel()
+        self._pnlMiscellaneous: RAMSTKBasePanel = HardwareMiscellaneousPanel()
 
         self._lst_callbacks = [
             self._do_request_make_comp_ref_des,
@@ -596,7 +579,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_component_panels: Dict[int, RAMSTKPanel] = {
+        self._dic_component_panels: Dict[int, RAMSTKBasePanel] = {
             1: ICDesignElectricInputPanel(),
             2: SemiconductorDesignElectricInputPanel(),
             3: ResistorDesignElectricInputPanel(),
@@ -630,11 +613,11 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlReliabilityInput: RAMSTKPanel = ReliabilityInputPanel()
-        self._pnlEnvironmentalInput: RAMSTKPanel = (
+        self._pnlReliabilityInput: RAMSTKBasePanel = ReliabilityInputPanel()
+        self._pnlEnvironmentalInput: RAMSTKBasePanel = (
             DesignElectricEnvironmentalInputPanel()
         )
-        self._pnlStressInput: RAMSTKPanel = DesignElectricStressInputPanel()
+        self._pnlStressInput: RAMSTKBasePanel = DesignElectricStressInputPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -679,7 +662,9 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
-            _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
+            _panel: RAMSTKBasePanel = self._dic_component_panels[
+                attributes["category_id"]
+            ]
             _panel.fmt = self.fmt
             _panel.category_id = attributes["category_id"]
             self._vpnRight.pack2(_panel, True, True)
@@ -823,7 +808,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         )
 
         # Initialize private dictionary attributes.
-        self._dic_component_results: Dict[int, RAMSTKPanel] = {
+        self._dic_component_results: Dict[int, RAMSTKBasePanel] = {
             1: ICMilHdbk217FResultPanel(),
             2: SemiconductorMilHdbk217FResultPanel(),
             3: ResistorMilHdbk217FResultPanel(),
@@ -857,9 +842,9 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self._hazard_rate_method_id: int = 0
         self._subcategory_id: int = 0
 
-        self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
-        self._pnlReliabilityResults: RAMSTKPanel = ReliabilityResultsPanel()
-        self._pnlStressResults: RAMSTKPanel = DesignElectricStressResultPanel()
+        self._pnlAvailabilityResults: RAMSTKBasePanel = AvailabilityResultsPanel()
+        self._pnlReliabilityResults: RAMSTKBasePanel = ReliabilityResultsPanel()
+        self._pnlStressResults: RAMSTKBasePanel = DesignElectricStressResultPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -899,7 +884,9 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
-            _panel: RAMSTKPanel = self._dic_component_results[attributes["category_id"]]
+            _panel: RAMSTKBasePanel = self._dic_component_results[
+                attributes["category_id"]
+            ]
             _panel.fmt = self.fmt
             self._vpnRight.pack2(_panel, True, True)
             self.show_all()
