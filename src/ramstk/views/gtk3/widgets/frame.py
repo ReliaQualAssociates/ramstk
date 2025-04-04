@@ -4,47 +4,41 @@
 #       ramstk.views.gtk3.widgets.frame.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 frame Module."""
-
-# Standard Library Imports
-from typing import Any, Dict, List, Union
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTKFrame module."""
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject, Gtk
+from ramstk.views.gtk3 import Gtk
 
 # RAMSTK Local Imports
 from .label import RAMSTKLabel
+from .widget import RAMSTKBaseWidget, WidgetProperties
 
 
-class RAMSTKFrame(Gtk.Frame):
-    """The RAMSTK Frame class."""
+class RAMSTKFrame(Gtk.Frame, RAMSTKBaseWidget):
+    """The RAMSTKFrame class."""
 
     def __init__(self) -> None:
-        """Initialize an instance of the RAMSTK Frame."""
-        GObject.GObject.__init__(self)
+        """Initialize an instance of the RAMSTKFrame widget."""
+        RAMSTKBaseWidget.__init__(self)
 
-    def do_set_properties(self, **kwargs: Any) -> None:
-        """Set the RAMSTKFrame properties."""
-        _bold: Union[Dict[str, Any], bool] = kwargs.get("bold", False)
-        _shadow = kwargs.get("shadow", Gtk.ShadowType.ETCHED_OUT)
-        _title: Union[Dict[str, Any], str] = kwargs.get("title", "")
+    # ----- ----- Standard widget methods. ----- ----- #
+    def do_set_properties(self, properties: WidgetProperties) -> None:
+        """Set the properties of the RAMSTKFrame.
 
-        _label: RAMSTKLabel = RAMSTKLabel(_title)  # type: ignore
-        _label.do_set_properties(bold=_bold)
+        :param properties: the WidgetProperties dict with the property values to set for
+            the RAMSTKFrame.
+        """
+        super().do_set_properties(properties)
+
+        self.dic_properties["label"] = str(properties.get("title", ""))
+        self.dic_properties["shadow_type"] = properties.get(
+            "shadow_type",
+            Gtk.ShadowType.ETCHED_OUT,
+        )
+
+        _label: RAMSTKLabel = RAMSTKLabel(self.dic_properties["label"])
+        _label.do_set_properties(properties)
         _label.show_all()
         self.set_label_widget(_label)
-
-        self.set_shadow_type(_shadow)
-
-    @staticmethod
-    def set_widget_sensitivity(widgets: List[Any], sensitive: bool = True) -> None:
-        """Set the sensitivity for a list of widgets.
-
-        :param widgets: list of widget objects.
-        :param sensitive: whether to make the widgets sensitive or not.
-        :return: None
-        :rtype: None
-        """
-        for _widget in widgets:
-            _widget.set_sensitive(sensitive)
+        self.set_shadow_type(self.dic_properties["shadow_type"])
