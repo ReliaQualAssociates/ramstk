@@ -13,8 +13,8 @@ import os
 import os.path
 import site
 import warnings
-from datetime import datetime
-from typing import Callable, List, Optional, Union
+from datetime import date, datetime
+from typing import Any, Callable, Dict, List, Optional, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -24,15 +24,15 @@ from pubsub import pub
 _ = gettext.gettext
 
 
-def date_to_ordinal(date: str) -> int:
+def date_to_ordinal(date_string: str) -> int:
     """Convert date strings to ordinal dates for use in the database.
 
-    :param date: the date string to convert.
+    :param date_string: the date string to convert.
     :return: ordinal representation of the passed date.
     :rtype: int
     """
     try:
-        return parse(date).toordinal()
+        return parse(date_string).toordinal()
     except (ValueError, TypeError):
         return parse("01/01/1970").toordinal()
 
@@ -81,8 +81,9 @@ def file_exists(_file: str) -> bool:
 
 
 def none_to_default(
-    field: Optional[Union[bool, float, int, str]], default: Union[bool, float, int, str]
-) -> Union[bool, float, int, str]:
+    field: Optional[Union[bool, date, float, int, str]],
+    default: Union[bool, date, float, int, str, None],
+) -> Union[bool, date, float, int, str, None]:
     """Convert None values into default values.
 
     :param field: the original value that may be None.
@@ -153,6 +154,22 @@ def integer_to_boolean(integer: int) -> bool:
     :rtype: bool :raise: TypeError if passed a string.
     """
     return integer > 0
+
+
+def sort_dict(dictionary, by_value=True, reverse=False) -> Dict[Any, Any]:
+    """Sort a dict by value or by key.
+
+    :param dictionary: the dict to sort.
+    :param by_value: whether to sort by value (default) or by key.
+    :param reverse: whether to sort in ascending order (default) or descending order.
+    :return: the dict sorted by value or by key.
+    """
+    if by_value:
+        return dict(
+            sorted(dictionary.items(), key=lambda item: item[1], reverse=reverse)
+        )
+    else:
+        return dict(sorted(dictionary.items(), reverse=reverse))
 
 
 def string_to_boolean(string: Union[bool, str]) -> bool:
