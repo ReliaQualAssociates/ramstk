@@ -1,66 +1,63 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import TypedDict
 
 # Third Party Imports
 import matplotlib
+from _typeshed import Incomplete
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk as Gdk
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 
-class RAMSTKPlot:
-    _lst_max: Any = ...
-    _lst_min: Any = ...
-    figure: Any = ...
-    canvas: Any = ...
-    axis: Any = ...
-    plot: Any = ...
+# RAMSTK Local Imports
+from .widget import RAMSTKBaseWidget as RAMSTKBaseWidget
+
+class PlotProperties(TypedDict, total=False):
+    font_size: int | str
+    font_weight: str
+    frame_on: bool
+    horizontal_alignment: str
+    line_width: float
+    location: str
+    n_columns: int
+    rotation: str
+    shadow: bool
+    title: str
+    vertical_alignment: str
+    x_pos: int
+    y_pos: int
+
+class RAMSTKPlot(RAMSTKBaseWidget):
+    figure: matplotlib.figure.Figure
+    canvas: Incomplete
+    axis: Incomplete
     def __init__(self) -> None: ...
     def do_load_plot(
-        self,
-        x_values: List[float],
-        y_values: List[float],
-        **kwargs: Dict[str, str],
+        self, x_values: list[float], y_values: list[float], plot_type: str = "scatter"
     ) -> None: ...
     def do_add_line(
         self,
-        x_values: List[float],
-        y_values: List[float] = ...,
-        color: str = ...,
-        marker: str = ...,
+        x_values: list[float],
+        y_values: list[float] | None = None,
+        color: str = "k",
+        marker: str = "^",
     ) -> None: ...
     def do_close_plot(
-        self, __window: Gtk.Window, __event: Gdk.Event, parent: Gtk.Widget
+        self, __window: Gtk.Window, /, __event: Gdk.Event, parent: Gtk.Widget
     ) -> None: ...
     def do_expand_plot(self, event: matplotlib.backend_bases.MouseEvent) -> None: ...
-    def do_make_labels(self, label: str, **kwargs: Any) -> matplotlib.text.Text: ...
-    def do_make_legend(self, text: Union[Any], **kwargs: Any) -> None: ...
-    def do_make_title(
-        self, title: str, fontsize: int = ..., fontweight: str = ...
+    def do_make_labels(
+        self,
+        label: str,
+        properties: PlotProperties,
+        set_x: bool = True,
+        x_pos: int = 0,
+        y_pos: int = 0,
     ) -> matplotlib.text.Text: ...
-    def _do_make_date_plot(
-        self,
-        x_values: List[float],
-        y_values: List[float],
-        **kwargs: Dict[str, str],
+    def do_make_legend(
+        self, text: list[str], title: str, properties: PlotProperties
     ) -> None: ...
-    def _do_make_histogram(
-        self,
-        x_values: List[float],
-        y_values: List[float],
-        **kwargs: Dict[str, str],
-    ) -> None: ...
-    def _do_make_scatter_plot(
-        self,
-        x_values: List[float],
-        y_values: List[float],
-        **kwargs: Dict[str, str],
-    ) -> None: ...
-    def _do_make_step_plot(
-        self,
-        x_values: List[float],
-        y_values: List[float],
-        **kwargs: Dict[str, str],
-    ) -> None: ...
-    def _get_minimax_ordinates(self) -> Tuple[float, float]: ...
+    def do_make_title(
+        self, title: str, properties: PlotProperties
+    ) -> matplotlib.text.Text: ...
