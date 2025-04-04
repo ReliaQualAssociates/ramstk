@@ -4,26 +4,31 @@
 #       ramstk.views.gtk3.widgets.combo.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Combo Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTKComboBox module."""
 
 # Standard Library Imports
+from datetime import date
 from typing import Any, Dict, List, Union
+
+# Third Party Imports
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.utilities import none_to_default
 from ramstk.views.gtk3 import GObject, Gtk
 
 # RAMSTK Local Imports
-from .widget import RAMSTKWidget
+from .widget import RAMSTKBaseWidget, WidgetProperties
 
 
-class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
-    """The RAMSTK ComboBox class."""
+class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
+    """The RAMSTKComboBox class."""
 
     # Define private class scalar attributes.
     _default_height = 30
     _default_width = 200
+    _edit_signal = "changed"
 
     def __init__(
         self,
@@ -31,36 +36,23 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         simple: bool = True,
         n_items: int = 2,
     ) -> None:
-        """Create RAMSTK ComboBox widgets.
+        """Initialize an instance of the RAMSTKComboBox widget.
 
-        :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to display.
-        Default is 0. :keyword bool simple: indicates whether to make a simple (one
-        item) or complex (n_item) RAMSTKComboBox.  Default is True. :keyword int
-        n_items: the number of items (columns) to add for a     non-simple
-        RAMSTKComboBox.
+        :param index: the index in the RAMSTKComboBox Gtk.ListView to display. Default
+            is 0.
+        :param simple: indicates whether to make a simple (one item) or complex (n_item)
+            RAMSTKComboBox. Default is True.
+        :param n_items: the number of items (columns) to add for a non-simple
+            RAMSTKComboBox.
         """
-        RAMSTKWidget.__init__(self)
+        RAMSTKBaseWidget.__init__(self)
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private attributes.
         self._index: int = index
         self._n_items: int = n_items
+        self._simple: bool = simple
 
-        _list = Gtk.ListStore()
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        if not simple:
-            _list.set_column_types([GObject.TYPE_STRING] * self._n_items)
-        else:
-            _list.set_column_types([GObject.TYPE_STRING])
-        self.set_model(_list)
+        self.set_model(Gtk.ListStore())
 
         _cell = Gtk.CellRendererText()
         self.pack_start(_cell, True)
@@ -68,8 +60,67 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         self.show()
 
+    # ----- ----- Standard widget methods. ----- ----- #
+    def do_set_properties(self, properties: WidgetProperties) -> None:
+        """Set the properties of the RAMSTKComboBox.
+
+        :param properties: the WidgetProperties dict with the property values to set for
+            the RAMSTKComboBox.
+        """
+        super().do_set_properties(properties)
+
+        self.dic_properties["has_entry"] = properties.get("has_entry", True)
+        self.dic_properties["model"] = properties.get("model", Gtk.ListStore())
+
+        if not self._simple:
+            self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
+                [GObject.TYPE_STRING] * self._n_items
+            )
+        else:
+            self.dic_properties["model"].set_column_types([GObject.TYPE_STRING])  # type: ignore[union-attr] # noqa
+        self.set_model(self.dic_properties["model"])
+
+        self.set_property(self.dic_properties["has_entry"])
+
+    def do_update(
+        self, package: Dict[str, Union[bool, date, float, int, str, None]]
+    ) -> None:
+        """Update the RAMSTKComboBox with a new value.
+
+        :param package: the date package to use to update the RAMSTKComboBox.
+        """
+        _field, _value = next(iter(package.items()))
+
+        if _field != self.field:
+            return
+
+        _value = none_to_default(_value, self.default)
+
+        try:
+            self.handler_block(self.handler_id)
+            self.set_active(_value)
+            self.handler_unblock(self.handler_id)
+        except KeyError:
+            self.set_active(_value)
+
+    def on_changed(self) -> None:
+        """Retrieve the data package for the RAMSTKComboBox on value changes.
+
+        This method also sends a PyPubSub message along with the data package for
+        listeners to update with the new value.
+        """
+        try:
+            self.handler_block(self.handler_id)
+            _package = {self.field: self.get_value()}
+            self.handler_unblock(self.handler_id)
+        except KeyError:
+            _package = {self.field: self.get_value()}
+
+        pub.sendMessage(self.topic, node_id=self.record_id, package=_package)
+
+    # ----- ----- RAMSTKComboBox specific methods. ----- ----- #
     def do_get_options(self) -> Dict[int, Any]:
-        """Retrieve all the options in the RAMSTK Combo.
+        """Retrieve all the options in the RAMSTKComboBox.
 
         :return: _options
         :rtype: dict
@@ -87,20 +138,16 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         return _options
 
-    # noinspection PyIncorrectDocstring
     def do_load_combo(
         self,
         entries: List[List[Union[str, int]]],
-        signal: str = "",
         simple: bool = True,
     ) -> None:
-        """Load RAMSTK ComboBox widgets.
+        """Load the RAMSTKComboBox widget.
 
         :param entries: the information to load into the Gtk.ComboBox(). This is always
             a list of lists where each internal list contains the information to be
             displayed and there is one internal list for each RAMSTKComboBox line.
-        :param signal: the name of the signal whose handler ID the RAMSTKComboBox()
-            needs to block.
         :param simple: indicates whether this is a simple (one item) or complex (three
             item) RAMSTKComboBox. A simple (default) RAMSTKComboBox contains and
             displays one field only. A 'complex' RAMSTKComboBox contains three str
@@ -109,16 +156,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
             RAMSTKComboBox. For example, if the name of an item is displayed, the other
             two fields might contain a code and an index. These could be extracted for
             use in the RAMSTK Views.
-        :return: None :raise: TypeError if attempting to load other than string values.
+        :raises: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()
         _model.clear()
 
-        try:
-            _handler_id = self.dic_handler_id[signal]
-            self.handler_block(_handler_id)
-        except KeyError:
-            _handler_id = -1
+        self.handler_block(self.handler_id)
 
         if not simple:
             _model.append([""] * self._n_items)
@@ -126,36 +169,17 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
                 _model.append(list(_entry))
         else:
             _model.append([""])
-            # pylint: disable=unused-variable
             for _entry in entries:
                 _model.append([_entry[self._index]])
 
-        if _handler_id > 0:
-            self.handler_unblock(_handler_id)
-
-    def do_update(self, value: int, signal: str = "") -> None:
-        """Update the RAMSTK Combo with a new value.
-
-        :param value: the information to update the RAMSTKCombo() to display.
-        :param str signal: the name of the signal whose handler ID the RAMSTKComboBox()
-            needs to block.
-        :return: None
-        :rtype: None
-        """
-        _handler_id = self.dic_handler_id[signal]
-
-        _value = none_to_default(value, 0)
-
-        self.handler_block(_handler_id)
-        self.set_active(_value)
-        self.handler_unblock(_handler_id)
+        self.handler_unblock(self.handler_id)
 
     def get_value(self, index: int = 0) -> str:
-        """Return value in the RAMSTKComboBox() model at the index position.
+        """Return the value in the RAMSTKComboBox model found at <index> position.
 
-        :keyword int index: the column in the RAMSTKComboBox() model whose     value is
-        to be retrieved.  Defaults to zero which will always     read a 'simple'
-        RAMSTKComboBox().
+        :param index: the column in the RAMSTKComboBox model whose value is to be
+            retrieved. Defaults to zero which will always read a 'simple'
+            RAMSTKComboBox.
         :return: _value
         :rtype: str
         """
