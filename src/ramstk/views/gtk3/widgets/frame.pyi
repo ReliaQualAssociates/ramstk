@@ -1,15 +1,11 @@
-# Standard Library Imports
-from typing import Any, List
-
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 
 # RAMSTK Local Imports
 from .label import RAMSTKLabel as RAMSTKLabel
+from .widget import RAMSTKBaseWidget as RAMSTKBaseWidget
+from .widget import WidgetProperties as WidgetProperties
 
-class RAMSTKFrame(Gtk.Frame):
+class RAMSTKFrame(Gtk.Frame, RAMSTKBaseWidget):
     def __init__(self) -> None: ...
-    def do_set_properties(self, **kwargs: Any) -> None: ...
-    @staticmethod
-    def set_widget_sensitivity(widgets: List[Any], sensitive: bool = True) -> None: ...
+    def do_set_properties(self, properties: WidgetProperties) -> None: ...
