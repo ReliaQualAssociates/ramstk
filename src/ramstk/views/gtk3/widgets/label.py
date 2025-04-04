@@ -4,106 +4,97 @@
 #       ramstk.gui.gtk.ramstk.Label.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Label Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTKLabel module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from datetime import date
+from typing import Dict, List, Tuple, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk
 
 # RAMSTK Local Imports
-from .widget import RAMSTKWidget
+from .widget import RAMSTKBaseWidget, WidgetProperties
 
 
-class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
-    """The RAMSTK Label class."""
+class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
+    """The RAMSTKLabel class."""
 
-    # Define private class scalar attributes.
+    # Define private class attributes.
     _default_height = 25
     _default_width = 190
+    _edit_signal = ""
 
     def __init__(self, text: str) -> None:
-        """Create RAMSTKLabel widget.
+        """Initialize an instance of the RAMSTKLabel widget.
 
         :param text: the text to display in the label.
         """
-        RAMSTKWidget.__init__(self)
+        RAMSTKBaseWidget.__init__(self)
 
-        self.set_markup("<span>" + text + "</span>")
+        self.dic_properties["label"] = "<span>" + text + "</span>"
+
+        self.set_markup(self.dic_properties["label"])
         self.show_all()
 
-    def get_attribute(self, attribute: str) -> Any:
-        """Get the value of the requested attribute.
+    # ----- ----- Standard widget methods. ----- ----- #
+    def do_set_properties(self, properties: WidgetProperties) -> None:
+        """Set the properties of the RAMSTKLabel.
 
-        :param attribute: the name of the attribute to retrieve.
-        :return: the value of the requested attribute.
+        :param properties: the WidgetProperties dict with the property values to set for
+            the RAMSTKLabel.
         """
-        # The natural size = default size and the requested size = minimum size
-        _attributes = {
-            "height": self.get_preferred_height()[1],
-            "width": self.get_preferred_width()[1],
-        }
+        super().do_set_properties(properties)
 
-        return _attributes[attribute]
+        self.dic_properties["angle"] = properties.get("angle", 0.0)
+        self.dic_properties["bold"] = properties.get("bold", True)
+        self.dic_properties["ellipsize"] = properties.get("ellipsize", True)
+        self.dic_properties["label"] = properties.get("label", "")
+        self.dic_properties["lines"] = properties.get("lines", -1)
+        self.dic_properties["justify"] = properties.get(
+            "justify", Gtk.Justification.RIGHT
+        )
+        self.dic_properties["wrap"] = properties.get("wrap", False)
 
-    def do_set_properties(self, **kwargs: Any) -> None:
-        """Set the RAMSTKFrame properties.
-
-        :Keyword Arguments:
-            * *width* (int) -- width of the Gtk.Label() widget.  Default is
-                190.
-            * *height* (int) -- height of the Gtk.Label() widget.  Default is
-                25.
-            * *bold* (bool) -- boolean indicating whether text should be bold.
-                Default is True.
-            * *wrap* (bool) -- boolean indicating whether the label text should
-                wrap or not.  Default is False.
-            * *justify* (str) -- the justification type when the label wraps
-                and contains more than one line.  Default is JUSTIFY_LEFT.
-            * *tooltip* (str) -- the tooltip, if any, for the label.
-                Default is an empty string.
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties(**kwargs)
-
-        _bold = kwargs.get("bold", True)
-        _justify = kwargs.get("justify", Gtk.Justification.LEFT)
-        _wrap = kwargs.get("wrap", False)
-
-        self.set_property("wrap", _wrap)
-        self.set_property("justify", _justify)
-        if _justify == Gtk.Justification.CENTER:
+        self.set_property("wrap", self.dic_properties["wrap"])
+        self.set_property("justify", self.dic_properties["justify"])
+        if self.dic_properties["justify"] == Gtk.Justification.CENTER:
             self.set_xalign(0.5)
-        elif _justify == Gtk.Justification.LEFT:
+        elif self.dic_properties["justify"] == Gtk.Justification.LEFT:
             self.set_xalign(0.05)
         else:
             self.set_xalign(0.99)
         self.set_yalign(0.5)
-        if _bold:
-            _text = self.get_property("label")
-            _text = "<b>" + _text + "</b>"
-            self.set_markup(_text)
 
-    # pylint: disable=unused-argument
-    def do_update(self, text: str, signal: str = "") -> None:
-        """Update the text displayed by the label.
+        if self.dic_properties["bold"]:
+            self.dic_properties["label"] = "<b>" + self.dic_properties["label"] + "</b>"
+        self.set_markup(self.dic_properties["label"])
 
-        :param text: the information to update the RAMSTKLabel() to display.
-        :param signal: the name of the signal whose handler ID the RAMSTKLabel() needs
-            to block. Unused in this method, but required for compatibility.
-        :return: None
-        :rtype: None
+    def do_update(self, package: Dict[str, Union[bool, date, float, int, str]]) -> None:
+        """Update the RAMSTKLabel to a new value.
+
+        :param package: the date package to use to update the RAMSTKLabel.
         """
-        self.set_markup("<span>" + text + "</span>")
+        _field: str
+        _value: str
+
+        _field, _raw_value = next(iter(package.items()))
+        _value = str(_raw_value)
+
+        if _field != self.field:
+            return
+
+        self.dic_properties["label"] = "<span>" + _value + "</span>"
+        if self.dic_properties["bold"]:
+            self.dic_properties["label"] = "<b>" + self.dic_properties["label"] + "</b>"
+        self.set_markup(self.dic_properties["label"])
 
 
 def do_make_label_group(
-    text: List[str], **kwargs: Dict[str, Any]
+    text: List[str],
 ) -> Tuple[int, List[RAMSTKLabel]]:
-    """Make and place a group of labels.
+    """Make and place a group of RAMSTKLabels.
 
     The width of each label is set using a natural request.  This ensures the label
     doesn't cut off letters.  The maximum size of the labels is determined and used to
@@ -113,26 +104,18 @@ def do_make_label_group(
 
     :param text: a list containing the text for each label.
     :return: (_max_x, _lst_labels) the width of the label with the longest text and a
-        list of the RAMSTKLabel() instances.
-    :rtype: tuple of (integer, list of RAMSTKLabel())
+        list of the RAMSTKLabel instances.
+    :rtype: tuple of (integer, list of RAMSTKLabel)
     """
-    _bold = kwargs.get("bold", True)
-    _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
-    _wrap = kwargs.get("wrap", True)
-
     _lst_labels = []
     _max_x = 0
 
     _char_width = max(len(_label_text) for _label_text in text)
 
-    # pylint: disable=unused-variable
-    for _label_text in text:
+    for _idx, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
-        _label.do_set_properties(
-            bold=_bold, height=-1, justify=_justify, width=-1, wrap=_wrap
-        )
         _label.set_width_chars(_char_width)
-        _max_x = max(_max_x, _label.get_attribute("width"))
+        _max_x = max(_max_x, _label.get_preferred_size()[0].width)
         _lst_labels.append(_label)
 
     return _max_x, _lst_labels
