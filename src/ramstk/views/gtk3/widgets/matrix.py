@@ -5,11 +5,11 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMatrixView Module."""
+"""The RAMSTKMatrixView module."""
 
 
 # Standard Library Imports
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
@@ -17,53 +17,34 @@ from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
 # RAMSTK Local Imports
 from .combo import RAMSTKComboBox
 from .label import RAMSTKLabel
+from .widget import RAMSTKBaseWidget
 
 
-class RAMSTKMatrixView(Gtk.Grid):
+class RAMSTKMatrixView(Gtk.Grid, RAMSTKBaseWidget):
     """The RAMSTKMatrixView class."""
 
     def __init__(self) -> None:
-        """Initialize a RAMSTKMatrixView() instance.
-
-        :return: None
-        :rtype: None
-        """
+        """Initialize an instance of the RAMSTKMatrixView widget."""
         # noinspection PyCallByClass,PyTypeChecker
         Gtk.Grid.__init__(self)
         GObject.GObject.__init__(self)
+        RAMSTKBaseWidget.__init__(self)
 
-        # Initialize private dictionary instance attributes:
-
-        # Initialize private list instance attributes:
-
-        # Initialize private scalar instance attributes.
-
-        # Initialize public dictionary instance attributes.
+        # Initialize public instance attributes.
         self.column_id_dic: Dict[str, int] = {}
         self.icons_dic = {"complete": "", "none": "", "partial": ""}
         self.row_id_dic: Dict[str, int] = {}
-
-        # Initialize public list instance attributes.
-
-        # Initialize public scalar instance attributes.
         self.n_columns = 0
         self.n_rows = 0
 
+    # ----- ----- RAMSTKMatrixView specific methods ----- ----- #
     def do_add_column(self) -> None:
-        """Add a column to the RAMSTKMatrixView().
-
-        :return: None
-        :rtype: None
-        """
+        """Add a column to the RAMSTKMatrixView."""
         self.insert_column(self.n_columns + 1)
         self.n_columns += 1
 
     def do_add_row(self) -> None:
-        """Add a row to the RAMSTKMatrixView().
-
-        :return: None
-        :rtype: None
-        """
+        """Add a row to the RAMSTKMatrixView."""
         self.insert_row(self.n_rows + 1)
         self.n_rows += 1
 
@@ -78,8 +59,6 @@ class RAMSTKMatrixView(Gtk.Grid):
             items to use as the column headings and the tooltips.
         :param row_name_lst: a list of tuples with the name and description of the items
             to use as the row headings and the tooltips.
-        :return: None
-        :rtype: None
         """
         self.do_set_column_headings(column_name_lst)
         self.do_set_row_headings(row_name_lst)
@@ -91,7 +70,7 @@ class RAMSTKMatrixView(Gtk.Grid):
         self,
         column_idx: int,
         row_idx: int,
-    ) -> Gtk.Widget:
+    ) -> Optional[Gtk.Widget]:
         """Get the interactive widget at column/row.
 
         :param column_idx: the index of the column in the matrix to retrieve the widget.
@@ -105,8 +84,6 @@ class RAMSTKMatrixView(Gtk.Grid):
         """Remove the RAMSTKMatrixView() column at position_idx.
 
         :param position_idx: the column position to remove.
-        :return: None
-        :rtype: None
         """
         self.remove_column(position_idx)
         self.n_columns -= 1
@@ -115,8 +92,6 @@ class RAMSTKMatrixView(Gtk.Grid):
         """Remove the RAMSTKMatrixView() row at position_idx.
 
         :param position_idx: the row position to remove.
-        :return: None
-        :rtype: None
         """
         self.remove_row(position_idx)
         self.n_rows -= 1
@@ -138,8 +113,6 @@ class RAMSTKMatrixView(Gtk.Grid):
 
         :param column_name_lst: a list of tuples with the name and description of the
             items to use as the column heading and the tooltip.
-        :return: None
-        :rtype: None
         """
         for _column_name_tpl in column_name_lst:
             self.do_add_column()
@@ -171,8 +144,6 @@ class RAMSTKMatrixView(Gtk.Grid):
 
         :param row_name_lst: a list of tuples with the name and description of the items
             to use as the row heading and the tooltip.
-        :return: None
-        :rtype: None
         """
         for _row_name_tpl in row_name_lst:
             self.do_add_row()
@@ -185,29 +156,29 @@ class RAMSTKMatrixView(Gtk.Grid):
 
     def _do_add_label(
         self,
-        position_tpl: Tuple[int, int],
-        heading_str: str,
-        tooltip_str: str,
+        position: Tuple[int, int],
+        heading: str,
+        tooltip: str,
     ) -> None:
         """Add either a column or row label to the RAMSTKMatrixView().
 
-        :param position_tpl: the column number and row number to attach the left side
-            and top side respectively of new widgets to.
-        :param heading_str: the text to display as the heading for the new column/row.
-        :param tooltip_str: the tooltip for the new column's/row's header widget.
-        :return: None
-        :rtype: None
+        :param position: the column number and row number to attach the left side and
+            top side respectively of new widgets to.
+        :param heading: the text to display as the heading for the new column/row.
+        :param tooltip: the tooltip for the new column's/row's header widget.
         """
-        _label_obj = RAMSTKLabel(heading_str)
-        _label_obj.do_set_properties(
-            angle=90,
-            can_focus=False,
-            tooltip=tooltip_str,
-            wrap=False,
+        _label = RAMSTKLabel(heading)
+        _label.do_set_properties(
+            {
+                "angle": 90,
+                "can_focus": False,
+                "tooltip": tooltip,
+                "wrap": False,
+            },
         )
-        _label_obj.set_angle(90.0)
+        _label.set_angle(90.0)
 
-        self.attach(_label_obj, position_tpl[0], position_tpl[1], 1, 1)
+        self.attach(_label, position[0], position[1], 1, 1)
 
     def _do_add_widgets(
         self,
@@ -221,8 +192,6 @@ class RAMSTKMatrixView(Gtk.Grid):
         :param position_int: the left (for columns) or top (for rows) position of the
             new widget.
         :param row_flag: indicates whether to insert a column or a row (default).
-        :return: None
-        :rtype: None
         """
         for _add_idx in range(n_positions_int):
             _combo_obj = self._do_make_combobox()
@@ -237,30 +206,32 @@ class RAMSTKMatrixView(Gtk.Grid):
         :return: _combo_obj; the RAMSTKComboBox() created by this method.
         :rtype: :class:`RAMSTKComboBox()`
         """
-        _combo_obj = RAMSTKComboBox(1)
-        _model_obj = Gtk.ListStore(*[GObject.TYPE_STRING, GdkPixbuf.Pixbuf])
+        _combo = RAMSTKComboBox(1)
+        _model = Gtk.ListStore(*[GObject.TYPE_STRING, GdkPixbuf.Pixbuf])
 
         for _pixbuf_key_str in ["none", "partial", "complete"]:
-            _pixbuf_obj = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self.icons_dic[_pixbuf_key_str], 22, 22
             )
-            _model_obj.append(
-                [_pixbuf_key_str.upper(), _pixbuf_obj],
+            _model.append(
+                [_pixbuf_key_str.upper(), _pixbuf],
             )
-        _combo_obj.set_model(_model_obj)
-        _combo_obj.do_set_properties(
-            tooltip=_(
-                "Shows the strength of the relationship between the intersecting "
-                "column and row with a blank meaning no relationship, a P meaning "
-                "partial, and a C meaning complete."
-            ),
-            width=25,
+        _combo.set_model(_model)
+        _combo.do_set_properties(
+            {
+                "tooltip": _(
+                    "Shows the strength of the relationship between the intersecting "
+                    "column and row with a blank meaning no relationship, a P meaning "
+                    "partial, and a C meaning complete."
+                ),
+                "width_request": 25,
+            }
         )
-        _cell_obj = Gtk.CellRendererPixbuf()
-        _combo_obj.pack_start(_cell_obj, True)
-        _combo_obj.add_attribute(_cell_obj, "pixbuf", 1)
+        _cell = Gtk.CellRendererPixbuf()
+        _combo.pack_start(_cell, True)
+        _combo.add_attribute(_cell, "pixbuf", 1)
 
-        return _combo_obj
+        return _combo
 
 
 # Register the new widget types.
