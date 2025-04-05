@@ -23,11 +23,13 @@ class RAMSTKBaseDialog(Gtk.Dialog, RAMSTKBaseWidget):
     def __init__(
         self,
         title: str,
+        parent: object,
         buttons: Optional[Tuple[Any, Any, Any, Any]] = None,
     ) -> None:
         """Initialize an instance of the RAMSTKBaseDialog widget.
 
         :param title: the title text for the RAMSTKBaseDialog.
+        :param parent: the parent window for the RAMSTKBaseDialog.
         :param buttons: a tuple containing the buttons and their associated response
             type.
         """
@@ -41,6 +43,7 @@ class RAMSTKBaseDialog(Gtk.Dialog, RAMSTKBaseWidget):
                 Gtk.ResponseType.CANCEL,
             )
         self.add_buttons(*buttons)
+        self.set_parent(parent)
         self.set_title(title)
 
     # ----- ----- Standard widget methods. ----- ----- #

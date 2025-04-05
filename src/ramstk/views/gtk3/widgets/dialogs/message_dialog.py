@@ -25,6 +25,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog, RAMSTKBaseDialog):
     def __init__(
         self,
         title: str,
+        parent: object,
         buttons: Tuple[Any, Any, Any, Any] = (
             Gtk.STOCK_OK,
             Gtk.ResponseType.OK,
@@ -35,11 +36,12 @@ class RAMSTKMessageDialog(Gtk.MessageDialog, RAMSTKBaseDialog):
         """Initialize an instance of the RAMSTKMessageDialog widget.
 
         :param title: the title text for the RAMSTKMessageDialog.
+        :param parent: the parent window for the RAMSTKMessageDialog.
         :param buttons: a tuple containing the buttons and their associated response
             type.
         """
         Gtk.MessageDialog.__init__(self)
-        RAMSTKBaseDialog.__init__(self, title, buttons)
+        RAMSTKBaseDialog.__init__(self, title, parent, buttons)
 
         self.show_all()
 

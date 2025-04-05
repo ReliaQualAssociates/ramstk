@@ -23,11 +23,11 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gdk, Gtk, _
 
 # RAMSTK Local Imports
-from .button import do_make_buttonbox
-from .dialog import RAMSTKMessageDialog
+from .buttons import do_make_buttonbox
+from .dialogs import RAMSTKMessageDialog
 from .label import RAMSTKLabel
-from .panel import RAMSTKPanel
-from .treeview import RAMSTKTreeView
+from .panels import RAMSTKBasePanel
+from .treeviews import RAMSTKTreeView
 
 
 # noinspection PyUnresolvedReferences,GrazieInspection
@@ -72,19 +72,17 @@ class RAMSTKBaseView(Gtk.HBox):
     :type hbx_tab_label: :class:`Gtk.HBox`
     """
 
-    # Define private class scalar attributes.
+    # Define private class attributes.
     _tag: str = ""
     _pixbuf: bool = False
 
-    # Define public class dict attributes.
+    # Define public class attributes.
     dic_tab_position = {
         "left": Gtk.PositionType.LEFT,
         "right": Gtk.PositionType.RIGHT,
         "top": Gtk.PositionType.TOP,
         "bottom": Gtk.PositionType.BOTTOM,
     }
-
-    # Define public class scalar attributes.
     RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
     def __init__(
@@ -105,10 +103,8 @@ class RAMSTKBaseView(Gtk.HBox):
             to_tty=False,
         )
 
-        # Initialize private dictionary attributes.
+        # Initialize private instance attributes.
         self._dic_icons: Dict[str, str] = self.__set_icons()
-
-        # Initialize private list attributes.
         self._lst_callbacks: List[object] = [
             self.do_request_update,
             self.do_request_update_all,
@@ -140,25 +136,19 @@ class RAMSTKBaseView(Gtk.HBox):
             "testing",
             "validation",
         ]
-
-        # Initialize private scalar attributes.
         self._img_tab: Gtk.Image = Gtk.Image()
         self._mission_time: float = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._notebook: Gtk.Notebook = Gtk.Notebook()
-        self._pnlPanel: RAMSTKPanel = RAMSTKPanel()
+        self._pnlPanel: RAMSTKBasePanel = RAMSTKBasePanel()
         self._revision_id: int = 0
         self._tree_loaded: bool = False
 
-        # Initialize public dictionary attributes.
+        # Initialize public instance attributes.
         self.dic_pkeys: Dict[str, int] = {
             "revision_id": 0,
             f"{self._tag}_id": 0,
             "parent_id": 0,
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
         self.fmt: str = (
             "{0:0." + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + "G}"
         )
@@ -187,10 +177,7 @@ class RAMSTKBaseView(Gtk.HBox):
         )
 
     def do_embed_treeview_panel(self) -> None:
-        """Embed a treeview RAMSTKPanel() into the layout.
-
-        :return: None
-        """
+        """Embed a treeview RAMSTKTreePanel into the layout."""
         try:
             _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}bg"]
             _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}fg"]
@@ -198,17 +185,12 @@ class RAMSTKBaseView(Gtk.HBox):
             _bg_color = "#FFFFFF"
             _fg_color = "#000000"
 
-        _fmt_file = (
+        _format_file = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
             + "/layouts/"
             + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._tag]
         )
-        self._pnlPanel.do_make_treeview(
-            bg_color=_bg_color,
-            fg_color=_fg_color,
-            fmt_file=_fmt_file,
-            attrs=self._pnlPanel.dic_attribute_widget_map,
-        )
+        self._pnlPanel.do_make_treeview(_format_file)
 
         self.pack_end(self._pnlPanel, True, True, 0)
 
@@ -221,10 +203,6 @@ class RAMSTKBaseView(Gtk.HBox):
         |  U  |                                       | |  T  | | |  T  | | |  O  | | |
         N  |                                       | |  S  | |
         +-----+---------------------------------------+ self.make_toolbuttons ------->
-        self
-
-        :return: None
-        :rtype: None
         """
         self.make_tab_label(tablabel=self._tablabel, tooltip=self._tabtooltip)
         self.make_toolbuttons(
@@ -354,8 +332,12 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: _dialog
         """
         _parent = kwargs.get("parent")
+        _title = kwargs.get("title", "This is a RAMSTK Message Dialog")
 
-        return RAMSTKMessageDialog(parent=_parent)
+        return RAMSTKMessageDialog(
+            _title,
+            _parent,
+        )
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKFunction table.
@@ -369,7 +351,10 @@ class RAMSTKBaseView(Gtk.HBox):
             f"{self.dic_pkeys['record_id']} and all data associated with it.  Is this "
             f"really what you want to do?"
         )
-        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog = RAMSTKMessageDialog(
+            _(f"Confirm delete {self._tag.title()}..."),
+            _parent,
+        )
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
@@ -555,10 +540,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
         _label: RAMSTKLabel = RAMSTKLabel(self._tablabel)
         _label.do_set_properties(
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=self._tabtooltip,
+            {
+                "height_request": 30,
+                "justify": Gtk.Justification.CENTER,
+                "tooltip": self._tabtooltip,
+                "width_request": -1,
+            }
         )
         self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
@@ -703,11 +690,7 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._lst_icons.insert(1, "remove")
 
     def make_ui(self) -> None:
-        """Build the user interface for a ModuleView.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface for a ModuleView."""
         super().do_make_layout()
         super().do_embed_treeview_panel()
 

@@ -12,7 +12,7 @@ from typing import Any, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, Gtk
-from ramstk.views.gtk3.widgets import RAMSTKBaseWidget, WidgetProperties
+from ramstk.views.gtk3.widgets.widget import RAMSTKBaseWidget, WidgetProperties
 
 
 def do_make_buttonbox(

@@ -13,7 +13,7 @@ from typing import Dict, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.widgets import WidgetProperties
+from ramstk.views.gtk3.widgets.widget import WidgetProperties
 
 # RAMSTK Local Imports
 from . import RAMSTKButton
