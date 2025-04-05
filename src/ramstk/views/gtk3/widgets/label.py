@@ -92,7 +92,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
 
 
 def do_make_label_group(
-    text: List[str],
+    label_text: List[str],
 ) -> Tuple[int, List[RAMSTKLabel]]:
     """Make and place a group of RAMSTKLabels.
 
@@ -102,7 +102,7 @@ def do_make_label_group(
     ensures everything lines up.  It also returns a list of y-coordinates indicating the
     placement of each label that is used to place the corresponding widget.
 
-    :param text: a list containing the text for each label.
+    :param label_text: a list containing the text for each label.
     :return: (_max_x, _lst_labels) the width of the label with the longest text and a
         list of the RAMSTKLabel instances.
     :rtype: tuple of (integer, list of RAMSTKLabel)
@@ -110,9 +110,9 @@ def do_make_label_group(
     _lst_labels = []
     _max_x = 0
 
-    _char_width = max(len(_label_text) for _label_text in text)
+    _char_width = max(len(_label_text) for _label_text in label_text)
 
-    for _idx, _label_text in enumerate(text):
+    for _label_text in label_text:
         _label = RAMSTKLabel(_label_text)
         _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.get_preferred_size()[0].width)

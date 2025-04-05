@@ -31,7 +31,7 @@ class RAMSTKFrame(Gtk.Frame, RAMSTKBaseWidget):
         """
         super().do_set_properties(properties)
 
-        self.dic_properties["label"] = str(properties.get("title", ""))
+        self.dic_properties["label"] = str(properties.get("label", ""))
         self.dic_properties["shadow_type"] = properties.get(
             "shadow_type",
             Gtk.ShadowType.ETCHED_OUT,
