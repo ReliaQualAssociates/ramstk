@@ -1,12 +1,11 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.widgets.scrolledwindow.py is part of the RAMSTK
-#       Project
+#       ramstk.views.gtk3.widgets.scrolledwindow.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 ScrolledWindow Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTKScrolledWindow module."""
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GObject, Gtk
@@ -16,9 +15,9 @@ class RAMSTKScrolledWindow(Gtk.ScrolledWindow):
     """The RAMSTKScrolledWindow class."""
 
     def __init__(self, child: object) -> None:
-        """Create ScrolledWindow() widgets.
+        """Initialize an instance of the RAMSTKScrolledWindow widget.
 
-        :param child: the Gtk.Widget() to add to the scrolled window.
+        :param child: the Gtk.Widget to add to the RAMSTKScrolledWindow.
         """
         GObject.GObject.__init__(self)
 
