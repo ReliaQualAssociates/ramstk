@@ -52,8 +52,8 @@ class RAMSTKPlot(RAMSTKBaseWidget):
         label: str,
         properties: PlotProperties,
         set_x: bool = True,
-        x_pos: int = 0,
-        y_pos: int = 0,
+        x_pos: float = 0.0,
+        y_pos: float = 0.0,
     ) -> matplotlib.text.Text: ...
     def do_make_legend(
         self, text: list[str], title: str, properties: PlotProperties
