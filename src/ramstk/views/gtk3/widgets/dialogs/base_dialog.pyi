@@ -13,7 +13,10 @@ from ..widget import WidgetProperties as WidgetProperties
 
 class RAMSTKBaseDialog(Gtk.Dialog, RAMSTKBaseWidget):
     def __init__(
-        self, title: str, buttons: tuple[Any, Any, Any, Any] | None = None
+        self,
+        title: str,
+        parent: object,
+        buttons: tuple[Any, Any, Any, Any] | None = None,
     ) -> None: ...
     def do_set_properties(self, properties: WidgetProperties) -> None: ...
     def do_destroy(self) -> None: ...
