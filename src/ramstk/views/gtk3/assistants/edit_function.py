@@ -15,15 +15,15 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
+    RAMSTKBaseDialog,
     RAMSTKCheckButton,
-    RAMSTKDialog,
     RAMSTKEntry,
     RAMSTKLabel,
     RAMSTKTreeView,
 )
 
 
-class EditFunction(RAMSTKDialog):
+class EditFunction(RAMSTKBaseDialog):
     """Assistant for editing user defined functions."""
 
     def __init__(self, treeview: RAMSTKTreeView, **kwargs: Dict[str, Any]) -> None:
@@ -38,7 +38,7 @@ class EditFunction(RAMSTKDialog):
 
         super().__init__(
             _(f"RAMSTK {_module} Analysis User Function Editing Assistant"),
-            dlgparent=_dlgparent,
+            _dlgparent,
         )
 
         # Initialize private dictionary attributes.
@@ -170,11 +170,23 @@ class EditFunction(RAMSTKDialog):
         self.set_default_size(610, -1)
 
         _label1: RAMSTKLabel = RAMSTKLabel(self._lst_labels[0])  # type: ignore
-        _label1.do_set_properties(width=600, height=-1, wrap=True)
+        _label1.do_set_properties(
+            {
+                "height_request": -1,
+                "width_request": 600,
+                "wrap": True,
+            }
+        )
         _height1 = _label1.get_attribute("height")
 
         _label2: RAMSTKLabel = RAMSTKLabel(self._lst_labels[1])  # type: ignore
-        _label2.do_set_properties(width=600, height=-1, wrap=True)
+        _label2.do_set_properties(
+            {
+                "height_request": -1,
+                "width_request": 600,
+                "wrap": True,
+            }
+        )
         _height2 = _label2.get_attribute("height")
 
         # Build the dialog assistant.

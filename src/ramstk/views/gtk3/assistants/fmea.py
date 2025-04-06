@@ -3,35 +3,25 @@
 #       ramstk.views.gtk3.assistants.fmea.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK (D)FME(C)A Assistants Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK (D)FME(C)A Assistants module."""
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKDialog, RAMSTKLabel
+from ramstk.views.gtk3.widgets import RAMSTKBaseDialog, RAMSTKLabel
 
 
-class AddControlAction(RAMSTKDialog):
-    """Assistant to walk user through process of adding control or action."""
+class AddControlAction(RAMSTKBaseDialog):
+    """Assistant to walk user through process of adding a control or an action."""
 
     def __init__(self, parent=None):
-        """Initialize on instance of the Add Control or Action Assistant."""
+        """Initialize an instance of the AddControlAction widget."""
         super().__init__(
             _("RAMSTK FMEA/FMECA Design Control and Action Addition Assistant"),
-            dlgparent=parent,
+            parent,
         )
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize widgets.
         self.rdoControl = Gtk.RadioButton.new_with_label_from_widget(
             None, _("Add control")
         )
@@ -40,12 +30,15 @@ class AddControlAction(RAMSTKDialog):
 
         self.__make_ui()
 
-    def __make_ui(self):
-        """Build the user interface.
+    def _cancel(self, __button):
+        """Destroy the assistant when the 'Cancel' button is pressed.
 
-        :return: None
-        :rtype: None
+        :param gtk.Button __button: the gtk.Button that called this method.
         """
+        self.destroy()
+
+    def __make_ui(self):
+        """Build the user interface."""
         self.set_default_size(250, -1)
 
         _fixed = Gtk.Fixed()
@@ -60,7 +53,13 @@ class AddControlAction(RAMSTKDialog):
                 "Program database."
             )
         )
-        _label.do_set_properties(width=600, height=-1, wrap=True)
+        _label.do_set_properties(
+            {
+                "height_request": -1,
+                "width_request": 600,
+                "wrap": True,
+            }
+        )
         _fixed.put(_label, 5, 10)
 
         _y_pos: int = _label.get_preferred_size()[0].height + 50
@@ -76,10 +75,3 @@ class AddControlAction(RAMSTKDialog):
         _fixed.put(self.rdoAction, 10, _y_pos + 35)
 
         _fixed.show_all()
-
-    def _cancel(self, __button):
-        """Destroy the assistant when the 'Cancel' button is pressed.
-
-        :param gtk.Button __button: the gtk.Button() that called this method.
-        """
-        self.destroy()

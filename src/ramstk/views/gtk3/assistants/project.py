@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.assistants.project.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK Open Project Assistant Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Open Project Assistant module."""
 
 # Third Party Imports
 from pubsub import pub
@@ -13,12 +13,12 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.models.db import BaseDatabase
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets.dialog import (
-    RAMSTKDatabaseSelect,
-    RAMSTKDialog,
+from ramstk.views.gtk3.widgets import (
+    RAMSTKBaseDialog,
+    RAMSTKDatabaseSelectDialog,
+    RAMSTKLabel,
     RAMSTKMessageDialog,
 )
-from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
 
 class CreateProject:
@@ -34,22 +34,14 @@ class CreateProject:
     ) -> None:
         """Initialize an instance of the Create Project Assistant.
 
-        :param __button: the Gtk.ToolButton() that launched this class.
+        :param __button: the Gtk.ToolButton that launched this class.
         :param configuration: the RAMSTKUserConfiguration class instance.
         :param parent: the parent window associated with the dialog.
         """
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
         self._parent: object = parent
 
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.RAMSTK_USER_CONFIGURATION = configuration
 
         self._do_request_create_project()
@@ -59,18 +51,16 @@ class CreateProject:
 
         :param database: the name of the existing database that is to be confirmed for
             overwrite.
-        :return: None
-        :rtype: None
         """
-        _dialog = RAMSTKDialog(
+        _dialog = RAMSTKBaseDialog(
             _("RAMSTK - Confirm Overwrite"),
-            dlgbuttons=(
+            self._parent,
+            (
                 Gtk.STOCK_YES,
                 Gtk.ResponseType.YES,
                 Gtk.STOCK_NO,
                 Gtk.ResponseType.NO,
             ),
-            dlgparent=self._parent,
         )
 
         _label = RAMSTKLabel(
@@ -79,7 +69,14 @@ class CreateProject:
                 f"{database}\n\nOverwrite?"
             )
         )
-        _label.do_set_properties(width=-1, height=-1, bold=False, wrap=True)
+        _label.do_set_properties(
+            {
+                "bold": False,
+                "height_request": -1,
+                "width_request": -1,
+                "wrap": True,
+            }
+        )
         _dialog.vbox.pack_start(_label, True, True, 0)
         _dialog.show_all()
 
@@ -91,21 +88,20 @@ class CreateProject:
         _dialog.destroy()
 
     def _do_request_create_project(self) -> None:
-        """Request to create a new RAMSTK Project Database.
-
-        :return: None
-        :rtype: None
-        """
-        _dialog = RAMSTKDatabaseSelect(
-            dlgtitle=(
+        """Request to create a new RAMSTK Project Database."""
+        _dialog = RAMSTKDatabaseSelectDialog(
+            _(
                 f"Select RAMSTK Program Database on the "
                 f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']} "
                 f"Server"
             ),
-            dlgparent=self._parent,
-            dao=BaseDatabase(),
-            database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
-            icons={
+            self._parent,
+        )
+
+        _dialog.dao = BaseDatabase()
+        _dialog.database = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO
+        _dialog.do_set_icons(
+            {
                 "refresh": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
                 + "/icons/32x32/view-refresh.png",
                 "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
@@ -144,46 +140,36 @@ class OpenProject:
         :param __button: the Gtk.ToolButton() that launched an instance of this class.
         :param configuration: the RAMSTKUserConfiguration class instance.
         """
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
         self._parent: object = parent
 
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.RAMSTK_USER_CONFIGURATION = configuration
 
         self._do_request_open_project()
 
     def _do_request_open_project(self) -> None:
-        """Open or connect to a RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
+        """Open or connect to a RAMSTK Program database."""
         if self.RAMSTK_USER_CONFIGURATION.loaded:
             self.__project_is_open()
         else:
-            _dialog = RAMSTKDatabaseSelect(
-                dlgtitle=(
+            _dialog = RAMSTKDatabaseSelectDialog(
+                (
                     f"Select RAMSTK Program Database on the "
                     f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']} "
                     f"Server"
                 ),
-                dlgparent=self._parent,
-                dao=BaseDatabase(),
-                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
-                icons={
+                self._parent,
+            )
+            _dialog.dao = BaseDatabase()
+            _dialog.database = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO
+            _dialog.do_set_icons(
+                {
                     "refresh": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
                     + "/icons/32x32/view-refresh.png",
                     "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
                     + "/icons/32x32/save.png",
-                },
+                }
             )
 
             _response = _dialog.do_run()
@@ -208,17 +194,17 @@ class OpenProject:
             _dialog.do_destroy()
 
     def __project_is_open(self) -> None:
-        """Raise dialog explaining a project is already open.
-
-        :return: None
-        """
+        """Raise dialog explaining a project is already open."""
         _prompt = _(
             "A database is already open.  Only one database can "
             "be open at a time in RAMSTK.  You must close the "
             "currently open RAMSTK database before a new "
             "database can be opened."
         )
-        _dialog = RAMSTKMessageDialog(parent=self._parent)
+        _dialog = RAMSTKMessageDialog(
+            _("Database Currently Open"),
+            self._parent,
+        )
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("info")
 

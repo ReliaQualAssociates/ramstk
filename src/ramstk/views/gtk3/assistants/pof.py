@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.assistants.fmea.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.assistants.pof.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK (D)FME(C)A Assistants Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Physics of Failure Assistants module."""
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKDialog, RAMSTKLabel
+from ramstk.views.gtk3.widgets import RAMSTKBaseDialog, RAMSTKLabel
 
 
-class AddStressTestMethod(RAMSTKDialog):
+class AddStressTestMethod(RAMSTKBaseDialog):
     """Assistant to walk user through process of adding stress or test."""
 
     def __init__(self, parent=None):
@@ -21,20 +21,10 @@ class AddStressTestMethod(RAMSTKDialog):
                 "RAMSTK Physics of Failure Analysis Operating "
                 "Stress and Test Method Addition Assistant"
             ),
-            dlgparent=parent,
+            parent,
         )
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize widgets.
         self.rdoOpStress = Gtk.RadioButton.new_with_label_from_widget(
             None, _("Add stress")
         )
@@ -51,11 +41,7 @@ class AddStressTestMethod(RAMSTKDialog):
         self.destroy()
 
     def __make_ui(self) -> None:
-        """Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface."""
         _fixed = Gtk.Fixed()
         self.vbox.pack_start(_fixed, True, True, 0)
 
@@ -68,7 +54,13 @@ class AddStressTestMethod(RAMSTKDialog):
                 "Program database."
             )
         )
-        _label.do_set_properties(width=600, height=-1, wrap=True)
+        _label.do_set_properties(
+            {
+                "height_request": -1,
+                "width_request": 600,
+                "wrap": True,
+            }
+        )
         _fixed.put(_label, 5, 10)
 
         _y_pos: int = _label.get_preferred_size()[0].height + 50
