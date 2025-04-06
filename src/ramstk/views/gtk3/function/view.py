@@ -14,7 +14,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKModuleView, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import FunctionGeneralDataPanel, FunctionTreePanel
@@ -187,7 +187,7 @@ class FunctionWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlGeneralData: RAMSTKPanel = FunctionGeneralDataPanel()
+        self._pnlGeneralData: RAMSTKBasePanel = FunctionGeneralDataPanel()
 
         # Initialize public dictionary attributes.
 

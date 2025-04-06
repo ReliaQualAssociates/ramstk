@@ -5,8 +5,9 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The GTK3 Function package."""
+"""The Function views package."""
 
 # RAMSTK Local Imports
-from .panel import FunctionGeneralDataPanel, FunctionTreePanel
-from .view import FunctionModuleView, FunctionWorkView
+from .general_data_panel import FunctionGeneralDataPanel  # noqa: F401
+from .tree_panel import FunctionTreePanel  # noqa: F401
+from .view import FunctionModuleView, FunctionWorkView  # noqa: F401
