@@ -31,6 +31,7 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
     def __init__(
         self,
         title: str,
+        parent: object,
         buttons: Optional[Tuple[Any, Any, Any, Any]] = None,
     ) -> None:
         """Initialize an instance of the RAMSTKDatabaseSelectDialog widget.
@@ -39,7 +40,7 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
         :param buttons: a tuple containing the buttons and their associated response
             type.
         """
-        RAMSTKBaseDialog.__init__(self, title, buttons)
+        RAMSTKBaseDialog.__init__(self, title, parent, buttons)
 
         # Initialize widgets.
         self._pnlSelectPanel = RAMSTKDatabaseSelectPanel()

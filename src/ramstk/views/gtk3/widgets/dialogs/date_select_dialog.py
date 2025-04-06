@@ -25,6 +25,7 @@ class RAMSTKDateSelectDialog(RAMSTKBaseDialog):
     def __init__(
         self,
         title: str,
+        parent: object,
         buttons: Tuple[Any, Any, Any, Any] = (
             Gtk.STOCK_OK,
             Gtk.ResponseType.ACCEPT,
@@ -38,7 +39,7 @@ class RAMSTKDateSelectDialog(RAMSTKBaseDialog):
         :param buttons: a tuple containing the buttons and their associated response
             type.
         """
-        RAMSTKBaseDialog.__init__(self, title, buttons)
+        RAMSTKBaseDialog.__init__(self, title, parent, buttons)
 
         self.add_buttons(*buttons)
         self.set_title(title)

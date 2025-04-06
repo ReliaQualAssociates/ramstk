@@ -23,6 +23,7 @@ class RAMSTKFileChooserDialog(Gtk.FileChooserDialog, RAMSTKBaseDialog):
     def __init__(
         self,
         title: str,
+        parent: object,
         buttons: Tuple[Any, Any, Any, Any] = (
             Gtk.STOCK_OK,
             Gtk.ResponseType.ACCEPT,
@@ -37,7 +38,7 @@ class RAMSTKFileChooserDialog(Gtk.FileChooserDialog, RAMSTKBaseDialog):
             type.
         """
         Gtk.FileChooserDialog(self)
-        RAMSTKBaseDialog.__init__(self, title, buttons)
+        RAMSTKBaseDialog.__init__(self, title, parent, buttons)
 
         self.set_action(Gtk.FileChooserAction.SAVE)
 
