@@ -24,7 +24,10 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
     database: dict[str, str]
     exists: bool
     def __init__(
-        self, title: str, buttons: tuple[Any, Any, Any, Any] | None = None
+        self,
+        title: str,
+        parent: object,
+        buttons: tuple[Any, Any, Any, Any] | None = None,
     ) -> None: ...
     def do_set_widget_callbacks(self) -> None: ...
     def do_run(self) -> Gtk.ResponseType: ...

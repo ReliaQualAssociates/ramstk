@@ -7,7 +7,7 @@ from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKBaseDialog as RAMSTKBaseDialog
 from ramstk.views.gtk3.widgets import RAMSTKLabel as RAMSTKLabel
 
-class AddStressTestMethod(RAMSTKBaseDialog):
-    rdoOpStress: Incomplete
-    rdoTestMethod: Incomplete
+class AddControlAction(RAMSTKBaseDialog):
+    rdoControl: Incomplete
+    rdoAction: Incomplete
     def __init__(self, parent: Incomplete | None = None) -> None: ...
