@@ -5,16 +5,14 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Hardware Package."""
+"""The Hardware views package."""
 
 # RAMSTK Local Imports
-from .panel import (
-    HardwareGeneralDataPanel,
-    HardwareLogisticsPanel,
-    HardwareMiscellaneousPanel,
-    HardwareTreePanel,
-)
-from .view import (
+from .general_data_panel import HardwareGeneralDataPanel  # noqa: F401
+from .logistics_panel import HardwareLogisticsPanel  # noqa: F401
+from .miscellaneous_panel import HardwareMiscellaneousPanel  # noqa: F401
+from .tree_panel import HardwareTreePanel  # noqa: F401
+from .view import (  # noqa: F401
     HardwareAssessmentInputView,
     HardwareAssessmentResultsView,
     HardwareGeneralDataView,

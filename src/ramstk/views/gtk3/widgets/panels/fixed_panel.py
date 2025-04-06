@@ -62,7 +62,7 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
 
         :param attributes: the attribute dict for the selected record.
         """
-        self._record_id = int(attributes[self._record_field])
+        self._record_id = int(attributes[self._record_field])  # type: ignore[arg-type]
         for _widget in self._lst_widget_configuration:
             _widget["widget"].record_id = self._record_id
             _widget["widget"].do_update(
@@ -95,7 +95,8 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
 
         self.add(RAMSTKScrolledWindow(self.fixed))
 
-    def _do_subscribe_to_messages(self) -> None:
+    # ----- ----- RAMSTKFixedPanel specific methods. ----- ----- #
+    def do_subscribe_to_messages(self) -> None:
         """Subscribe to relevant PyPubSub messages."""
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, f"selected_{self._tag}")
@@ -105,7 +106,6 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
         with contextlib.suppress(AttributeError):
             pub.subscribe(self._do_load_entries, f"succeed_get_{self._tag}_attributes")
 
-    # ----- ----- RAMSTKFixedPanel specific methods. ----- ----- #
     def _do_create_widgets_for_column(
         self,
         column: int,
