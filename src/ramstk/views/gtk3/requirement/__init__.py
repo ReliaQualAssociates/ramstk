@@ -5,18 +5,16 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Requirement Package."""
+"""The Requirement views package."""
 
 # RAMSTK Local Imports
-from .panel import (
-    RequirementClarityPanel,
-    RequirementCompletenessPanel,
-    RequirementConsistencyPanel,
-    RequirementGeneralDataPanel,
-    RequirementTreePanel,
-    RequirementVerifiabilityPanel,
-)
-from .view import (
+from .clarity_panel import RequirementClarityPanel  # noqa: F401
+from .completeness_panel import RequirementCompletenessPanel  # noqa: F401
+from .consistency_panel import RequirementConsistencyPanel  # noqa: F401
+from .general_data_panel import RequirementGeneralDataPanel  # noqa: F401
+from .tree_panel import RequirementTreePanel  # noqa: F401
+from .verifiability_panel import RequirementVerifiabilityPanel  # noqa: F401
+from .view import (  # noqa: F401
     RequirementAnalysisView,
     RequirementGeneralDataView,
     RequirementModuleView,

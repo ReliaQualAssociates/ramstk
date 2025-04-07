@@ -132,7 +132,7 @@ class RequirementModuleView(RAMSTKModuleView):
             f"You are about to delete Requirement {self.dic_pkeys['record_id']} and "
             f"all data associated with it.  Is this really what you want to do?"
         )
-        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog = RAMSTKMessageDialog(_("Confirm Delete"), _parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
@@ -149,8 +149,6 @@ class RequirementModuleView(RAMSTKModuleView):
         """Set the Requirement's record and parent ID.
 
         :param attributes: the attributes dict for the selected Requirement.
-        :return: None
-        :rtype: None
         """
         self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
@@ -164,50 +162,32 @@ class RequirementModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS:
-            self._pnlPanel.lst_owner.append(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS[_key][0]
-            )
-
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE:
-            self._pnlPanel.lst_type.append(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key][1]
-            )
-
-        # pylint: disable=unused-variable
-        self._pnlPanel.tvwTreeView.do_load_combo_cell(
-            self._pnlPanel.tvwTreeView.position["owner"],
-            self._pnlPanel.lst_owner,
-        )
-        self._pnlPanel.tvwTreeView.do_load_combo_cell(
-            self._pnlPanel.tvwTreeView.position["priority"],
-            ["", "1", "2", "3", "4", "5"],
-        )
-        self._pnlPanel.tvwTreeView.do_load_combo_cell(
-            self._pnlPanel.tvwTreeView.position["requirement_type"],
-            self._pnlPanel.lst_type,
+        self._pnlPanel.do_load_owners(self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS)
+        self._pnlPanel.do_load_priorities()
+        self._pnlPanel.do_load_types(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
         )
 
-        self._pnlPanel.do_set_cell_callbacks(
-            "mvw_editing_requirement",
-            [
-                "derived",
-                "description",
-                "figure_number",
-                "owner",
-                "page_number",
-                "priority",
-                "specification",
-                "requirement_type",
-                "validated",
-                "validated_date",
-            ],
-        )
-        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
-            self._pnlPanel.tvwTreeView.connect(
-                "button_press_event", super().on_button_press
-            )
-        )
+        # self._pnlPanel.do_set_cell_callbacks(
+        #    "mvw_editing_requirement",
+        #    [
+        #        "derived",
+        #       "description",
+        #        "figure_number",
+        #        "owner",
+        #        "page_number",
+        #        "priority",
+        #        "specification",
+        #        "requirement_type",
+        #        "validated",
+        #        "validated_date",
+        #    ],
+        # )
+        # self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+        #    self._pnlPanel.tvwTreeView.connect(
+        #        "button_press_event", super().on_button_press
+        #    )
+        # )
 
 
 class RequirementGeneralDataView(RAMSTKWorkView):
@@ -219,15 +199,15 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     :cvar str _tag: the name of the module. :cvar str _tablabel: the text to display on
     the tab's label. :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
-    :ivar list _lst_callbacks: the list of callback methods for the view's     toolbar
-    buttons and pop-up menu.  The methods are listed in the order     they appear on the
+    :ivar list _lst_callbacks: the list of callback methods for the view's toolbar
+    buttons and pop-up menu.  The methods are listed in the order they appear on the
     toolbar and pop-up menu. :ivar list _lst_icons: the list of icons for the view's
-    toolbar buttons     and pop-up menu.  The icons are listed in the order they appear
-    on the     toolbar and pop-up menu. :ivar list _lst_mnu_labels: the list of labels
-    for the view's pop-up     menu.  The labels are listed in the order they appear in
-    the menu. :ivar list _lst_tooltips: the list of tooltips for the view's     toolbar
-    buttons and pop-up menu.  The tooltips are listed in the     order they appear on
-    the toolbar or pop-up menu.
+    toolbar buttons and pop-up     menu.  The icons are listed in the order they appear
+    on the toolbar and     pop-up menu. :ivar list _lst_mnu_labels: the list of labels
+    for the view's pop-up menu.  The     labels are listed in the order they appear in
+    the menu. :ivar list _lst_tooltips: the list of tooltips for the view's toolbar
+    buttons and     pop-up menu.  The tooltips are listed in the order they appear on
+    the toolbar     or pop-up menu.
     """
 
     # Define private dict class attributes.
@@ -301,8 +281,6 @@ class RequirementGeneralDataView(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
         """
         _prefix = self._pnlGeneralData.cmbRequirementType.get_value()
 
@@ -317,8 +295,6 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         """Set the record and parent ID.
 
         :param attributes: the attributes dict for the selected requirement.
-        :return: None
-        :rtype: None
         """
         self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
@@ -326,11 +302,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         self.dic_pkeys["requirement_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
-        """Build the user interface for the Requirement General Data tab.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface for the Requirement General Data tab."""
         super().do_make_layout()
 
         # Add the validation date dialog launcher button to the right of the
@@ -436,8 +408,6 @@ class RequirementAnalysisView(RAMSTKWorkView):
         """Set the record and parent ID.
 
         :param attributes: the attributes dict for the selected requirement.
-        :return: None
-        :rtype: None
         """
         self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
@@ -445,11 +415,7 @@ class RequirementAnalysisView(RAMSTKWorkView):
         self.dic_pkeys["requirement_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
-        """Build the user interface for the Requirement Analysis tab.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface for the Requirement Analysis tab."""
         _vpaned_left, _vpaned_right = super().do_make_layout_llrr()
 
         _vpaned_left.pack1(self._pnlClarity, False)
