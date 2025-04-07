@@ -1,29 +1,29 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, List, Tuple
+from datetime import date
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages as do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
+from ramstk.views.gtk3.widgets import RAMSTKCellRendererCombo as RAMSTKCellRendererCombo
+from ramstk.views.gtk3.widgets import RAMSTKCellRendererText as RAMSTKCellRendererText
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
+from ramstk.views.gtk3.widgets import WidgetConfig as WidgetConfig
 
 class HazardsTreePanel(RAMSTKTreePanel):
-    _select_msg: str
-    _tag: str
-    _title: str
-    _dic_row_loader: Dict[str, Callable]
-    _filtered_tree: bool
-    _on_edit_message: str
-    dic_attribute_widget_map: Dict[str, List[Any]]
+    lst_hazards: list[str]
+    lst_probability: list[str]
+    lst_severity: list[str]
     def __init__(self) -> None: ...
-    def filter_tree(
-        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    def do_filter_tree(
+        self,
+        model: Gtk.TreeModel,
+        row: Gtk.TreeIter,
+        data: bool | date | float | int | str,
     ) -> bool: ...
-    def do_load_severity(
-        self, criticalities: Dict[int, Tuple[str, str, int]]
+    def do_load_hazards(self, hazards: dict[int, tuple[str, str]]) -> None: ...
+    def do_load_probabilities(self, probabilities: list[list[str]]) -> None: ...
+    def do_load_severities(
+        self, severities: dict[int, tuple[str, str, int]]
     ) -> None: ...
-    def do_load_hazards(self, hazards: Dict[Any, Any]) -> None: ...
-    def do_load_probability(self, probabilities: List[str]) -> None: ...
-    _parent_id: int
-    _record_id: int
-    def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
-    def _on_select_function(self, attributes: Dict[str, Any]) -> None: ...
+    def do_refresh_functions(self, row: Gtk.TreeIter, function: list[str]) -> None: ...
