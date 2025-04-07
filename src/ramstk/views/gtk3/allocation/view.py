@@ -17,7 +17,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKFixedPanel, RAMSTKTreePanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import AllocationGoalMethodPanel, AllocationTreePanel
@@ -85,8 +85,8 @@ class AllocationWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlGoalMethods: RAMSTKPanel = AllocationGoalMethodPanel()
-        self._pnlPanel: RAMSTKPanel = AllocationTreePanel()
+        self._pnlGoalMethods: RAMSTKFixedPanel = AllocationGoalMethodPanel()
+        self._pnlPanel: RAMSTKTreePanel = AllocationTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -151,7 +151,6 @@ class AllocationWorkView(RAMSTKWorkView):
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
         self._pnlGoalMethods.fmt = self.fmt
-        self._pnlGoalMethods.do_load_comboboxes()
 
         super().do_embed_treeview_panel()
 

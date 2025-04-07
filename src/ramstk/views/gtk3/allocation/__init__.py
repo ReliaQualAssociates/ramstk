@@ -5,8 +5,9 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Allocation Views."""
+"""The Allocation view package."""
 
 # RAMSTK Local Imports
-from .panel import AllocationGoalMethodPanel, AllocationTreePanel
-from .view import AllocationWorkView
+from .goal_method_panel import AllocationGoalMethodPanel  # noqa: F401
+from .tree_panel import AllocationTreePanel  # noqa: F401
+from .view import AllocationWorkView  # noqa: F401
