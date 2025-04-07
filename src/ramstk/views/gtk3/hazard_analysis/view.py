@@ -18,7 +18,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import HazardsTreePanel
@@ -100,7 +100,7 @@ class HazardsWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlPanel: RAMSTKPanel = HazardsTreePanel()
+        self._pnlPanel: RAMSTKBasePanel = HazardsTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -201,24 +201,14 @@ class HazardsWorkView(RAMSTKWorkView):
         self.dic_pkeys["function_id"] = attributes["function_id"]
 
     def __do_load_lists(self) -> None:
-        """Load the pick lists associated with Hazards.
-
-        :return: None
-        :rtype: None
-        """
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS:
-            _hazard = (
-                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS[_key][0]}, "
-                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS[_key][1]}"
-            )
-            self._pnlPanel.lst_hazards.append(_hazard)
-
-        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY:
-            _severity = self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY[_key][1]
-            self._pnlPanel.lst_severity.append(_severity)
-
-        for _probability in self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY:
-            self._pnlPanel.lst_probability.append(_probability[0])
+        """Load the pick lists associated with Hazards."""
+        self._pnlPanel.do_load_hazards(self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
+        self._pnlPanel.do_load_probabilities(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY
+        )
+        self._pnlPanel.do_load_severities(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY
+        )
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function Hazard Analysis tab.
@@ -230,6 +220,5 @@ class HazardsWorkView(RAMSTKWorkView):
         super().do_embed_treeview_panel()
 
         self.__do_load_lists()
-        self._pnlPanel.do_load_comboboxes()
 
         self.show_all()

@@ -23,7 +23,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
-from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import FMEAMethodPanel, FMEATreePanel
@@ -140,8 +140,8 @@ class FMEAWorkView(RAMSTKWorkView):
         self._hardware_id: int = 0
         self._item_hazard_rate: float = 0.0
 
-        self._pnlMethods: RAMSTKPanel = FMEAMethodPanel()
-        self._pnlPanel: RAMSTKPanel = FMEATreePanel()
+        self._pnlMethods: RAMSTKBasePanel = FMEAMethodPanel()
+        self._pnlPanel: RAMSTKBasePanel = FMEATreePanel()
 
         # Initialize public dictionary attributes.
 
