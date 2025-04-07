@@ -18,7 +18,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import PoFTreePanel
@@ -114,7 +114,7 @@ class PoFWorkView(RAMSTKWorkView):
         # Initialize private scalar attributes.
         self._hardware_id: int = 0
 
-        self._pnlPanel: RAMSTKPanel = PoFTreePanel()
+        self._pnlPanel: RAMSTKBasePanel = PoFTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -217,36 +217,26 @@ class PoFWorkView(RAMSTKWorkView):
 
         return _attributes
 
-    def __do_load_pof_lists(self):
-        """Load the Gtk.CellRendererCombo()s associated with test methods.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlPanel.lst_damage_models = [
-            x[1] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS.items()
-        ]
-        self._pnlPanel.lst_load_history = [
-            x[1] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY.items()
-        ]
-        self._pnlPanel.lst_measurable_parameters = [
-            x[1][1]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS.items()
-        ]
+    def __do_load_pof_lists(self) -> None:
+        """Load the Gtk.CellRendererCombo()s associated with test methods."""
+        self._pnlPanel.do_load_damage_models(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS
+        )
+        self._pnlPanel.do_load_load_history(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY
+        )
+        self._pnlPanel.do_load_measurable_parameters(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS
+        )
 
     def __make_ui(self) -> None:
-        """Build the user interface for the PoF tab.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface for the PoF tab."""
         super().do_make_layout()
 
         self._pnlPanel.dic_icons = self._dic_icons
 
         super().do_embed_treeview_panel()
         self.__do_load_pof_lists()
-        self._pnlPanel.do_load_comboboxes()
 
         self.show_all()
 

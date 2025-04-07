@@ -4,10 +4,10 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 PoF Panels."""
+"""The Physics of Failure tree panel module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 import treelib
@@ -16,13 +16,19 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKTreePanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCellRendererCombo,
+    RAMSTKCellRendererSpin,
+    RAMSTKCellRendererText,
+    RAMSTKTreePanel,
+    WidgetConfig,
+)
 
 
 class PoFTreePanel(RAMSTKTreePanel):
     """Panel to display Physics if Failure analysis worksheet."""
 
-    # Define private dictionary class attributes.
+    # Define private class attributes.
     _dic_visible_mask: Dict[str, List[bool]] = {
         "mode": [
             True,
@@ -115,25 +121,272 @@ class PoFTreePanel(RAMSTKTreePanel):
             True,
         ],
     }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
     _select_msg = "succeed_retrieve_pof"
     _tag = "pof"
     _title = _("Physics of Failure (PoF) Analysis")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the PoF analysis worksheet."""
         super().__init__()
 
-        # Initialize private dictionary instance attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "hardware_id",
+                    "index": 0,
+                    "label_text": _("Hardware ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "mode_id",
+                    "index": 1,
+                    "label_text": _("Mode ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "mechanism_id",
+                    "index": 2,
+                    "label_text": _("Mechanism ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "opload_id",
+                    "index": 3,
+                    "label_text": _("Load ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "opstress_id",
+                    "index": 4,
+                    "label_text": _("Stress ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "test_method_id",
+                    "index": 5,
+                    "label_text": _("Test ID"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": False,
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "description",
+                    "index": 6,
+                    "label_text": _("Description"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "effect_end",
+                    "index": 7,
+                    "label_text": _("End Effect"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "severity_class",
+                    "index": 8,
+                    "label_text": _("Severity"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "mode_probability",
+                    "index": 9,
+                    "label_text": _("Mode Probability"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "damage_model",
+                    "index": 10,
+                    "label_text": _("Damage Model"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "measurable_parameter",
+                    "index": 11,
+                    "label_text": _("Measurable Parameter"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "load_history",
+                    "index": 12,
+                    "label_text": _("Load History Method"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "boundary_conditions",
+                    "index": 13,
+                    "label_text": _("Boundary Conditions"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererSpin(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "priority_id",
+                    "index": 14,
+                    "label_text": _("Priority"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "remarks",
+                    "index": 15,
+                    "label_text": _("Remarks"),
+                    "listen_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "visible": True,
+                },
+            },
+        ]
+        self._filtered_tree = True
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
+
+        # Initialize public instance attributes.
+        self.dic_icons: Dict[str, str] = {}
+        self.lst_damage_models: List[str] = []
+        self.lst_load_history: List[str] = []
+        self.lst_measurable_parameters: List[str] = []
+
+        super().do_set_widget_properties()
+        super().do_make_panel()
+        super().do_set_widget_callbacks()
+        self._do_load_priorities()
+
+        # FIXME: Do we need this line?
         self.tvwTreeView.dic_row_loader = {
             "mode": self.__do_load_mode,
             "mechanism": self.__do_load_mechanism,
@@ -141,285 +394,6 @@ class PoFTreePanel(RAMSTKTreePanel):
             "opstress": self.__do_load_opstress,
             "test_method": self.__do_load_test_method,
         }
-
-        # Initialize private list instance attributes.
-
-        # Initialize private scalar instance attributes.
-        self._filtered_tree = True
-        self._on_edit_message: str = f"wvw_editing_{self._tag}"
-
-        # Initialize public dictionary instance attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "hardware_id": [
-                0,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Hardware ID"),
-                "gint",
-            ],
-            "mode_id": [
-                1,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Mode ID"),
-                "gint",
-            ],
-            "mechanism_id": [
-                2,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Mechanism ID"),
-                "gint",
-            ],
-            "opload_id": [
-                3,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Load ID"),
-                "gint",
-            ],
-            "opstress_id": [
-                4,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Stress ID"),
-                "gint",
-            ],
-            "test_method_id": [
-                5,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Test ID"),
-                "gint",
-            ],
-            "description": [
-                6,
-                Gtk.CellRendererText(),
-                "edited",
-                self._on_cell_edit,
-                "wvw_editing_pof",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Description"),
-                "gchararray",
-            ],
-            "effect_end": [
-                7,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("End Effect"),
-                "gchararray",
-            ],
-            "severity_class": [
-                8,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Severity"),
-                "gchararray",
-            ],
-            "mode_probability": [
-                9,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0.0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Mode Probability"),
-                "gfloat",
-            ],
-            "damage_model": [
-                10,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                "wvw_editing_opload",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Damage Model"),
-                "gchararray",
-            ],
-            "measurable_parameter": [
-                11,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                "wvw_editing_opstress",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Measurable Parameter"),
-                "gchararray",
-            ],
-            "load_history": [
-                12,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                "wvw_editing_opstress",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Load History Method"),
-                "gchararray",
-            ],
-            "boundary_conditions": [
-                13,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                "wvw_editing_test_method",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Boundary Conditions"),
-                "gchararray",
-            ],
-            "priority_id": [
-                14,
-                Gtk.CellRendererSpin(),
-                "edited",
-                super().on_cell_edit,
-                "wvw_editing_opload",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Priority"),
-                "gint",
-            ],
-            "remarks": [
-                15,
-                Gtk.CellRendererText(),
-                "edited",
-                self._on_cell_edit,
-                "wvw_editing_pof",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Remarks"),
-                "gchararray",
-            ],
-        }
-        self.dic_icons: Dict[str, str] = {}
-
-        # Initialize public list instance attributes.
-        self.lst_damage_models: List[str] = []
-        self.lst_load_history: List[str] = []
-        self.lst_measurable_parameters: List[str] = []
-
-        # Initialize public scalar instance attributes.
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
         self.tvwTreeView.set_tooltip_text(
             _(
                 "Displays the Physics of Failure (PoF) Analysis for the currently "
@@ -435,6 +409,25 @@ class PoFTreePanel(RAMSTKTreePanel):
             }
         )
 
+    # ----- ----- RAMSTKTreePanel specific methods. ----- ----- #
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Handle events for the PoF Work View RAMSTKTreeView().
+
+        This method is called whenever a RAMSTKTreeView() row is activated.
+
+        :param selection: the TreeSelection() of the currently selected row in the PoF
+            RAMSTKTreeView().
+        :return: None
+        """
+        _attributes = super().on_row_change(selection)
+        _model, _row = selection.get_selected()
+
+        if _row is not None:
+            self.do_get_pof_level(_model, _row)
+            super().do_set_visible_columns()
+            self._record_id = _attributes[f"{self.level}_id"]
+
+    # ----- ----- - PoFTreePanel specific methods. - ----- ----- #
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def do_filter_tree(
@@ -448,15 +441,14 @@ class PoFTreePanel(RAMSTKTreePanel):
         :return: True if row should be visible, False else.
         :rtype: bool
         """
+        # FIXME: This method should be moved to the RAMSTKTreeView class.
         return model[row][0] == self._parent_id
 
     def do_get_pof_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None:
-        """Determine the FMEA level of the selected FMEA row.
+        """Determine the PoF level of the selected PoF row.
 
-        :param model: the FMEA Gtk.TreeModel().
-        :param row: the selected Gtk.TreeIter() in the FMECA.
-        :return: None
-        :rtype: None
+        :param model: the PoF Gtk.TreeModel.
+        :param row: the selected Gtk.TreeIter in the PoF.
         """
         _cid = ""
 
@@ -471,16 +463,49 @@ class PoFTreePanel(RAMSTKTreePanel):
             "11101": "test_method",
         }[_cid]
 
-    def do_load_comboboxes(self) -> None:
-        """Load the RAMSTKComboBox() widgets.
+    def do_load_damage_models(self, models: Dict[int, Tuple[str]]) -> None:
+        """Load the RAMSTKTreeView damage model CellRendererCombo.
 
-        :return: None
-        :rtype: None
+        :param models: the dict with damage models to load.
         """
-        self.__do_load_damage_models()
-        self.__do_load_measureable_parameters()
-        self.__do_load_load_history()
+        for _model in models:
+            self.lst_damage_models.append(models[_model][0])
 
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "damage_model",
+            self.lst_damage_models,
+        )
+
+    def do_load_load_history(self, histories: Dict[int, Tuple[str]]) -> None:
+        """Load the RAMSTKTreeView operating load history CellRendererCombo.
+
+        :param histories: the dict with load histories to load.
+        """
+        for _history in histories:
+            self.lst_load_history.append(histories[_history][0])
+
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "load_history",
+            self.lst_load_history,
+        )
+
+    def do_load_measurable_parameters(
+        self, parameters: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the RAMSTKTreeView measurable parameters CellRendererCombo.
+
+        :param parameters: the dict with measurable parameters to load.
+        """
+        for _parameter in parameters:
+            self.lst_measurable_parameters.append(parameters[_parameter][1])
+
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "measurable_parameter",
+            self.lst_measurable_parameters,
+        )
+
+    def _do_load_priorities(self) -> None:
+        """Load the priority RAMSTKCellRendererSpin."""
         # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
         _cell = self.tvwTreeView.get_column(
@@ -505,7 +530,6 @@ class PoFTreePanel(RAMSTKTreePanel):
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
-        :return: None
         """
         super().on_cell_edit(
             cell,
@@ -515,63 +539,15 @@ class PoFTreePanel(RAMSTKTreePanel):
             f"wvw_editing_{self.level}",
         )
 
-    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
-        """Handle events for the PoF Work View RAMSTKTreeView().
-
-        This method is called whenever a RAMSTKTreeView() row is activated.
-
-        :param selection: the TreeSelection() of the currently selected row in the PoF
-            RAMSTKTreeView().
-        :return: None
-        """
-        _attributes = super().on_row_change(selection)
-        _model, _row = selection.get_selected()
-
-        if _row is not None:
-            self.do_get_pof_level(_model, _row)
-            super().do_set_visible_columns(_attributes)
-            self._record_id = _attributes[f"{self.level}_id"]
-
     def _on_select_hardware(
         self, attributes: Dict[str, Union[int, float, str]]
     ) -> None:
         """Filter FMEA when Hardware is selected.
 
         :param attributes: the dict of attributes for the selected Hardware.
-        :return: None
-        :rtype: None
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
-
-    def __do_load_damage_models(self) -> None:
-        """Load the RAMSTKTreeView() damage model CellRendererCombo().
-
-        :return: None
-        """
-        self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["damage_model"], self.lst_damage_models
-        )
-
-    def __do_load_load_history(self) -> None:
-        """Load the operating load history CellRendererCombo().
-
-        :return: None
-        :rtype: None
-        """
-        self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["load_history"], self.lst_load_history
-        )
-
-    def __do_load_measureable_parameters(self) -> None:
-        """Load the measureable parameters CellRendererCombo().
-
-        :return: None
-        """
-        self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["measurable_parameter"],
-            self.lst_measurable_parameters,
-        )
 
     def __do_load_mechanism(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -582,6 +558,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         :param row: the parent row of the mechanism to load into the FMEA form.
         :return: _new_row; the row that was just populated with mechanism data.
         """
+        # TODO: Can we simplify these __do_load methods and remove the duplication?
         _new_row = None
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
