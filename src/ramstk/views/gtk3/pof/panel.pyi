@@ -1,45 +1,33 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 # Third Party Imports
-import treelib
+from _typeshed import Incomplete
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages as do_subscribe_to_messages
 from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
+from ramstk.views.gtk3.widgets import RAMSTKCellRendererCombo as RAMSTKCellRendererCombo
+from ramstk.views.gtk3.widgets import RAMSTKCellRendererSpin as RAMSTKCellRendererSpin
+from ramstk.views.gtk3.widgets import RAMSTKCellRendererText as RAMSTKCellRendererText
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
+from ramstk.views.gtk3.widgets import WidgetConfig as WidgetConfig
 
 class PoFTreePanel(RAMSTKTreePanel):
-    _dic_column_masks: Dict[str, List[bool]]
-    _dic_headings: Dict[str, List[str]]
-    _select_msg: str
-    _tag: str
-    _title: str
-    _dic_row_loader: Dict[str, Callable]
-    _dic_visible_mask: Dict[str, List[str]]
-    _on_edit_message: str
-    dic_attribute_widget_map: Dict[str, List[Any]]
-    dic_icons: Dict[str, str]
-    lst_damage_models: List[str]
-    lst_load_history: List[str]
-    lst_measurable_parameters: List[str]
+    dic_icons: dict[str, str]
+    lst_damage_models: list[str]
+    lst_load_history: list[str]
+    lst_measurable_parameters: list[str]
     def __init__(self) -> None: ...
-    def do_load_comboboxes(self) -> None: ...
-    def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
-    def __do_load_damage_models(self) -> None: ...
-    def __do_load_load_history(self) -> None: ...
-    def __do_load_measureable_parameters(self) -> None: ...
-    def __do_load_mechanism(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter: ...
-    def __do_load_mode(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter: ...
-    def __do_load_opload(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter: ...
-    def __do_load_opstress(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter: ...
-    def __do_load_test_method(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter: ...
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool: ...
+    level: Incomplete
+    def do_get_pof_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None: ...
+    def do_load_damage_models(self, models: dict[int, tuple[str]]) -> None: ...
+    def do_load_load_history(self, histories: dict[int, tuple[str]]) -> None: ...
+    def do_load_measurable_parameters(
+        self, parameters: dict[int, tuple[str, str]]
+    ) -> None: ...
