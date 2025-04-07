@@ -18,9 +18,9 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
+    RAMSTKBasePanel,
     RAMSTKMessageDialog,
     RAMSTKModuleView,
-    RAMSTKPanel,
     RAMSTKWorkView,
 )
 
@@ -115,11 +115,10 @@ class RevisionModuleView(RAMSTKModuleView):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _prompt = _(
-            "You are about to delete Revision {0:d} and all "
-            "data associated with it.  Is this really what "
-            "you want to do?"
+            "You are about to delete Revision {0:d} and all data associated with it.  "
+            "Is this really what you want to do?"
         ).format(self._revision_id)
-        _dialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog = RAMSTKMessageDialog(_("Confirm Delete"), _parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
@@ -207,7 +206,7 @@ class RevisionWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlGeneralData: RAMSTKPanel = RevisionGeneralDataPanel()
+        self._pnlGeneralData: RAMSTKBasePanel = RevisionGeneralDataPanel()
 
         # Initialize public dictionary attributes.
         self.dic_pkeys.pop("parent_id")
