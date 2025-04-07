@@ -18,9 +18,9 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
+    RAMSTKBasePanel,
     RAMSTKMessageDialog,
     RAMSTKModuleView,
-    RAMSTKPanel,
     RAMSTKWorkView,
 )
 
@@ -124,7 +124,10 @@ class ValidationModuleView(RAMSTKModuleView):
             "data associated with it.  Is this really what "
             "you want to do?"
         ).format(self.dic_pkeys["record_id"])
-        _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent)
+        _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(
+            _("Confirm Delete"),
+            _parent,
+        )
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
@@ -162,11 +165,11 @@ class ValidationModuleView(RAMSTKModuleView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
 
-        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
-            self._pnlPanel.tvwTreeView.connect(
-                "button_press_event", super().on_button_press
-            )
-        )
+        # self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+        #    self._pnlPanel.tvwTreeView.connect(
+        #        "button_press_event", super().on_button_press
+        #   )
+        # )
 
 
 class ValidationGeneralDataView(RAMSTKWorkView):
@@ -250,9 +253,9 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlTaskDescription: RAMSTKPanel = ValidationTaskDescriptionPanel()
-        self._pnlTaskEffort: RAMSTKPanel = ValidationTaskEffortPanel()
-        # self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
+        self._pnlTaskDescription: RAMSTKBasePanel = ValidationTaskDescriptionPanel()
+        self._pnlTaskEffort: RAMSTKBasePanel = ValidationTaskEffortPanel()
+        # self._pnlProgramEffort: RAMSTKBasePanel = ProgramEffortPanel()
 
         # Initialize public dictionary attributes.
         self.dic_pkeys.pop("parent_id")

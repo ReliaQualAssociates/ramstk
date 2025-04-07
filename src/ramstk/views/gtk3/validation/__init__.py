@@ -5,12 +5,10 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Validation View Package."""
+"""The Validation Views package."""
 
 # RAMSTK Local Imports
-from .panel import (
-    ValidationTaskDescriptionPanel,
-    ValidationTaskEffortPanel,
-    ValidationTreePanel,
-)
-from .view import ValidationGeneralDataView, ValidationModuleView
+from .task_description_panel import ValidationTaskDescriptionPanel  # noqa: F401
+from .task_effort_panel import ValidationTaskEffortPanel  # noqa: F401
+from .tree_panel import ValidationTreePanel  # noqa: F401
+from .view import ValidationGeneralDataView, ValidationModuleView  # noqa: F401
