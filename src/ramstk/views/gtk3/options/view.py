@@ -5,17 +5,18 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Options Views."""
+"""The Options view module."""
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKDialog, RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel
+from ramstk.views.gtk3.widgets.dialogs import RAMSTKBaseDialog
 
 # RAMSTK Local Imports
 from . import OptionsPanel
 
 
-class OptionsDialog(RAMSTKDialog):
+class OptionsDialog(RAMSTKBaseDialog):
     """Provide a GUI to set various RAMSTK configuration options.
 
     RAMSTK options are stored in the RAMSTK Common database and the RAMSTK Program
@@ -28,31 +29,17 @@ class OptionsDialog(RAMSTKDialog):
     Attributes of the EditOptions are:
     """
 
-    # Define private dict class attributes.
-
     def __init__(self, parent: object = None) -> None:
         """Initialize an instance of the Options assistant.
 
         :param parent: the parent window for this assistant.
         """
-        super().__init__(_("RAMSTK Program Options Assistant"), dlgparent=parent)
+        super().__init__(_("RAMSTK Program Options Assistant"), parent)
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-        self._pnlPanel: RAMSTKPanel = OptionsPanel()
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize widgets.
+        self._pnlPanel: RAMSTKBasePanel = OptionsPanel()
 
         self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
 
     def _cancel(self, __button: Gtk.Button):
         """Destroy the assistant when the 'Cancel' button is pressed.
@@ -63,11 +50,7 @@ class OptionsDialog(RAMSTKDialog):
         self.do_destroy()
 
     def __make_ui(self) -> None:
-        """Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface."""
         self.set_default_size(800, 500)
 
         self.vbox.pack_start(self._pnlPanel, True, True, 0)

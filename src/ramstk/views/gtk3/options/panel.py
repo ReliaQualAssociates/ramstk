@@ -5,36 +5,31 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Options Panels."""
+"""The Options panel module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import List
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+)
 
 
 class OptionsPanel(RAMSTKFixedPanel):
     """The panel to display options to be edited."""
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _select_msg = "succeed_get_siteinfo_attributes"
     _tag = "option"
     _title = _("General Information")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Edit Options panel."""
@@ -77,248 +72,251 @@ class OptionsPanel(RAMSTKFixedPanel):
         self.txtProductKey: RAMSTKEntry = RAMSTKEntry()
         self.txtExpireDate: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dict instance attributes.
-
-        # Initialize private list instance attributes.
-
-        # Initialize private scalar instance attributes.
-
-        # Initialize public dict instance attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "site_id": [
-                0,
-                self.txtSiteID,
-                "changed",
-                super().on_changed_entry,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": self.txtSiteID,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "site_id",
+                    "index": 0,
+                    "label_text": _("Site ID:"),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _("Site ID:"),
-                "gint",
-            ],
-            "site_name": [
-                1,
-                self.txtSiteName,
-                "changed",
-                super().on_changed_entry,
-                "",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.txtSiteName,
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "site_name",
+                    "index": 1,
+                    "label_text": _("Site Name:"),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _("Site Name:"),
-                "gchararray",
-            ],
-            "product_key": [
-                2,
-                self.txtProductKey,
-                "changed",
-                super().on_changed_entry,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.txtProductKey,
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": 0,
+                    "field": "product_key",
+                    "index": 2,
+                    "label_text": _("Product Key:"),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _("Product Key:"),
-                "gchararray",
-            ],
-            "expire_on": [
-                3,
-                self.txtExpireDate,
-                "changed",
-                super().on_changed_entry,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.txtExpireDate,
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": 0,
+                    "field": "expire_on",
+                    "index": 3,
+                    "label_text": _("Expire Date:"),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _("Expire Date:"),
-                "gchararray",
-            ],
-            "function_enabled": [
-                4,
-                self.chkFunctions,
-                "toggled",
-                super().on_toggled,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkFunctions,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "function_enabled",
+                    "index": 4,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _(""),
-                "gint",
-            ],
-            "requirement_enabled": [
-                5,
-                self.chkRequirements,
-                "toggled",
-                super().on_toggled,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkRequirements,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "requirement_enabled",
+                    "index": 5,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "hardware_enabled": [
-                6,
-                self.chkHardware,
-                "toggled",
-                super().on_toggled,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkHardware,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "hardware_enabled",
+                    "index": 6,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "validation_enabled": [
-                7,
-                self.chkValidation,
-                "toggled",
-                super().on_toggled,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkValidation,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "validation_enabled",
+                    "index": 7,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": False,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": False,
                 },
-                _(""),
-                "gint",
-            ],
-            "hazard_enabled": [
-                8,
-                self.chkHazards,
-                "toggled",
-                super().on_toggled,
-                "",
-                0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkHazards,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "hazard_enabled",
+                    "index": 8,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "stakeholder_enabled": [
-                9,
-                self.chkStakeholder,
-                "toggled",
-                super().on_toggled,
-                "",
-                0.0,
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkStakeholder,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0.0,
+                    "field": "stakeholder_enabled",
+                    "index": 9,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "allocation_enabled": [
-                10,
-                self.chkAllocation,
-                "toggled",
-                super().on_toggled,
-                "",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkAllocation,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": "",
+                    "field": "allocation_enabled",
+                    "index": 10,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "similar_item_enabled": [
-                11,
-                self.chkSimilarItem,
-                "toggled",
-                super().on_toggled,
-                "",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkSimilarItem,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": "",
+                    "field": "similar_item_enabled",
+                    "index": 11,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "fmea_enabled": [
-                12,
-                self.chkFMEA,
-                "toggled",
-                super().on_toggled,
-                "",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkFMEA,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": "",
+                    "field": "fmea_enabled",
+                    "index": 12,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-            "pof_enabled": [
-                13,
-                self.chkPoF,
-                "toggled",
-                super().on_toggled,
-                "",
-                "",
-                {
-                    "bg_color": "#FFFFFF",
+            },
+            {
+                "widget": self.chkPoF,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": "",
+                    "field": "pof_enabled",
+                    "index": 13,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
                     "editable": True,
-                    "fg_color": "#000000",
+                    "tooltip": "",
                     "visible": True,
                 },
-                _(""),
-                "gint",
-            ],
-        }
+            },
+        ]
 
-        # Initialize public list instance attributes.
-
-        # Initialize public scalar instance attributes.
-
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
+        super().do_set_widget_callbacks()
 
         pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
