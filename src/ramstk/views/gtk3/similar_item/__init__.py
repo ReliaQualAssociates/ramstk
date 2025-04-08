@@ -5,8 +5,9 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Similar Item Views."""
+"""The Similar Item View package."""
 
 # RAMSTK Local Imports
-from .panel import SimilarItemMethodPanel, SimilarItemTreePanel
-from .view import SimilarItemWorkView
+from .method_panel import SimilarItemMethodPanel  # noqa: F401
+from .tree_panel import SimilarItemTreePanel  # noqa: F401
+from .view import SimilarItemWorkView  # noqa: F401

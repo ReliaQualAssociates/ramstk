@@ -18,7 +18,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
-from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKBasePanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import SimilarItemMethodPanel, SimilarItemTreePanel
@@ -104,8 +104,8 @@ class SimilarItemWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlMethod: RAMSTKPanel = SimilarItemMethodPanel()
-        self._pnlPanel: RAMSTKPanel = SimilarItemTreePanel()
+        self._pnlMethod: RAMSTKBasePanel = SimilarItemMethodPanel()
+        self._pnlPanel: RAMSTKBasePanel = SimilarItemTreePanel()
 
         # Initialize public dictionary attributes.
 
