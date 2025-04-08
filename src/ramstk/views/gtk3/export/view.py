@@ -14,16 +14,14 @@ from typing import Dict, Tuple
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKDialog, RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKBaseDialog, RAMSTKBasePanel
 
 # RAMSTK Local Imports
 from . import ExportPanel
 
 
-class ExportDialog(RAMSTKDialog):
+class ExportDialog(RAMSTKBaseDialog):
     """Provide a GUI to guide RAMSTK module exports/reporting."""
-
-    # Define private dict class attributes.
 
     def __init__(
         self, configuration: RAMSTKUserConfiguration, parent: object = None
@@ -32,29 +30,17 @@ class ExportDialog(RAMSTKDialog):
 
         :param parent: the parent window for this assistant.
         """
-        super().__init__(_("RAMSTK Program Export Assistant"), dlgparent=parent)
+        super().__init__(_("RAMSTK Program Export Assistant"), parent)
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
         self._default_path = f"{configuration.RAMSTK_PROG_DIR}"
         self._default_file_name = "ramstk_export.txt"
-        self._pnlPanel: RAMSTKPanel = ExportPanel(
+        self._pnlPanel: RAMSTKBasePanel = ExportPanel(
             analysis_path=configuration.RAMSTK_PROG_DIR,
             parent=parent,
         )
 
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
         self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
 
     def do_get_export_information(self) -> Tuple[Dict[str, bool], str]:
         """Retrieve the modules to export and file name to receive export.
@@ -94,11 +80,7 @@ class ExportDialog(RAMSTKDialog):
         self.do_destroy()
 
     def __make_ui(self) -> None:
-        """Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface."""
         self.set_default_size(800, 500)
 
         self.vbox.pack_start(self._pnlPanel, True, True, 0)

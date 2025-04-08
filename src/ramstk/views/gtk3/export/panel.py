@@ -5,14 +5,11 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Project Export Panels."""
+"""The Project Export panel module."""
 
 # Standard Library Imports
 import os
-from typing import Any, Dict, List
-
-# Third Party Imports
-from pubsub import pub
+from typing import List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
@@ -23,26 +20,17 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKLabel,
     RAMSTKMessageDialog,
+    WidgetConfig,
 )
 
 
 class ExportPanel(RAMSTKFixedPanel):
-    """The panel to display exprot options."""
+    """The panel to display export options."""
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _select_msg = ""
     _tag = "export"
     _title = _("Export Modules")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self, analysis_path: str = "", parent: Gtk.Window = None) -> None:
         """Initialize an instance of the Export panel."""
@@ -88,248 +76,243 @@ class ExportPanel(RAMSTKFixedPanel):
         )
         self.txtFileName = RAMSTKEntry()
 
-        # Initialize private dict instance attributes.
-
-        # Initialize private list instance attributes.
-
-        # Initialize private scalar instance attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": self.chkRevisions,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_revision",
+                    "index": 0,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": self.chkFunctions,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_function",
+                    "index": 1,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": self.chkRequirements,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_requirement",
+                    "index": 2,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkHardware,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_hardware",
+                    "index": 3,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkValidation,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_validation",
+                    "index": 4,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": self.chkHazards,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_hazards",
+                    "index": 5,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkStakeholder,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_stakeholder",
+                    "index": 6,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkAllocation,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_allocation",
+                    "index": 7,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkSimilarItem,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_similar_item",
+                    "index": 8,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkFMEA,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_fmea",
+                    "index": 9,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkPoF,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_pof",
+                    "index": 10,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.chkUsageProfile,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "export_usage_profile",
+                    "index": 11,
+                    "label_text": _(""),
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+        ]
         self._analysis_path: str = analysis_path
         self._parent: Gtk.Window = parent
 
-        # Initialize public dict instance attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "export_revision": [
-                0,
-                self.chkRevisions,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_function": [
-                1,
-                self.chkFunctions,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_requirement": [
-                2,
-                self.chkRequirements,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_hardware": [
-                3,
-                self.chkHardware,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_validation": [
-                4,
-                self.chkValidation,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_hazards": [
-                5,
-                self.chkHazards,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_stakeholder": [
-                6,
-                self.chkStakeholder,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_allocation": [
-                7,
-                self.chkAllocation,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_similar_item": [
-                8,
-                self.chkSimilarItem,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_fmea": [
-                9,
-                self.chkFMEA,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_pof": [
-                10,
-                self.chkPoF,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-            "export_usage_profile": [
-                11,
-                self.chkUsageProfile,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
-        }
-
-        # Initialize public list instance attributes.
-
-        # Initialize public scalar instance attributes.
-
-        super().do_set_properties()
-        super().do_make_panel(n_columns=2)  # type: ignore
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
+        super().do_make_panel(n_columns=2)
         self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
 
     def do_set_file(self, button) -> None:
         """Retrieve the selected filename.
 
-        :param button: the RAMSTKFileChooserButton() calling this method.
-        :return: None
-        :rtype: None
+        :param button: the RAMSTKFileChooserButton calling this method.
         """
         _file_name = button.get_filename()
 
         if os.path.exists(_file_name):
-            _dialog = RAMSTKMessageDialog(self._parent)
+            _dialog = RAMSTKMessageDialog(_("Select File"), self._parent)
             _dialog.do_set_message(_(f"File {_file_name} already exists.  Overwrite?"))
             _dialog.do_set_message_type("question")
             _response = _dialog.do_run()
             if _response == Gtk.ResponseType.YES:
                 os.remove(_file_name)
-                self.txtFileName.do_update(_file_name, "changed")
+                self.txtFileName.do_update({"": _file_name})
 
             _dialog.destroy()
 
     def __make_ui(self) -> None:
-        """Adjust position of widgets from default one column to two columns.
-
-        :return: None
-        :rtype: None
-        """
+        """Adjust position of widgets from default one column to two columns."""
         self.btnFileName.set_filename(f"{self._analysis_path}/untitled")
-        self.txtFileName.do_set_properties(width=300)
+        self.txtFileName.do_set_properties({"width_request": 300})
         _lblFileName = RAMSTKLabel(_("Select file for export:"))
 
         _fixed = self.get_children()[0].get_children()[0].get_children()[0]
