@@ -110,9 +110,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         listeners to update with the new value.
         """
         try:
-            self.handler_block(self.handler_id)
+            self.handler_block(self.dic_handler_id[self._edit_signal])
             _package = {self.field: self.get_value()}
-            self.handler_unblock(self.handler_id)
+            self.handler_unblock(self.dic_handler_id[self._edit_signal])
         except KeyError:
             _package = {self.field: self.get_value()}
 
@@ -161,7 +161,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         _model = self.get_model()
         _model.clear()
 
-        self.handler_block(self.handler_id)
+        self.handler_block(self.dic_handler_id[self._edit_signal])
 
         if not simple:
             _model.append([""] * self._n_items)
@@ -172,7 +172,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
             for _entry in entries:
                 _model.append([_entry[self._index]])
 
-        self.handler_unblock(self.handler_id)
+        self.handler_unblock(self.dic_handler_id[self._edit_signal])
 
     def get_value(self, index: int = 0) -> str:
         """Return the value in the RAMSTKComboBox model found at <index> position.

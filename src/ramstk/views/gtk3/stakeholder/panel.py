@@ -324,6 +324,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 },
             },
         ]
+        self._lst_groups: List[str] = []
+        self._lst_stakeholders: List[str] = []
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         super().do_set_widget_attributes()
@@ -332,9 +334,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         super().do_set_widget_callbacks()
 
         # FIXME: Is this line needed?
-        self.tvwTreeView.dic_row_loader = {
-            "stakeholder": super().do_load_treerow,
-        }
+        # self.tvwTreeView.dic_row_loader = {
+        #    "stakeholder": super().do_load_treerow,
+        # }
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
 
         do_subscribe_to_messages(
@@ -349,36 +351,24 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         :param affinities: the dict containing the affinity groups and the group type
             (affinity in all cases).
-        :return: None
         """
-        _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["group"]
-        ).get_cells()[0]
-        _cell.set_property("has-entry", True)
-        _cellmodel = _cell.get_property("model")
-        _cellmodel.clear()
-        _cellmodel.append([""])
+        for _group in affinities:
+            self._lst_groups.append(affinities[_group][0])
 
-        # pylint: disable=unused-variable
-        for _group in affinities.values():
-            _cellmodel.append([_group[0]])
+        self.tvwTreeView.do_load_cellrenderercombo("group", self._lst_groups)
 
     def do_load_stakeholders(self, stakeholders: Dict[int, str]) -> None:
         """Load the stakeholder list.
 
         :param stakeholders: the dict containing the names of the stakeholders.
-        :return: None
         """
-        _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["stakeholder"]
-        ).get_cells()[0]
-        _cell.set_property("has-entry", True)
-        _cellmodel = _cell.get_property("model")
-        _cellmodel.clear()
-        _cellmodel.append([""])
+        for _stakeholder in stakeholders:
+            self._lst_stakeholders.append(stakeholders[_stakeholder][0])
 
-        for _group in stakeholders.values():
-            _cellmodel.append([_group[0]])
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "stakeholder",
+            self._lst_stakeholders,
+        )
 
     def _do_load_requirements(self, tree: treelib.Tree) -> None:
         """Load the requirement ID list when Requirements are retrieved.

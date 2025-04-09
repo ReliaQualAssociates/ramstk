@@ -50,8 +50,27 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "datatype": "gint",
                     "default": 0,
                     "field": "goal_measure_id",
-                    "index": 5,
+                    "index": 23,
                     "label_text": _("Select Goal Metric:"),
+                    "listen_topic": "mvw_editing_allocation",
+                    "send_topic": "wvw_editing_allocation",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "Selects the goal measure for the selected hardware assembly."
+                    ),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbAllocationMethod,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "allocation_method_id",
+                    "index": 24,
+                    "label_text": _("Select Goal Method:"),
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
@@ -69,7 +88,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "reliability_goal",
-                    "index": 19,
+                    "index": 25,
                     "label_text": _("R(t) Goal:"),
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
@@ -89,7 +108,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_goal",
-                    "index": 7,
+                    "index": 26,
                     "label_text": _("h(t) Goal:"),
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
@@ -109,7 +128,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_goal",
-                    "index": 13,
+                    "index": 27,
                     "label_text": _("MTBF Goal:"),
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
@@ -189,8 +208,18 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
 
     def _do_set_widget_callbacks(self) -> None:
         """Set the callback methods for the Allocation goal and method panel."""
-        self.cmbAllocationMethod.connect("changed", self._on_method_changed)
-        self.cmbAllocationGoal.connect("changed", self._on_goal_changed)
+        self.cmbAllocationGoal.dic_handler_id["changed"] = (
+            self.cmbAllocationGoal.connect(
+                "changed",
+                self._on_goal_changed,
+            )
+        )
+        self.cmbAllocationMethod.dic_handler_id["changed"] = (
+            self.cmbAllocationMethod.connect(
+                "changed",
+                self._on_method_changed,
+            )
+        )
 
     def _on_goal_changed(self, combo: RAMSTKComboBox) -> None:
         """Let others know when allocation goal combo changes.

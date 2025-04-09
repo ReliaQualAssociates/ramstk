@@ -62,8 +62,8 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
-        self._do_load_methods()
         self._do_set_widget_callbacks()
+        self._do_load_methods()
 
     # ----- SimilarItemMethodPanel specific methods. ----- #
     def _do_load_methods(self) -> None:
@@ -89,7 +89,12 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         """Set the widget callbacks for the Similar Item Method panel."""
         super().do_set_widget_callbacks()
 
-        self.cmbSimilarItemMethod.connect("changed", self._on_method_changed)
+        self.cmbSimilarItemMethod.dic_handler_id["changed"] = (
+            self.cmbSimilarItemMethod.connect(
+                "changed",
+                self._on_method_changed,
+            )
+        )
 
     def _on_method_changed(self, combo: RAMSTKComboBox) -> None:
         """Let others know when similar item method combo changes.

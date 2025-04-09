@@ -236,8 +236,6 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
             key is the attribute name, the value is the attribute value. Pulling them
             from the RAMSTKTreeView ensures uncommitted changes are always selected.
         """
-        selection.handler_block(self.tvwTreeView.dic_handler_id["changed"])
-
         _attributes: dict = {}
         _model, _row = selection.get_selected()
 
@@ -252,8 +250,6 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
         for _widget in self._lst_widget_configuration:
             _widget["widget"].record_id = _attributes[f"{self._tag}_id"]
             _widget["widget"].parent_id = _attributes["parent_id"]
-
-        selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])
 
         pub.sendMessage(
             f"selected_{self._tag}",

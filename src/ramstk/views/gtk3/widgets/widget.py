@@ -130,7 +130,6 @@ class RAMSTKBaseWidget(Gtk.Widget):
         self.default: Union[bool, date, float, int, str, None] = None
         self.field: str = ""
         self.format: str = "{}"
-        self.handler_id: int = -1
         self.height: int = -1
         self.index: int = -1
         self.label_text: str = ""
@@ -195,7 +194,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
                     self.on_changed,
                 )
             else:
-                self.handler_id = self.connect(
+                self.dic_handler_id[self._edit_signal] = self.connect(
                     self._edit_signal,
                     self.on_changed,
                 )

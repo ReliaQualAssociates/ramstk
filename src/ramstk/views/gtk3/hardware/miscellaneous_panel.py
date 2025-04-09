@@ -50,7 +50,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
             {
-                "widget": self.cmbAttachments,
+                "widget": self.txtAttachments,
                 "attributes": {
                     "datatype": "gchararray",
                     "default": "",
