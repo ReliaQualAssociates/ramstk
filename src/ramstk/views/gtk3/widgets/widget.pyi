@@ -90,13 +90,15 @@ class WidgetProperties(TypedDict, total=False):
     yalign: float
 
 class RAMSTKBaseWidget(Gtk.Widget):
+    _default_height: int
+    _default_width: int
+    _edit_signal: str
     dic_handler_id: dict[str, int]
     dic_properties: Incomplete
     datatype: bool | date | float | int | str | None
     default: bool | date | float | int | str | None
     field: str
     format: str
-    handler_id: int
     height: int
     index: int
     label_text: str

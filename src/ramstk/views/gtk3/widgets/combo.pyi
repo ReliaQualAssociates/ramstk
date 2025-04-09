@@ -12,6 +12,12 @@ from .widget import RAMSTKBaseWidget as RAMSTKBaseWidget
 from .widget import WidgetProperties as WidgetProperties
 
 class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
+    _default_height: int
+    _default_width: int
+    _edit_signal: str
+    _index: int
+    _n_items: int
+    _simple: bool
     def __init__(
         self, index: int = 0, simple: bool = True, n_items: int = 2
     ) -> None: ...

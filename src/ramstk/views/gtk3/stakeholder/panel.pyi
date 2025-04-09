@@ -17,6 +17,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: Incomplete
     _lst_widget_configuration: list[WidgetConfig]
+    _lst_groups: list[str]
+    _lst_stakeholders: list[str]
     _on_edit_message: str
     def __init__(self) -> None: ...
     def do_load_affinity_groups(
