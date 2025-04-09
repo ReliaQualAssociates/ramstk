@@ -4,10 +4,10 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Stakeholder Panels."""
+"""The Stakeholder panel module."""
 
 # Standard Library Imports
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -16,321 +16,325 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKTreePanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCellRendererCombo,
+    RAMSTKCellRendererSpin,
+    RAMSTKCellRendererText,
+    RAMSTKTreePanel,
+    WidgetConfig,
+)
 
 
 class StakeholderTreePanel(RAMSTKTreePanel):
     """Panel to display list of stakeholder inputs."""
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _select_msg = "succeed_retrieve_all_stakeholder"
     _tag = "stakeholder"
     _title = _("Stakeholder Input List")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the stakeholder input panel."""
         super().__init__()
 
-        # Initialize private dictionary class attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "revision_id",
+                    "index": 0,
+                    "label_text": _("Revision ID"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "stakeholder_id",
+                    "index": 1,
+                    "label_text": _("Stakeholder ID"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererSpin(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "customer_rank",
+                    "index": 2,
+                    "label_text": _("Customer Ranking"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                    "digits": 0,
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "description",
+                    "index": 3,
+                    "label_text": _("Description"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "group",
+                    "index": 4,
+                    "label_text": _("Affinity Group"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "improvement",
+                    "index": 5,
+                    "label_text": _("Improvement Factor"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": "",
+                    "field": "overall_weight",
+                    "index": 6,
+                    "label_text": _("Overall Weighting"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": False,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererSpin(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 1,
+                    "field": "planned_rank",
+                    "index": 7,
+                    "label_text": _("Planned Satisfaction Rating"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                    "digits": 0,
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererSpin(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "priority",
+                    "index": 8,
+                    "label_text": _("Priority"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                    "digits": 0,
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gint",
+                    "default": "",
+                    "field": "requirement_id",
+                    "index": 9,
+                    "label_text": _("Associated Requirement"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererCombo(),
+                "attributes": {
+                    "datatype": "gchararray",
+                    "default": "",
+                    "field": "stakeholder",
+                    "index": 10,
+                    "label_text": _("Stakeholder"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": True,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": "",
+                    "field": "user_float_1",
+                    "index": 11,
+                    "label_text": _("User Float 1"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "user_float_2",
+                    "index": 12,
+                    "label_text": _("User Float 2"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "user_float_3",
+                    "index": 13,
+                    "label_text": _("User Float 3"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0,
+                    "field": "user_float_4",
+                    "index": 14,
+                    "label_text": _("User Float 4"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+            {
+                "widget": RAMSTKCellRendererText(),
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0,
+                    "field": "user_float_5",
+                    "index": 15,
+                    "label_text": _("User Float 5"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_stakeholder",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": "",
+                    "visible": False,
+                },
+            },
+        ]
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
+
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
+        super().do_make_panel()
+        super().do_set_widget_callbacks()
+
+        # FIXME: Is this line needed?
         self.tvwTreeView.dic_row_loader = {
             "stakeholder": super().do_load_treerow,
         }
-
-        # Initialize private list class attributes.
-
-        # Initialize private scalar class attributes.
-        self._on_edit_message: str = f"wvw_editing_{self._tag}"
-
-        # Initialize public dictionary class attributes.
-        self.dic_attribute_widget_map = {
-            "revision_id": [
-                0,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Revision ID"),
-                "gint",
-            ],
-            "stakeholder_id": [
-                1,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("Stakeholder ID"),
-                "gint",
-            ],
-            "customer_rank": [
-                2,
-                Gtk.CellRendererSpin(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "digits": 0,
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "lower": 1,
-                    "step": 1,
-                    "upper": 5,
-                    "visible": True,
-                },
-                _("Customer Ranking"),
-                "gint",
-            ],
-            "description": [
-                3,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Description"),
-                "gchararray",
-            ],
-            "group": [
-                4,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Affinity Group"),
-                "gchararray",
-            ],
-            "improvement": [
-                5,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                0.0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Improvement Factor"),
-                "gfloat",
-            ],
-            "overall_weight": [
-                6,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": False,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Overall Weighting"),
-                "gfloat",
-            ],
-            "planned_rank": [
-                7,
-                Gtk.CellRendererSpin(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "digits": 0,
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "lower": 1,
-                    "step": 1,
-                    "upper": 5,
-                    "visible": True,
-                },
-                _("Planned Satisfaction Rating"),
-                "gint",
-            ],
-            "priority": [
-                8,
-                Gtk.CellRendererSpin(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "digits": 0,
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "lower": 1,
-                    "step": 1,
-                    "upper": 5,
-                    "visible": True,
-                },
-                _("Priority"),
-                "gint",
-            ],
-            "requirement_id": [
-                9,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Associated Requirement"),
-                "gint",
-            ],
-            "stakeholder": [
-                10,
-                Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _("Stakeholder"),
-                "gchararray",
-            ],
-            "user_float_1": [
-                11,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                "",
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("User Float 1"),
-                "gfloat",
-            ],
-            "user_float_2": [
-                12,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0.0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("User Float 2"),
-                "gfloat",
-            ],
-            "user_float_3": [
-                13,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0.0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("User Float 3"),
-                "gfloat",
-            ],
-            "user_float_4": [
-                14,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("User Float 4"),
-                "gfloat",
-            ],
-            "user_float_5": [
-                15,
-                Gtk.CellRendererText(),
-                "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
-                0,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": False,
-                },
-                _("User Float 5"),
-                "gfloat",
-            ],
-        }
-
-        # Initialize public list class attributes.
-
-        # Initialize public scalar class attributes.
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
 
         do_subscribe_to_messages(

@@ -80,7 +80,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
             self.dic_properties["model"].set_column_types([GObject.TYPE_STRING])  # type: ignore[union-attr] # noqa
         self.set_model(self.dic_properties["model"])
 
-        self.set_property(self.dic_properties["has_entry"])
+        self.set_property("has-entry", self.dic_properties["has_entry"])
 
     def do_update(
         self, package: Dict[str, Union[bool, date, float, int, str, None]]

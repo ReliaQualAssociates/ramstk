@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Stakeholder Views."""
+"""The Stakeholder view module."""
 
 # Standard Library Imports
 from typing import Any, Dict
