@@ -37,18 +37,10 @@ class UsageProfileWorkView(RAMSTKWorkView):
         order they appear on the toolbar or pop-up menu.
     """
 
-    # Define private dict class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _tag: str = "usage_profile"
     _tablabel: str = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
     _tabtooltip: str = _("Displays usage profiles for the selected revision.")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
@@ -60,9 +52,7 @@ class UsageProfileWorkView(RAMSTKWorkView):
         """
         super().__init__(configuration, logger)
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
+        # Initialize private instance attributes.
         self._lst_callbacks.insert(0, self._do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
@@ -89,15 +79,7 @@ class UsageProfileWorkView(RAMSTKWorkView):
             _("Save changes to the currently selected entity in the usage profile."),
             _("Save changes to all entities at the same level in the usage profile."),
         ]
-
-        # Initialize private scalar attributes.
         self._pnlPanel = UsageProfileTreePanel()
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
 
         self.__make_ui()
 
@@ -229,15 +211,14 @@ class UsageProfileWorkView(RAMSTKWorkView):
         super().do_make_layout()
         super().do_embed_treeview_panel()
 
-        self._pnlPanel.dic_units = (
+        self._pnlPanel.do_load_units(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
         )
-        self._pnlPanel.do_load_comboboxes()
 
-        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
-            self._pnlPanel.tvwTreeView.connect(
-                "button_press_event", super().on_button_press
-            )
-        )
+        # self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+        #    self._pnlPanel.tvwTreeView.connect(
+        #        "button_press_event", super().on_button_press
+        #    )
+        # )
         for _element in ["mission", "mission_phase", "environment"]:
             self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]

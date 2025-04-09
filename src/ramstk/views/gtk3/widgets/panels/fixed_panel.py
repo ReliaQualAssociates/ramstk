@@ -46,7 +46,7 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
         self.fixed = Gtk.Fixed()
 
         # Subscribe to PyPubSub messages.
-        self._do_subscribe_to_messages()
+        self.do_subscribe_to_messages()
 
     # ----- ----- Standard panel methods. ----- ----- #
     def do_clear_panel(self) -> None:

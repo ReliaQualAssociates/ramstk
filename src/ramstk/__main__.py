@@ -81,7 +81,7 @@ from ramstk.models.dbviews import (
 )
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
-from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
+from ramstk.views.gtk3.widgets.dialogs import RAMSTKDatabaseSelectDialog
 
 
 def do_connect_to_site_db(conn_info) -> RAMSTKCommonDB:
@@ -119,19 +119,21 @@ def do_connect_to_site_db(conn_info) -> RAMSTKCommonDB:
 def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
     """Raise dialog to set up site database.
 
-    :param configuration: the RAMSTKSiteConfiguration() instance.
-    :return: None
-    :rtype: None
+    :param configuration: the RAMSTKSiteConfiguration instance.
     """
-    _dialog = RAMSTKDatabaseSelect(
-        dlgtitle=_("Set up RAMSTK Site Database Server Connection"),
-        dao=BaseDatabase(),
-        database=configuration.RAMSTK_COM_INFO,
-        icons={
+    _dialog = RAMSTKDatabaseSelectDialog(
+        _("Set up RAMSTK Site Database Server Connection"),
+        None,
+    )
+    _dialog.database = configuration.RAMSTK_COM_INFO
+    _dialog.do_set_icons(
+        {
             "refresh": f"{configuration.RAMSTK_SITE_DIR}/icons/32x32/view-refresh.png",
             "save": f"{configuration.RAMSTK_SITE_DIR}/icons/32x32/save.png",
+            "db-disconnected": f"{configuration.RAMSTK_SITE_DIR}/icons/32x32/db-disconnected.png",  # noqa: E501
         },
     )
+    _dialog.do_load_database_parameters()
 
     if _dialog.do_run() == Gtk.ResponseType.OK:
         _site_dir = configuration.RAMSTK_SITE_DIR
@@ -307,8 +309,6 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
         """Log error message when there's a failure to create the site conf.
 
         :param error_message: the error message raised by the failure.
-        :return: None
-        :rtype: None
         """
         pub.sendMessage(
             "do_log_debug_msg",
@@ -356,8 +356,6 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
         """Log error message when there's a failure to create the user conf.
 
         :param error_message: the error message raised by the failure.
-        :return: None
-        :rtype: None
         """
         print(error_message)
 
@@ -391,8 +389,7 @@ def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
     # See ISSUE #354
     # splScreen = SplashScreen()
-    # If you don't do this, the splash screen will show, but won't render it's
-    # contents
+    # If you don't do this, the splash screen will show, but won't render its contents
     # while Gtk.events_pending():
     #     Gtk.main_iteration()
 
