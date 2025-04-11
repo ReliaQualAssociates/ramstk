@@ -5,48 +5,22 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Integrated Circuit Input Panel."""
+"""THe Integrated Circuit input panel module."""
 
 
 # Standard Library Imports
 from typing import Any, Dict, List
 
 # RAMSTK Package Imports
+from ramstk.constants.integrated_circuit import IC_TECHNOLOGY_DICT, IC_TYPE_DICT
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
-
-IC_TECHNOLOGY_DICT: Dict[int, List[List[str]]] = {
-    1: [["MOS"], [_("Bipolar")]],
-    2: [
-        ["TTL"],
-        ["ASTTL"],
-        ["CML"],
-        ["HTTL"],
-        ["FTTL"],
-        ["DTL"],
-        ["ECL"],
-        ["ALSTTL"],
-        ["FLTTL"],
-        ["STTL"],
-        ["BiCMOS"],
-        ["LSTTL"],
-        ["III"],
-        ["IIIL"],
-        ["ISL"],
-    ],
-    3: [["MOS"], [_("Bipolar")]],
-    4: [["MOS"], [_("Bipolar")]],
-    5: [["MOS"], [_("Bipolar")]],
-    6: [["MOS"], [_("Bipolar")]],
-    7: [["MOS"], [_("Bipolar")]],
-    8: [["MOS"], [_("Bipolar")]],
-    9: [["MMIC"], [_("Digital")]],
-}
-IC_TYPE_DICT = {
-    9: [["MMIC"], [_("Digital")]],
-    10: [[_("Logic and Custom")], [_("Gate Array")]],
-}
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+)
 
 
 class ICDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -56,10 +30,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     inputs for the selected integrated circuit.  This includes, currently,
     inputs for MIL-HDBK-217FN2.  The attributes of an integrated circuit
     assessment input view are:
-
-    :cvar dict _dic_technology: dictionary of integrated circuit package
-        technologies.  Key is integrated circuit subcategory ID; values are
-        lists of technologies.
 
     :ivar cmbApplication: select and display the application of the integrated
         circuit.
@@ -93,23 +63,11 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         integrated circuit type has been in production.
     """
 
-    # Define private dict class attributes.
-    _dic_technology: Dict[int, List[List[str]]] = IC_TECHNOLOGY_DICT
-    _dic_types: Dict[int, List[List[str]]] = IC_TYPE_DICT
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field = "hardware_id"
     _select_msg = "succeed_get_design_electric_attributes"
     _tag = "design_electric"
     _title = _("Integrated Circuit Design Inputs")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the IC assessment input view."""
@@ -134,76 +92,406 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self.txtVoltageESD: RAMSTKEntry = RAMSTKEntry()
         self.txtYearsInProduction: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": self.cmbQuality,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "quality_id",
+                    "index": 32,
+                    "label_text": _("Quality Level:"),
+                    "listen_topic": "mvw_editing_reliability",
+                    "send_topic": "wvw_editing_reliability",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The quality level of the integrated circuit."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbPackage,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "package_id",
+                    "index": 30,
+                    "label_text": _("Package:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The type of package housing the integrated circuit."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtArea,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "area",
+                    "index": 3,
+                    "label_text": _("Die Area:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The die area (in mil<sup>2</sup>) of the integrated circuit."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.txtNElements,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "n_elements",
+                    "index": 25,
+                    "label_text": _("N Elements:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The number of active elements in the integrated circuit."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.txtThetaJC,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "theta_jc",
+                    "index": 47,
+                    "label_text": _("\u0398<sub>JC</sub>:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The junction to case thermal resistance."),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.txtNActivePins,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "n_active_pins",
+                    "index": 22,
+                    "label_text": _("Active Pins:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The number of active pins on the integrated circuit."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.cmbTechnology,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "technology_id",
+                    "index": 37,
+                    "label_text": _("Technology:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The technology used to construct the integrated circuit."
+                    ),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtYearsInProduction,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 2,
+                    "field": "years_in_production",
+                    "index": 55,
+                    "label_text": _("Years in Production:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The number of years the generic device type has been in "
+                        "production."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.cmbConstruction,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "construction_id",
+                    "index": 6,
+                    "label_text": _("Construction:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The method of construction of the integrated circuit."
+                    ),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtNCycles,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "n_cycles",
+                    "index": 24,
+                    "label_text": _("Programming Cycles:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The total number of programming cycles over the EEPROM life."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.txtOperatingLife,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "operating_life",
+                    "index": 28,
+                    "label_text": _("Operating Life:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The system lifetime operating hours."),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.cmbECC,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "family_id",
+                    "index": 15,
+                    "label_text": _("Error Correction Code:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The error correction code used by the EEPROM."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbApplication,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "application_id",
+                    "index": 2,
+                    "label_text": _("Application:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The application of the integrated circuit."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbType,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "type_id",
+                    "index": 48,
+                    "label_text": _("Device Type:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The type of GaAs or VLSI device."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtFeatureSize,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "feature_size",
+                    "index": 16,
+                    "label_text": _("Feature Size:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The feature size (in microns) of the VLSI device."),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+            {
+                "widget": self.cmbManufacturing,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "manufacturing_id",
+                    "index": 20,
+                    "label_text": _("Manufacturing Process:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The manufacturing process for the VLSI device."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtVoltageESD,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "voltage_esd",
+                    "index": 51,
+                    "label_text": _("ESD Threshold Voltage:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The ESD susceptibility threshold voltage of the VLSI device."
+                    ),
+                    "visible": True,
+                    "width": 125,
+                },
+            },
+        ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0
 
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.category_id: int = 0
         self.subcategory_id: int = 0
 
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-        super().do_set_callbacks()
+        super().do_set_widget_callbacks()
+        self._do_load_construction()
+        self._do_load_ecc()
+        self._do_load_manufacturing()
+        self._do_load_package()
+        self._do_load_quality()
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "changed_subcategory": self.do_load_comboboxes,
+                "changed_subcategory": self.on_subcategory_change,
                 "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
     # pylint: disable=unused-argument
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the integrated circuit RAMSTKComboBox()s.
+    def on_subcategory_change(self, subcategory_id: int) -> None:
+        """Load the integrated circuit subcategory-specific RAMSTKComboBoxes.
 
         :param subcategory_id: the subcategory ID of the selected IC. This is unused in
             this method but required because this method is a PyPubSub listener.
-        :return: None
-        :rtype: None
         """
         self.subcategory_id = subcategory_id
 
-        self.cmbQuality.do_load_combo(
-            [
-                [_("Class S")],
-                [_("Class B")],
-                [_("Class B-1")],
-            ],
-            signal="changed",
+        self.cmbTechnology.do_load_combo(
+            self._get_technology_list(),
         )
+        self.cmbType.do_load_combo(
+            IC_TYPE_DICT.get(self.subcategory_id, []),
+        )
+
+        self._set_sensitive()
+
+    def _do_load_application(self, attributes: Dict[str, Any]) -> None:
+        """Load the IC application RAMSTKComboBox.
+
+        :param attributes: the attributes dict for the selected integrated circuit.
+        """
+        self.cmbApplication.do_load_combo(
+            self._get_application_list(attributes["construction_id"]),
+        )
+
+    def _do_load_construction(self) -> None:
+        """Load the IC construction RAMSTKComboBox."""
         self.cmbConstruction.do_load_combo(
             [
                 ["FLOTOX"],
                 [_("Textured Poly")],
             ],
-            signal="changed",
         )
+
+    def _do_load_ecc(self) -> None:
+        """Load the IC ECC RAMSTKComboBox."""
         self.cmbECC.do_load_combo(
             [
                 [_("No on-chip ECC")],
                 [_("On-chip Hamming code")],
                 [_("Two-Needs-One redundant cell approach")],
             ],
-            signal="changed",
         )
+
+    def _do_load_manufacturing(self) -> None:
+        """Load the IC manufacturing RAMSTKComboBox."""
         self.cmbManufacturing.do_load_combo(
             [
                 ["QML or QPL"],
                 ["Non-QML or non-QPL"],
             ],
-            signal="changed",
         )
+
+    def _do_load_package(self) -> None:
+        """Load the IC package RAMSTKComboBox."""
         self.cmbPackage.do_load_combo(
             [
                 [_("Hermetic DIP w/ Solder or Weld Seal")],
@@ -216,280 +504,16 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("Nonhermetic Pin Grid Array (PGA)")],
                 [_("Nonhermetic SMT")],
             ],
-            signal="changed",
-        )
-        self.cmbTechnology.do_load_combo(
-            self._get_technology_list(),
-            signal="changed",
-        )
-        self.cmbType.do_load_combo(
-            self._dic_types.get(self.subcategory_id, []),
-            signal="changed",
         )
 
-        self._set_sensitive()
-
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
-        """Initialize the attribute widget map."""
-        return {
-            "quality_id": [
-                32,
-                self.cmbQuality,
-                "changed",
-                super().on_changed_combo,
-                "wvw_editing_reliability",
-                0,
-                {
-                    "tooltip": _("The quality level of the integrated circuit."),
-                },
-                _("Quality Level:"),
-                "gint",
+    def _do_load_quality(self) -> None:
+        """Load the IC quality RAMSTKComboBox."""
+        self.cmbQuality.do_load_combo(
+            [
+                [_("Class S")],
+                [_("Class B")],
+                [_("Class B-1")],
             ],
-            "package_id": [
-                30,
-                self.cmbPackage,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The type of package housing the integrated circuit."),
-                },
-                _("Package:"),
-                "gint",
-            ],
-            "area": [
-                3,
-                self.txtArea,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _(
-                        "The die area (in mil<sup>2</sup>) of the integrated circuit."
-                    ),
-                    "width": 125,
-                },
-                _("Die Area:"),
-                "gfloat",
-            ],
-            "n_elements": [
-                25,
-                self.txtNElements,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The number of active elements in the integrated circuit."
-                    ),
-                    "width": 125,
-                },
-                _("N Elements:"),
-                "gint",
-            ],
-            "theta_jc": [
-                47,
-                self.txtThetaJC,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _("The junction to case thermal resistance."),
-                    "width": 125,
-                },
-                _("\u0398<sub>JC</sub>:"),
-                "gfloat",
-            ],
-            "n_active_pins": [
-                22,
-                self.txtNActivePins,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The number of active pins on the integrated circuit."
-                    ),
-                    "width": 125,
-                },
-                _("Active Pins:"),
-                "gint",
-            ],
-            "technology_id": [
-                37,
-                self.cmbTechnology,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The technology used to construct the integrated circuit."
-                    ),
-                },
-                _("Technology:"),
-                "gint",
-            ],
-            "years_in_production": [
-                55,
-                self.txtYearsInProduction,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                2,
-                {
-                    "tooltip": _(
-                        "The number of years the generic device type has been in "
-                        "production."
-                    ),
-                    "width": 125,
-                },
-                _("Years in Production:"),
-                "gfloat",
-            ],
-            "construction_id": [
-                6,
-                self.cmbConstruction,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The method of construction of the integrated circuit."
-                    ),
-                },
-                _("Construction:"),
-                "gint",
-            ],
-            "n_cycles": [
-                24,
-                self.txtNCycles,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The total number of programming cycles over the EEPROM life."
-                    ),
-                    "width": 125,
-                },
-                _("Programming Cycles:"),
-                "gint",
-            ],
-            "operating_life": [
-                28,
-                self.txtOperatingLife,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _("The system lifetime operating hours."),
-                    "width": 125,
-                },
-                _("Operating Life:"),
-                "gfloat",
-            ],
-            "family_id": [
-                15,
-                self.cmbECC,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The error correction code used by the EEPROM."),
-                },
-                _("Error Correction Code:"),
-                "gint",
-            ],
-            "application_id": [
-                2,
-                self.cmbApplication,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The application of the integrated circuit."),
-                },
-                _("Application:"),
-                "gint",
-            ],
-            "type_id": [
-                48,
-                self.cmbType,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The type of GaAs or VLSI device."),
-                },
-                _("Device Type:"),
-                "gint",
-            ],
-            "feature_size": [
-                16,
-                self.txtFeatureSize,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _("The feature size (in microns) of the VLSI device."),
-                    "width": 125,
-                },
-                _("Feature Size:"),
-                "gfloat",
-            ],
-            "manufacturing_id": [
-                20,
-                self.cmbManufacturing,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The manufacturing process for the VLSI device."),
-                },
-                _("Manufacturing Process:"),
-                "gint",
-            ],
-            "voltage_esd": [
-                51,
-                self.txtVoltageESD,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _(
-                        "The ESD susceptibility threshold voltage of the VLSI device."
-                    ),
-                    "width": 125,
-                },
-                _("ESD Threshold Voltage:"),
-                "gfloat",
-            ],
-        }
-
-    def _do_load_application_combo(self, attributes: Dict[str, Any]) -> None:
-        """Load the IC application RAMSTKComboBox().
-
-        :param attributes: the attributes dict for the selected integrated circuit.
-        :return: None
-        """
-        self.cmbApplication.do_load_combo(
-            self._get_application_list(attributes["construction_id"]),
-            signal="changed",
         )
 
     @staticmethod
@@ -535,7 +559,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         try:
             if self._hazard_rate_method_id == 1:
                 return self._get_part_count_technology_list()
-            return self._dic_technology.get(self.subcategory_id, [])
+            return IC_TECHNOLOGY_DICT.get(self.subcategory_id, [])
         except KeyError:
             return []
 
@@ -543,25 +567,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
         """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
+        self._hazard_rate_method_id = int(attributes["hazard_rate_method_id"])
+        self._quality_id = int(attributes["quality_id"])
 
         self._set_sensitive()
-        super().set_widget_sensitivity([self.cmbQuality])
+        super().do_set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
+            {"quality_id": self._quality_id},
         )
 
     def _set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected IC.
-
-        :return: None
-        :rtype: None
-        """
+        """Set widget sensitivity as needed for the selected IC."""
         # Reset all widgets to be insensitive.
         super().set_widget_sensitivity(
             [
@@ -632,11 +649,11 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         }
 
         # Set widget sensitivity based on subcategory and hazard rate method
-        super().set_widget_sensitivity(_sensitivity_map.get(self.subcategory_id, []))
+        super().do_set_widget_sensitivity(_sensitivity_map.get(self.subcategory_id, []))
 
         # For Part Stress, add extra sensitivity.
         if self._hazard_rate_method_id == 2:
-            super().set_widget_sensitivity(
+            super().do_set_widget_sensitivity(
                 [
                     self.cmbPackage,
                     self.txtThetaJC,

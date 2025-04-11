@@ -18,7 +18,7 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from ..frame import RAMSTKFrame
-from ..widget import WidgetConfig
+from ..widget import RAMSTKBaseWidget, WidgetConfig
 
 
 def do_log_message(
@@ -89,3 +89,12 @@ class RAMSTKBasePanel(RAMSTKFrame):
         """Set the properties of the RAMSTKBasePanel widgets."""
         for _widget in self._lst_widget_configuration:
             _widget["widget"].do_set_properties(_widget["properties"])
+
+    @staticmethod
+    def do_set_widget_sensitivity(widgets: List[RAMSTKBaseWidget]) -> None:
+        """Set the sensitivity of the RAMSTKBasePanel widgets.
+
+        :param widgets: a list of RAMSTKWidget objects to set sensitivity.
+        """
+        for _widget in widgets:
+            _widget.set_sensitive(True)

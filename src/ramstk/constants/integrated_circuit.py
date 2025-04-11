@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Integrated circuit MIL-HDBK-217F Constants Module."""
+"""Integrated circuit Constants Module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIl-HDBK-217FN2 models.
 ACTIVATION_ENERGY: Dict[int, float | List[float]] = {
     1: 0.65,
     2: [
@@ -1038,3 +1042,36 @@ PI_E: List[float] = [
 ]
 PI_PT: Dict[int, float] = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 PI_Q: List[float] = [0.25, 1.0, 2.0]
+
+# Constants for GUI displays.
+IC_TECHNOLOGY_DICT: Dict[int, List[List[str]]] = {
+    1: [["MOS"], [_("Bipolar")]],
+    2: [
+        ["TTL"],
+        ["ASTTL"],
+        ["CML"],
+        ["HTTL"],
+        ["FTTL"],
+        ["DTL"],
+        ["ECL"],
+        ["ALSTTL"],
+        ["FLTTL"],
+        ["STTL"],
+        ["BiCMOS"],
+        ["LSTTL"],
+        ["III"],
+        ["IIIL"],
+        ["ISL"],
+    ],
+    3: [["MOS"], [_("Bipolar")]],
+    4: [["MOS"], [_("Bipolar")]],
+    5: [["MOS"], [_("Bipolar")]],
+    6: [["MOS"], [_("Bipolar")]],
+    7: [["MOS"], [_("Bipolar")]],
+    8: [["MOS"], [_("Bipolar")]],
+    9: [["MMIC"], [_("Digital")]],
+}
+IC_TYPE_DICT = {
+    9: [["MMIC"], [_("Digital")]],
+    10: [[_("Logic and Custom")], [_("Gate Array")]],
+}
