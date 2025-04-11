@@ -91,10 +91,13 @@ class RAMSTKBasePanel(RAMSTKFrame):
             _widget["widget"].do_set_properties(_widget["properties"])
 
     @staticmethod
-    def do_set_widget_sensitivity(widgets: List[RAMSTKBaseWidget]) -> None:
+    def do_set_widget_sensitivity(
+        widgets: List[RAMSTKBaseWidget], sensitive=True
+    ) -> None:
         """Set the sensitivity of the RAMSTKBasePanel widgets.
 
         :param widgets: a list of RAMSTKWidget objects to set sensitivity.
+        :param sensitive: the sensitivity state to set the widgets to.
         """
         for _widget in widgets:
-            _widget.set_sensitive(True)
+            _widget.set_sensitive(sensitive)
