@@ -10,6 +10,10 @@
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models.
 PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         0.0005,
@@ -685,3 +689,135 @@ REF_TEMPS: Dict[int, float] = {
     15: 343.0,
 }
 REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
+
+
+# Constance for GUI display.
+# Key is subcategory ID; index is construction ID.
+RESISTOR_CONSTRUCTION_DICT: Dict[int, List[List[str]]] = {
+    10: [
+        ["RR0900A2A9J103"],
+        ["RR0900A3A9J103"],
+        ["RR0900A4A9J103"],
+        ["RR0900A5A9J103"],
+    ],
+    12: [[_("Enclosed")], [_("Unenclosed")]],
+}
+RESISTOR_QUALITY_DICT: Dict[int, List[List[str]]] = {
+    1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
+    2: [
+        ["S"],
+        ["R"],
+        ["P"],
+        ["M"],
+        ["MIL-R-10509"],
+        ["MIL-R-22684"],
+        [_("Lower")],
+    ],
+    3: [["MIL-SPEC"], [_("Lower")]],
+    4: [["MIL-SPEC"], [_("Lower")]],
+    5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
+    6: [["S"], ["R"], ["P"], ["M"], ["MIL-R-26"], [_("Lower")]],
+    7: [["S"], ["R"], ["P"], ["M"], ["MIL-R-18546"], [_("Lower")]],
+    8: [["MIL-SPEC"], [_("Lower")]],
+    9: [["S"], ["R"], ["P"], ["M"], ["MIL-R-27208"], [_("Lower")]],
+    10: [["MIL-SPEC"], [_("Lower")]],
+    11: [["MIL-SPEC"], [_("Lower")]],
+    12: [["MIL-SPEC"], [_("Lower")]],
+    13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_("Lower")]],
+    14: [["MIL-SPEC"], [_("Lower")]],
+    15: [["MIL-SPEC"], [_("Lower")]],
+}
+# Key is subcategory ID; index is specification ID.
+RESISTOR_SPECIFICATION_DICT: Dict[int, List[List[str]]] = {
+    2: [
+        ["MIL-R-10509"],
+        ["MIL-R-22684"],
+        ["MIL-R-39017"],
+        ["MIL-R-55182"],
+    ],
+    6: [["MIL-R-26"], ["MIL-R-39007"]],
+    7: [["MIL-R-18546"], ["MIL-R-39009"]],
+    15: [["MIL-R-23285"], ["MIL-R-39023"]],
+}
+# First key is subcategory ID; second key is specification ID.  Index is style ID.
+RESISTOR_STYLE_DICT: Dict[int, Dict[int, List[List[str]]]] = {
+    6: {
+        1: [
+            ["RWR 71"],
+            ["RWR 74"],
+            ["RWR 78"],
+            ["RWR 80"],
+            ["RWR 81"],
+            ["RWR 82"],
+            ["RWR 84"],
+            ["RWR 89"],
+        ],
+        2: [
+            ["RW 10"],
+            ["RW 11"],
+            ["RW 12"],
+            ["RW 13"],
+            ["RW 14"],
+            ["RW 15"],
+            ["RW 16"],
+            ["RW 20"],
+            ["RW 21"],
+            ["RW 22"],
+            ["RW 23"],
+            ["RW 24"],
+            ["RW 29"],
+            ["RW 30"],
+            ["RW 31"],
+            ["RW 32"],
+            ["RW 33"],
+            ["RW 34"],
+            ["RW 35"],
+            ["RW 36"],
+            ["RW 37"],
+            ["RW 38"],
+            ["RW 39"],
+            ["RW 47"],
+            ["RW 55"],
+            ["RW 56"],
+            ["RW 67"],
+            ["RW 68"],
+            ["RW 69"],
+            ["RW 70"],
+            ["RW 74"],
+            ["RW 78"],
+            ["RW 79"],
+            ["RW 80"],
+            ["RW 81"],
+        ],
+    },
+    7: {
+        1: [
+            ["RE 60/RER 60"],
+            ["RE 65/RER 65"],
+            ["RE 70/RER 70"],
+            ["RE 75/RER 75"],
+            ["RE 77"],
+            ["RE 80"],
+        ],
+        2: [
+            ["RE 60/RER40"],
+            ["RE 65/RER 45"],
+            ["RE 70/ RER 50"],
+            ["RE 75/RER 55"],
+            ["RE 77"],
+            ["RE 80"],
+        ],
+    },
+}
+# Key is subcategory ID, index is type ID.
+RESISTOR_TYPE_DICT: Dict[int, List[List[str]]] = {
+    1: [["RCR"], ["RC"]],
+    2: [["RLR"], ["RL"], ["RNR"], ["RN"]],
+    5: [["RBR"], ["RB"]],
+    6: [["RWR"], ["RW"]],
+    7: [["RER"], ["RE"]],
+    9: [["RTR"], ["RT"]],
+    11: [["RA"], ["RK"]],
+    13: [["RJR"], ["RJ"]],
+    15: [["RO"], ["RVC"]],
+}

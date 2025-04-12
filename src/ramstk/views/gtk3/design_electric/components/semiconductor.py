@@ -256,7 +256,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         )
 
     def on_change_subcategory(self, subcategory_id: int) -> None:
-        """Load the Semiconductor RAMSTKComboBox()s.
+        """Load the Semiconductor RAMSTKComboBoxes with subcategory specific entries.
 
         :param subcategory_id: the subcategory ID of the selected semiconductor.
         """
