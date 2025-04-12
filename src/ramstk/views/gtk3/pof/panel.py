@@ -381,6 +381,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         self.lst_load_history: List[str] = []
         self.lst_measurable_parameters: List[str] = []
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
         super().do_set_widget_callbacks()

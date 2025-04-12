@@ -690,6 +690,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         self.lst_probability: List[str] = [""]
         self.lst_severity: List[str] = [""]
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
         super().do_set_widget_callbacks()

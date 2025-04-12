@@ -255,6 +255,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
         self.lst_owner: List[str] = [""]
         self.lst_type: List[str] = [""]
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
         super().do_set_widget_callbacks()

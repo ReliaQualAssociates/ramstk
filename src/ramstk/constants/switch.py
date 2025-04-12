@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Switch MIL-HDBK-217F Constants Module."""
+"""Switch constants module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models.
 PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         0.0010,
@@ -208,4 +212,42 @@ PI_E: Dict[int, List[float]] = {
         67.0,
         0.0,
     ],
+}
+
+# Constants for GUI displays.
+# Key is subcategory ID; index is application ID.
+SWITCH_APPLICATION_DICT: Dict[int, List[List[str]]] = {
+    1: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    2: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    3: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    4: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    5: [
+        [_("Not Used as a Power On/Off Switch")],
+        [_("Also Used as a Power On/Off Switch")],
+    ],
+}
+# Key is subcategory ID; index is construction ID.
+SWITCH_CONSTRUCTION_DICT: Dict[int, List[List[str]]] = {
+    1: [[_("Snap Action")], [_("Non-Snap Action")]],
+    2: [
+        [_("Actuation Differential > 0.002 inches")],
+        [_("Actuation Differential < 0.002 inches")],
+    ],
+    3: [[_("Ceramic RF Wafers")], [_("Medium Power Wafers")]],
+    5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]],
+}
+# Key is subcategory ID; index is contact form ID.
+SWITCH_CONTACT_FORM_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        ["SPST"],
+        ["DPST"],
+        ["SPDT"],
+        ["3PST"],
+        ["4PST"],
+        ["DPDT"],
+        ["3PDT"],
+        ["4PDT"],
+        ["6PDT"],
+    ],
+    5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]],
 }

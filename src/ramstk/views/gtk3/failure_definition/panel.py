@@ -100,6 +100,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
         super().do_set_widget_callbacks()

@@ -594,6 +594,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         self.lst_manufacturers: List[str] = [""]
         self.part: int = 0
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
         super().do_set_widget_callbacks()
