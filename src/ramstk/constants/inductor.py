@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Inductive devices MIL-HDBK-217F Constants Module."""
+"""Inductive devices constants module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models.
 PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
@@ -154,4 +158,35 @@ PI_E: Dict[int, List[float]] = {
 REF_TEMPS: Dict[int, Dict[int, float]] = {
     1: {1: 329.0, 2: 352.0, 3: 364.0, 4: 400.0, 5: 398.0, 6: 477.0},
     2: {1: 329.0, 2: 352.0, 3: 364.0, 4: 409.0},
+}
+
+# Constants for GUI displays.
+INDUCTOR_INSULATION_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class O")],
+        [_("Insulation Class Q")],
+        [_("Insulation Class R")],
+        [_("Insulation Class S")],
+        [_("Insulation Class T")],
+        [_("Insulation Class U")],
+        [_("Insulation Class V")],
+    ],
+    2: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class F")],
+        [_("Insulation Class O")],
+    ],
+}
+INDUCTOR_QUALITY_DICT: Dict[int, List[List[str]]] = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
+}
+INDUCTOR_SPECIFICATION_DICT: Dict[int, List[List[str]]] = {
+    1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
+    2: [["MIL-T-15305"], ["MIL-T-39010"]],
 }
