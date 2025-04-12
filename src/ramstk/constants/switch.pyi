@@ -1,0 +1,14 @@
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _ as _
+
+PART_COUNT_LAMBDA_B: dict[int, list[float]]
+PART_COUNT_LAMBDA_B_BREAKER: dict[int, list[float]]
+PART_COUNT_PI_Q: dict[int, list[float]]
+PART_STRESS_LAMBDA_B_TOGGLE: dict[int, list[float]]
+PART_STRESS_LAMBDA_B_BREAKER: list[float]
+PART_STRESS_PI_Q: list[float]
+PI_C: dict[int, list[float]]
+PI_E: dict[int, list[float]]
+SWITCH_APPLICATION_DICT: dict[int, list[list[str]]]
+SWITCH_CONSTRUCTION_DICT: dict[int, list[list[str]]]
+SWITCH_CONTACT_FORM_DICT: dict[int, list[list[str]]]

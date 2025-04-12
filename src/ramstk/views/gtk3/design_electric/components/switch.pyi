@@ -1,16 +1,18 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any
 
 # RAMSTK Package Imports
+from ramstk.constants.switch import SWITCH_APPLICATION_DICT as SWITCH_APPLICATION_DICT
+from ramstk.constants.switch import SWITCH_CONSTRUCTION_DICT as SWITCH_CONSTRUCTION_DICT
+from ramstk.constants.switch import SWITCH_CONTACT_FORM_DICT as SWITCH_CONTACT_FORM_DICT
+from ramstk.utilities import do_subscribe_to_messages as do_subscribe_to_messages
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import WidgetConfig as WidgetConfig
 
 class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
-    _dic_applications: Dict[int, List[List[str]]]
-    _dic_constructions: Dict[int, List[List[str]]]
-    _dic_contact_forms: Dict[int, List[List[str]]]
     _record_field: str
     _select_msg: str
     _tag: str
@@ -21,16 +23,14 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
     cmbQuality: RAMSTKComboBox
     txtNCycles: RAMSTKEntry
     txtNElements: RAMSTKEntry
+    _lst_widget_configuration: list[WidgetConfig]
     _hazard_rate_method_id: int
     _quality_id: int
-    dic_attribute_widget_map: Dict[str, List[Any]]
     category_id: int
     subcategory_id: int
     def __init__(self) -> None: ...
-    def do_load_comboboxes(self, subcategory_id: int) -> None: ...
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None: ...
-    def _do_set_sensitive(self) -> None: ...
-    def __do_set_construction_sensitive(self) -> None: ...
-    def __do_set_contact_form_sensitive(self) -> None: ...
-    def __do_set_cycles_sensitive(self) -> None: ...
-    def __do_set_elements_sensitive(self) -> None: ...
+    def on_subcategory_change(self, subcategory_id: int) -> None: ...
+    def _do_load_quality(self) -> None: ...
+    def _get_construction_list(self) -> list[list[str]]: ...
+    def _set_reliability_attributes(self, attributes: dict[str, Any]) -> None: ...
+    def _set_sensitive(self) -> None: ...
