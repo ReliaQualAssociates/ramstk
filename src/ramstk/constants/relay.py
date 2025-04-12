@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Relay MIL-HDBK-217F Constants Module."""
+"""Relay constants module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models
 PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
@@ -242,3 +246,146 @@ PI_F: Dict[int, Dict[int, Dict[int, List[float]]]] = {
     },
     4: {1: {1: [7.0, 14.0], 2: [12.0, 24.0], 3: [10.0, 20.0], 4: [5.0, 10.0]}},
 }
+
+# Constants for GUI displays.
+# Key is contact rating ID.  Index is application ID.
+RELAY_APPLICATION_DICT: Dict[int, List[List[str]]] = {
+    1: [[_("Dry Circuit")]],
+    2: [
+        [_("General Purpose")],
+        [_("Sensitive (0 - 100mW)")],
+        [_("Polarized")],
+        [_("Vibrating Reed")],
+        [_("High Speed")],
+        [_("Thermal Time Delay")],
+        [_("Electronic Time Delay, Non-Thermal")],
+        [_("Magnetic Latching")],
+    ],
+    3: [
+        [_("High Voltage")],
+        [_("Medium Power")],
+    ],
+    4: [[_("Contactors, High Current")]],
+}
+# First key is contact rating ID, second key is application ID.
+# Index is construction ID.
+RELAY_CONSTRUCTION_DICT: Dict[int, Dict[int, List[List[str]]]] = {
+    1: {
+        1: [
+            [_("Armature (Long)")],
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ]
+    },
+    2: {
+        1: [
+            [_("Armature (Long)")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ],
+        2: [
+            [_("Armature (Long and Short)")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Meter Movement")],
+            [_("Balanced Armature")],
+        ],
+        3: [
+            [_("Armature (Short)")],
+            [_("Meter Movement")],
+        ],
+        4: [
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+        ],
+        5: [
+            [_("Armature (Balanced and Short)")],
+            [_("Dry Reed")],
+        ],
+        6: [[_("Bimetal")]],
+        8: [
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+            [_("Balanced Armature")],
+        ],
+    },
+    3: {
+        1: [
+            [_("Vacuum (Glass)")],
+            [_("Vacuum (Ceramic)")],
+        ],
+        2: [
+            [_("Armature (Long and Short)")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Mechanical Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ],
+    },
+    4: {
+        1: [
+            [_("Armature (Short)")],
+            [_("Magnetic Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ]
+    },
+}
+RELAY_QUALITY_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        ["S"],
+        ["R"],
+        ["P"],
+        ["M"],
+        ["MIL-C-15305"],
+        [_("Lower")],
+    ],
+    2: [
+        ["MIL-SPEC"],
+        [_("Lower")],
+    ],
+}
+# Key is subcategory ID.  Index is type ID.
+RELAY_TYPE_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        [_("General Purpose")],
+        [_("Contactor, High Current")],
+        [_("Latching")],
+        [_("Reed")],
+        [_("Thermal, Bi-Metal")],
+        [_("Meter Movement")],
+    ],
+    2: [
+        [_("Solid State")],
+        [_("Hybrid and Solid State Time Delay")],
+    ],
+}
+# Index is the contact form ID.
+RELAY_CONTACT_FORM_LIST: List[List[str]] = [
+    ["SPST"],
+    ["DPST"],
+    ["SPDT"],
+    ["3PST"],
+    ["4PST"],
+    ["DPDT"],
+    ["3PDT"],
+    ["4PDT"],
+    ["6PDT"],
+]
+# Index is contact rating ID.
+RELAY_CONTACT_RATING_LIST: List[List[str]] = [
+    [_("Signal Current (low mV and mA)")],
+    [_("0 - 5 Amp")],
+    [_("5 - 20 Amp")],
+    [_("20 - 600 Amp")],
+]
+# Index is the technology ID (load type).
+RELAY_TECHNOLOGY_LIST: List[List[str]] = [
+    [_("Resistive")],
+    [_("Inductive")],
+    [_("Lamp")],
+]

@@ -37,15 +37,12 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     MIL-HDBK-217FN2 parts count and part stress analysis.  The attributes of an
     Inductor assessment input view are:
 
-    :ivar list _lst_labels: list of label text to display for the capacitor
-        MIL-HDBK-217 input parameters.
-
+    :ivar cmbConstruction: select and display the method of construction of the
+        inductor.
     :ivar cmbInsulation: select and display the insulation class of the
         inductor.
     :ivar cmbSpecification: select and display the governing specification for
         the inductor.
-    :ivar cmbConstruction: select and display the method of construction of the
-        inductor.
     :ivar cmbFamily: select and display the family of the transformer.
     :ivar txtArea: enter and display the heat dissipating area of the inductor.
     :ivar txtWeight: enter and display the weight of the inductor.
