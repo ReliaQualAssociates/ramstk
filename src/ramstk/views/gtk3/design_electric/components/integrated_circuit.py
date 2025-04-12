@@ -437,7 +437,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
 
     # pylint: disable=unused-argument
     def on_subcategory_change(self, subcategory_id: int) -> None:
-        """Load the integrated circuit subcategory-specific RAMSTKComboBoxes.
+        """Load the integrated circuit RAMSTKComboBoxes with subcategory specific info.
 
         :param subcategory_id: the subcategory ID of the selected IC. This is unused in
             this method but required because this method is a PyPubSub listener.

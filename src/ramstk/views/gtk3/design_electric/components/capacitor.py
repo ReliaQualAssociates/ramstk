@@ -11,414 +11,20 @@
 from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
+from ramstk.constants.capacitor import (
+    CAPACITOR_QUALITY_DICT,
+    CAPACITOR_SPECIFICATION_DICT,
+    CAPACITOR_STYLE_DICT,
+    CAPACITOR_STYLE_DICT2,
+)
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
-
-CAPACITOR_QUALITY_DICT: Dict[int, List[Union[str, List[str]]]] = {
-    1: [["MIL-SPEC"], [_("Lower")]],
-    2: [
-        ["M"],
-        [_("MIL-C-11693 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    3: [
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-19978 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    4: [
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-18312 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    5: ["S", "R", "P", "M", [_("Lower")]],
-    6: ["S", "R", "P", "M", [_("Lower")]],
-    7: [
-        "T",
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-5 Non-Established Reliability, Dipped")],
-        [_("MIL-C-5 Non-Established Reliability, Molded")],
-        [_("Lower")],
-    ],
-    8: [["MIL-C-10950"], [_("Lower")]],
-    9: [
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-11272 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    10: [
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-11015 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    11: [
-        "S",
-        "R",
-        "P",
-        "M",
-        [_("MIL-C-20 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    12: ["D", "C", "S", "B", "R", "P", "M", "L", [_("Lower")]],
-    13: [
-        "S",
-        "R",
-        "P",
-        "M",
-        "L",
-        [_("MIL-C-3965 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    14: [
-        "S",
-        "R",
-        "P",
-        "M",
-        [_("MIL-C-39018 Non-Established Reliability")],
-        [_("Lower")],
-    ],
-    15: [["MIL-SPEC"], [_("Lower")]],
-    16: [["MIL-SPEC"], [_("Lower")]],
-    17: [["MIL-SPEC"], [_("Lower")]],
-    18: [["MIL-SPEC"], [_("Lower")]],
-    19: [["MIL-SPEC"], [_("Lower")]],
-}
-CAPACITOR_SPECIFICATION_DICT: Dict[int, List[List[str]]] = {
-    1: [["MIL-C-25"], ["MIL-C-12889"]],
-    2: [["MIL-C-11693"]],
-    3: [["MIL-C-14157"], ["MIL-C-19978"]],
-    4: [["MIL-C-18312"], ["MIL-C-39022"]],
-    5: [["MIL-C-55514"]],
-    6: [["MIL-C-83421"]],
-    7: [["MIL-C-5"], ["MIL-C-39001"]],
-    8: [["MIL-C-10950"]],
-    9: [["MIL-C-11272"], ["MIL-C-23269"]],
-    10: [["MIL-C-11015"], ["MIL-C-39014"]],
-    11: [["MIL-C-20"], ["MIL-C-55681"]],
-    12: [["MIL-C-39003"], ["MIL-C-55365"]],
-    13: [["MIL-C-3965"], ["MIL-C-39006"]],
-    14: [["MIL-C-39018"]],
-    15: [["MIL-C-62"]],
-    16: [["MIL-C-81"]],
-    17: [["MIL-C-14409"]],
-    18: [["MIL-C-92"]],
-    19: [["MIL-C-23183"]],
-}
-CAPACITOR_STYLE_DICT: Dict[int, List[List[List[str]]]] = {
-    1: [
-        [
-            ["CP4"],
-            ["CP5"],
-            ["CP8"],
-            ["CP9"],
-            ["CP10"],
-            ["CP11"],
-            ["CP12"],
-            ["CP13"],
-            ["CP25"],
-            ["CP26"],
-            ["CP27"],
-            ["CP28"],
-            ["CP29"],
-            ["CP40"],
-            ["CP41"],
-            ["CP67"],
-            ["CP69"],
-            ["CP70"],
-            ["CP72"],
-            ["CP75"],
-            ["CP76"],
-            ["CP77"],
-            ["CP78"],
-            ["CP80"],
-            ["CP81"],
-            ["CP82"],
-        ],
-        [["CA"]],
-    ],
-    3: [
-        [["CPV07"], ["CPV09"], ["CPV17"]],
-        [
-            [_("Characteristic E")],
-            [_("Characteristic F")],
-            [_("Characteristic G")],
-            [_("Characteristic K")],
-            [_("Characteristic L")],
-            [_("Characteristic M")],
-            [_("Characteristic P")],
-            [_("Characteristic Q")],
-            [_("Characteristic S")],
-            [_("Characteristic T")],
-        ],
-    ],
-    4: [
-        [[_("Characteristic N")], [_("Characteristic R")]],
-        [
-            [_("Characteristic 1")],
-            [_("Characteristic 9")],
-            [_("Characteristic 10")],
-            [_("Characteristic 12")],
-            [_("Characteristic 19")],
-            [_("Characteristic 29")],
-            [_("Characteristic 49")],
-            [_("Characteristic 59")],
-        ],
-    ],
-    7: [
-        [
-            [_("Temperature Range M")],
-            [_("Temperature Range N")],
-            [_("Temperature Range O")],
-            [_("Temperature Range P")],
-        ],
-        [[_("Temperature Range O")], [_("Temperature Range P")]],
-    ],
-    9: [
-        [[_("Temperature Range C")], [_("Temperature Range D")]],
-        [[_("All")]],
-    ],
-    10: [
-        [
-            [_("Type A Rated Temperature")],
-            [_("Type B Rated Temperature")],
-            [_("Type C Rated Temperature")],
-        ],
-        [
-            ["CKR05"],
-            ["CKR06"],
-            ["CKR07"],
-            ["CKR08"],
-            ["CKR09"],
-            ["CKR10"],
-            ["CKR11"],
-            ["CKR12"],
-            ["CKR13"],
-            ["CKR14"],
-            ["CKR15"],
-            ["CKR16"],
-            ["CKR17"],
-            ["CKR18"],
-            ["CKR19"],
-            ["CKR48"],
-            ["CKR64"],
-            ["CKR72"],
-            ["CKR73"],
-            ["CKR74"],
-        ],
-    ],
-    11: [
-        [
-            ["CC5"],
-            ["CC6"],
-            ["CC7"],
-            ["CC8"],
-            ["CC9"],
-            ["CC13"],
-            ["CC14"],
-            ["CC15"],
-            ["CC16"],
-            ["CC17"],
-            ["CC18"],
-            ["CC19"],
-            ["CC20"],
-            ["CC21"],
-            ["CC22"],
-            ["CC25"],
-            ["CC26"],
-            ["CC27"],
-            ["CC30"],
-            ["CC31"],
-            ["CC32"],
-            ["CC33"],
-            ["CC35"],
-            ["CC36"],
-            ["CC37"],
-            ["CC45"],
-            ["CC47"],
-            ["CC50"],
-            ["CC51"],
-            ["CC52"],
-            ["CC53"],
-            ["CC54"],
-            ["CC55"],
-            ["CC56"],
-            ["CC57"],
-            ["CC75"],
-            ["CC76"],
-            ["CC77"],
-            ["CC78"],
-            ["CC79"],
-            ["CC81"],
-            ["CC82"],
-            ["CC83"],
-            ["CC85"],
-            ["CC95"],
-            ["CC96"],
-            ["CC97"],
-            ["CCR05"],
-            ["CCR06"],
-            ["CCR07"],
-            ["CCR08"],
-            ["CCR09"],
-            ["CCR13"],
-            ["CCR14"],
-            ["CCR15"],
-            ["CCR16"],
-            ["CCR17"],
-            ["CCR18"],
-            ["CCR19"],
-            ["CCR54"],
-            ["CCR55"],
-            ["CCR56"],
-            ["CCR57"],
-            ["CCR75"],
-            ["CCR76"],
-            ["CCR77"],
-            ["CCR78"],
-            ["CCR79"],
-            ["CCR81"],
-            ["CCR82"],
-            ["CCR83"],
-            ["CCR90"],
-        ],
-        [["CDR"]],
-    ],
-    13: [
-        [
-            ["CL10"],
-            ["CL13"],
-            ["CL14"],
-            ["CL16"],
-            ["CL17"],
-            ["CL18"],
-            ["CL24"],
-            ["CL25"],
-            ["CL26"],
-            ["CL27"],
-            ["CL30"],
-            ["CL31"],
-            ["CL32"],
-            ["CL33"],
-            ["CL34"],
-            ["CL35"],
-            ["CL36"],
-            ["CL37"],
-            ["CL40"],
-            ["CL41"],
-            ["CL42"],
-            ["CL43"],
-            ["CL46"],
-            ["CL47"],
-            ["CL48"],
-            ["CL49"],
-            ["CL50"],
-            ["CL51"],
-            ["CL52"],
-            ["CL53"],
-            ["CL54"],
-            ["CL55"],
-            ["CL56"],
-            ["CL64"],
-            ["CL65"],
-            ["CL66"],
-            ["CL67"],
-            ["CL70"],
-            ["CL71"],
-            ["CL72"],
-            ["CL73"],
-        ],
-        [["CLR"]],
-    ],
-}
-CAPACITOR_STYLE_DICT2: Dict[int, List[List[str]]] = {
-    2: [
-        [_("Characteristic E")],
-        [_("Characteristic K")],
-        [_("Characteristic P")],
-        [_("Characteristic W")],
-    ],
-    5: [
-        [_("Characteristic M")],
-        [_("Characteristic N")],
-        [_("Characteristic Q")],
-        [_("Characteristic R")],
-        [_("Characteristic S")],
-    ],
-    6: [["CRH"]],
-    8: [["CB50"], [_("Other")]],
-    12: [["CSR"]],
-    14: [
-        [_("Style 16")],
-        [_("Style 17")],
-        [_("Style 71")],
-        [_("All Others")],
-    ],
-    15: [["CE"]],
-    16: [
-        ["CV11"],
-        ["CV14"],
-        ["CV21"],
-        ["CV31"],
-        ["CV32"],
-        ["CV34"],
-        ["CV35"],
-        ["CV36"],
-        ["CV40"],
-        ["CV41"],
-    ],
-    17: [
-        [_("Style G")],
-        [_("Style H")],
-        [_("Style J")],
-        [_("Style L")],
-        [_("Style Q")],
-        [_("Style T")],
-    ],
-    18: [["CT"]],
-    19: [
-        ["CG20"],
-        ["CG21"],
-        ["CG30"],
-        ["CG31"],
-        ["CG32"],
-        ["CG40"],
-        ["CG41"],
-        ["CG42"],
-        ["CG43"],
-        ["CG44"],
-        ["CG50"],
-        ["CG51"],
-        ["CG60"],
-        ["CG61"],
-        ["CG62"],
-        ["CG63"],
-        ["CG64"],
-        ["CG65"],
-        ["CG66"],
-        ["CG67"],
-    ],
-}
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+)
 
 
 class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -431,8 +37,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
 
     :ivar list _lst_labels: list of label text to display for the capacitor
         MIL-HDBK-217 input parameters.
-    :ivar _lst_widgets: the list of widgets to display in the panel.  These
-        are listed in the order they should appear on the panel.
 
     :ivar cmbConfiguration: select and display the configuration of the
         capacitor.
@@ -446,21 +50,11 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     :ivar txtESR: enter and display the equivalent series resistance.
     """
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field: str = "hardware_id"
     _select_msg: str = "succeed_get_design_electric_attributes"
     _tag: str = "design_electric"
     _title: str = _("Capacitor Design Inputs")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Capacitor assessment input view."""
@@ -475,53 +69,182 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
         self.txtESR: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": self.cmbQuality,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "quality_id",
+                    "index": 32,
+                    "label_text": _("Quality Level:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_reliability",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The quality level of the capacitor."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtCapacitance,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0,
+                    "field": "capacitance",
+                    "index": 4,
+                    "label_text": _("Capacitance (F):"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The capacitance rating (in farads) of the capacitor."
+                    ),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbSpecification,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "specification_id",
+                    "index": 36,
+                    "label_text": _("Specification:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The governing specification for the capacitor."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbStyle,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "type_id",
+                    "index": 48,
+                    "label_text": _("Style:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The style of the capacitor."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbConfiguration,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "configuration_id",
+                    "index": 5,
+                    "label_text": _("Configuration:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The configuration of the capacitor."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbConstruction,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "construction_id",
+                    "index": 6,
+                    "label_text": _("Construction:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The method of construction of the capacitor."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtESR,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0,
+                    "field": "resistance",
+                    "index": 35,
+                    "label_text": _("Equivalent Series Resistance (\u03a9):"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The equivalent series resistance of the capacitor."),
+                    "visible": True,
+                },
+            },
+        ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0
 
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.category_id: int = 0
         self.subcategory_id: int = 0
 
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-        super().do_set_callbacks()
-
-        self.cmbSpecification.connect("changed", self._do_load_styles)
+        self._do_set_widget_callbacks()
+        self._do_load_configuration()
+        self._do_load_construction()
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "changed_subcategory": self.do_load_comboboxes,
+                "changed_subcategory": self.on_subcategory_change,
                 "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the capacitor assessment input RAMSTKComboBox()s.
+    def on_subcategory_change(self, subcategory_id: int) -> None:
+        """Load the capacitor RAMSTKComboBoxes with subcategory specific entries.
 
         :param subcategory_id: the subcategory ID of the selected capacitor.
-        :return: None
-        :rtype: None
         """
         self.subcategory_id = subcategory_id
 
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+        )
+        self.cmbSpecification.do_load_combo(
+            CAPACITOR_SPECIFICATION_DICT.get(self.subcategory_id, [[""]]),
+        )
+        self.cmbStyle.do_load_combo(
+            [],
+        )
+
+        self._set_sensitive()
+
+    def _do_load_configuration(self) -> None:
+        """Load the configuration RAMSTKComboBox."""
         self.cmbConfiguration.do_load_combo(
             [
                 [_("Fixed")],
                 [_("Variable")],
             ],
-            signal="changed",
         )
+
+    def _do_load_construction(self) -> None:
+        """Load the construction RAMSTKComboBox."""
         self.cmbConstruction.do_load_combo(
             [
                 [_("Slug, All Tantalum")],
@@ -530,136 +253,22 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("Foil, Non-Hermetic")],
                 [_("Slug, Non-Hermetic")],
             ],
-            signal="changed",
         )
-        self.cmbQuality.do_load_combo(
-            self._get_quality_list(),
-            signal="changed",
-        )
-        self.cmbSpecification.do_load_combo(
-            CAPACITOR_SPECIFICATION_DICT.get(self.subcategory_id, [[""]]),
-            signal="changed",
-        )
-        self.cmbStyle.do_load_combo(
-            [],
-            signal="changed",
-        )
-
-        self._set_sensitive()
-
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
-        """Initialize the attribute widget map.
-
-        :return: the attributes dict for the Gtk widgets.
-        :rtype: dict
-        """
-        return {
-            "quality_id": [
-                32,
-                self.cmbQuality,
-                "changed",
-                super().on_changed_combo,
-                "wvw_editing_reliability",
-                0,
-                {
-                    "tooltip": _("The quality level of the capacitor."),
-                },
-                _("Quality Level:"),
-                "gint",
-            ],
-            "capacitance": [
-                4,
-                self.txtCapacitance,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The capacitance rating (in farads) of the capacitor."
-                    ),
-                },
-                _("Capacitance (F):"),
-                "gfloat",
-            ],
-            "specification_id": [
-                36,
-                self.cmbSpecification,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The governing specification for the capacitor."),
-                },
-                _("Specification:"),
-                "gint",
-            ],
-            "type_id": [
-                48,
-                self.cmbStyle,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The style of the capacitor."),
-                },
-                _("Style:"),
-                "gint",
-            ],
-            "configuration_id": [
-                5,
-                self.cmbConfiguration,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The configuration of the capacitor."),
-                },
-                _("Configuration:"),
-                "gint",
-            ],
-            "construction_id": [
-                6,
-                self.cmbConstruction,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The method of construction of the capacitor."),
-                },
-                _("Construction:"),
-                "gint",
-            ],
-            "resistance": [
-                35,
-                self.txtESR,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The equivalent series resistance of the capacitor."),
-                },
-                _("Equivalent Series Resistance (\u03a9):"),
-                "gfloat",
-            ],
-        }
 
     def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
-        """Load the style RAMSTKComboBox() when the specification changes.
+        """Load the style RAMSTKComboBox when the specification changes.
 
-        :param combo: the specification RAMSTKCombo() that called this method.
-        :return: None
-        :rtype: None
+        :param combo: the specification RAMSTKCombo that called this method.
         """
         self.cmbStyle.do_load_combo(
             self._get_style_list(combo),
-            signal="changed",
         )
+
+    def _do_set_widget_callbacks(self) -> None:
+        """Set the callbacks for the widgets in the Capacitor assessment input view."""
+        super().do_set_widget_callbacks()
+
+        self.cmbSpecification.connect("changed", self._do_load_styles)
 
     def _get_quality_list(self) -> List[Union[str, List[str]]]:
         """Return the list of quality levels based on subcategory.
@@ -708,25 +317,18 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
         """
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super().set_widget_sensitivity([self.cmbQuality])
+        super().do_set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
+            {"quality_id": self._quality_id},
         )
 
     def _set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected capacitor type.
-
-        :return: None
-        :rtype: None
-        """
+        """Set widget sensitivity as needed for the selected capacitor type."""
         # Define all widgets that could be sensitive
         _all_widgets = [
             self.cmbConstruction,
@@ -738,7 +340,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super().set_widget_sensitivity(
+        super().do_set_widget_sensitivity(
             _all_widgets,
             False,
         )
@@ -763,6 +365,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Set widget sensitivity based on hazard rate method
         if self._hazard_rate_method_id == 1:
-            super().set_widget_sensitivity([self.cmbSpecification])
+            super().do_set_widget_sensitivity([self.cmbSpecification])
         else:
-            super().set_widget_sensitivity(_sensitivity_list)
+            super().do_set_widget_sensitivity(_sensitivity_list)

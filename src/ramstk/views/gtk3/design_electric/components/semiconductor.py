@@ -250,13 +250,13 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "changed_subcategory": self.on_change_subcategory,
+                "changed_subcategory": self.on_subcategory_change,
                 "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
-    def on_change_subcategory(self, subcategory_id: int) -> None:
-        """Load the Semiconductor RAMSTKComboBoxes with subcategory specific entries.
+    def on_subcategory_change(self, subcategory_id: int) -> None:
+        """Load the semiconductor RAMSTKComboBoxes with subcategory specific entries.
 
         :param subcategory_id: the subcategory ID of the selected semiconductor.
         """
