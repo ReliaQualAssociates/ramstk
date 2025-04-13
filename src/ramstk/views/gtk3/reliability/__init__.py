@@ -5,11 +5,9 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Design Electric Package."""
+"""The Reliability view package."""
 
 # RAMSTK Local Imports
-from .panel import (
-    AvailabilityResultsPanel,
-    ReliabilityInputPanel,
-    ReliabilityResultsPanel,
-)
+from .availability_results_panel import AvailabilityResultsPanel  # noqa: F401
+from .reliability_input_panel import ReliabilityInputPanel  # noqa: F401
+from .reliability_results_panel import ReliabilityResultsPanel  # noqa: F401
