@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Connection MIL-HDBK-217F Constants Module."""
+"""Connection constants module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models.
 PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
@@ -385,4 +389,133 @@ FACTOR_KEYS: Dict[int, Dict[int, List[int]]] = {
         8: [3, 3, 2, 2, 2, 2, 2, 2],
     },
     5: {1: [3, 3, 2, 2, 2, 2, 2, 2]},
+}
+
+# Constants for GUI displays.
+INSERT_A_LIST: List[List[str]] = [
+    [_("Vitreous Glass")],
+    [_("Alumina Ceramic")],
+    [_("Polyimide")],
+]
+INSERT_B_LIST: List[List[str]] = [
+    [_("Diallylphtalate")],
+    [_("Melamine")],
+    [_("Flourosilicone")],
+    [_("Silicone Rubber")],
+    [_("Polysulfone")],
+    [_("Epoxy Resin")],
+]
+INSERT_C_LIST: List[List[str]] = [
+    [_("Polytetraflourethylene (Teflon)")],
+    [_("Chlorotriflourethylene (Kel-f)")],
+]
+INSERT_D_LIST: List[List[str]] = [
+    [_("Polyamide (Nylon)")],
+    [_("Polychloroprene (Neoprene)")],
+    [_("Polyethylene")],
+]
+# CONNECTION_INSERT_DICT: Nested dictionary structure
+# Key 1: Connection type
+# Key 2: Insert type
+# Value: List of insert materials
+CONNECTION_INSERT_DICT: Dict[int, Dict[int, List[List[str]]]] = {
+    1: {
+        1: INSERT_B_LIST,
+        2: INSERT_B_LIST,
+        3: INSERT_A_LIST + INSERT_B_LIST,
+        4: INSERT_A_LIST + INSERT_B_LIST,
+        5: INSERT_A_LIST + INSERT_B_LIST,
+    },
+    2: {
+        1: INSERT_B_LIST + INSERT_D_LIST,
+        2: INSERT_A_LIST + INSERT_B_LIST + INSERT_D_LIST,
+        3: INSERT_A_LIST + INSERT_B_LIST,
+        4: INSERT_A_LIST + INSERT_B_LIST,
+        5: INSERT_B_LIST,
+        6: INSERT_B_LIST,
+    },
+    3: {
+        1: INSERT_B_LIST + INSERT_D_LIST,
+        2: INSERT_B_LIST + INSERT_D_LIST,
+    },
+    4: {
+        1: INSERT_C_LIST,
+        2: INSERT_C_LIST,
+        3: INSERT_C_LIST,
+        4: INSERT_C_LIST,
+        5: INSERT_C_LIST,
+        6: INSERT_C_LIST,
+        7: INSERT_C_LIST,
+        8: INSERT_B_LIST + INSERT_C_LIST,
+    },
+    5: {
+        1: INSERT_B_LIST + INSERT_C_LIST,
+    },
+}
+CONNECTION_QUALITY_DICT: Dict[int, List[List[str]]] = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["MIL-SPEC"], [_("Lower")]],
+    4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
+    5: [
+        [_("Automated")],
+        [_("Manual, Upper")],
+        [_("Manual, Standard")],
+        [_("Manual, Lower")],
+    ],
+}
+CONNECTION_SPECIFICATION_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        [_("MIL-C-24308")],
+        [_("MIL-C-28748")],
+        [_("MIL-C-28804")],
+        [_("MIL-C-83513")],
+        [_("MIL-C-83733")],
+    ],
+    2: [
+        [_("MIL-C-5015")],
+        [_("MIL-C-26482")],
+        [_("MIL-C-28840")],
+        [_("MIL-C-38999")],
+        [_("MIL-C-81511")],
+        [_("MIL-C-83723")],
+    ],
+    3: [[_("MIL-C-3767")], [_("MIL-C-22992")]],
+    4: [
+        [_("MIL-C-3607")],
+        [_("MIL-C-3643")],
+        [_("MIL-C-3650")],
+        [_("MIL-C-3655")],
+        [_("MIL-C-25516")],
+        [_("MIL-C-39012")],
+        [_("MIL-C-55235")],
+        [_("MIL-C-55339")],
+    ],
+    5: [[_("MIL-C-49142")]],
+}
+CONNECTION_TYPE_DICT: Dict[int, List[List[str]]] = {
+    1: [
+        [_("Rack and Panel")],
+        [_("Circular")],
+        [_("Power")],
+        [_("Coaxial")],
+        [_("Triaxial")],
+    ],
+    4: [
+        [_("PWA/PCB with PTHs")],
+        [
+            _(
+                "Discrete Wiring with Electroless Deposited PTH (<3 Levels "
+                "of Circuitry)"
+            )
+        ],
+    ],  # noqa
+    5: [
+        [_("Hand Solder w/o Wrapping")],
+        [_("Hand Solder w/ Wrapping")],
+        [_("Crimp")],
+        [_("Weld")],
+        [_("Solderless Wrap")],
+        [_("Clip Termination")],
+        [_("Reflow Solder")],
+    ],
 }
