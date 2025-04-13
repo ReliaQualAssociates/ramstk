@@ -13,7 +13,12 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+)
 
 
 class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -33,21 +38,11 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         miscellaneous item (lamps only).
     """
 
-    # Define private dict class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field: str = "hardware_id"
     _select_msg: str = "succeed_get_design_electric_attributes"
     _tag: str = "design_electric"
     _title: str = _("Miscellaneous Device Design Inputs")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize instance of the Miscellaneous assessment input view."""
@@ -60,139 +55,153 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self.txtFrequency: RAMSTKEntry = RAMSTKEntry()
         self.txtUtilization: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            {
+                "widget": self.cmbQuality,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "quality_id",
+                    "index": 32,
+                    "label_text": _("Quality Level:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_reliability",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The quality level."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbApplication,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "application_id",
+                    "index": 2,
+                    "label_text": _("Application:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The application of the lamp."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.cmbType,
+                "attributes": {
+                    "datatype": "gint",
+                    "default": 0,
+                    "field": "type_id",
+                    "index": 48,
+                    "label_text": _("Type:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The type of electronic filter."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtFrequency,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "frequency_operating",
+                    "index": 17,
+                    "label_text": _("Operating Frequency:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_design_electric",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _("The operating frequency of the crystal."),
+                    "visible": True,
+                },
+            },
+            {
+                "widget": self.txtUtilization,
+                "attributes": {
+                    "datatype": "gfloat",
+                    "default": 100.0,
+                    "field": "duty_cycle",
+                    "index": 12,
+                    "label_text": _("Utilization:"),
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_hardware",
+                },
+                "properties": {
+                    "editable": True,
+                    "tooltip": _(
+                        "The utilization factor (illuminate hours / equipment operate "
+                        "hours) of the lamp."
+                    ),
+                    "visible": True,
+                },
+            },
+        ]
         self._duty_cycle: float = 100.0
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0
 
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.category_id: int = 0
         self.subcategory_id: int = 0
 
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-        super().do_set_callbacks()
+        super().do_set_widget_callbacks()
+        self._do_load_application()
+        self._do_load_quality()
+        self._do_load_type()
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "changed_subcategory": self.do_load_comboboxes,
+                "changed_subcategory": self.on_subcategory_change,
                 "succeed_get_hardware_attributes": self._set_hardware_attributes,
                 "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the miscellaneous assessment input RKTComboBox()s.
+    def on_subcategory_change(self, subcategory_id: int) -> None:
+        """Load the miscellaneous RAMSTKComboBoxes with subcategory specific entries.
 
         :param subcategory_id: the subcategory ID of the selected miscellaneous device.
-        :return: None
-        :rtype: None
         """
         self.subcategory_id = subcategory_id
+        self._set_sensitive()
 
+    def _do_load_application(self) -> None:
+        """Load the RAMSTKComboBox with the miscellaneous application list."""
         self.cmbApplication.do_load_combo(
             [
                 [_("Incandescent, AC")],
                 [_("Incandescent, DC")],
             ],
-            signal="changed",
         )
+
+    def _do_load_quality(self) -> None:
+        """Load the RAMSTKComboBox with the quality list."""
         self.cmbQuality.do_load_combo(
             [
                 ["MIL-SPEC"],
                 [_("Lower")],
             ],
-            signal="changed",
         )
+
+    def _do_load_type(self) -> None:
+        """Load the RAMSTKComboBox with the miscellaneous type list."""
         self.cmbType.do_load_combo(
             self._get_type_list(),
-            signal="changed",
         )
-
-        self._set_sensitive()
-
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
-        """Initialize the attribute widget map."""
-        return {
-            "quality_id": [
-                32,
-                self.cmbQuality,
-                "changed",
-                super().on_changed_combo,
-                "wvw_editing_reliability",
-                0,
-                {
-                    "tooltip": _("The quality level."),
-                },
-                _("Quality Level:"),
-                "gint",
-            ],
-            "application_id": [
-                2,
-                self.cmbApplication,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The application of the lamp."),
-                },
-                _("Application:"),
-                "gint",
-            ],
-            "type_id": [
-                48,
-                self.cmbType,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The type of electronic filter."),
-                },
-                _("Type:"),
-                "gint",
-            ],
-            "frequency_operating": [
-                17,
-                self.txtFrequency,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0.0,
-                {
-                    "tooltip": _("The operating frequency of the crystal."),
-                },
-                _("Operating Frequency:"),
-                "gfloat",
-            ],
-            "duty_cycle": [
-                12,
-                self.txtUtilization,
-                "changed",
-                super().on_changed_entry,
-                "wvw_editing_hardware",
-                100.0,
-                {
-                    "tooltip": _(
-                        "The utilization factor (illuminate hours / equipment operate "
-                        "hours) of the lamp."
-                    ),
-                },
-                _("Utilization:"),
-                "gfloat",
-            ],
-        }
 
     def _get_type_list(self) -> List[List[str]]:
         """Return the type list to load into the RAMSTKComboBox().
@@ -219,8 +228,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         """Set the attributes when the hardware attributes are retrieved.
 
         :param attributes: the dict of hardware attributes.
-        :return: None
-        :rtype: None
         """
         if attributes["hardware_id"] == self._record_id:
             self._duty_cycle = attributes["duty_cycle"]
@@ -229,8 +236,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
         """
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
@@ -238,18 +243,13 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._set_sensitive()
         super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
+            {"quality_id": self._quality_id},
         )
 
     def _set_sensitive(self) -> None:
-        """Set widget sensitivity for the selected Miscellaneous item.
-
-        :return: None
-        :rtype: None
-        """
+        """Set widget sensitivity for the selected Miscellaneous item."""
         # Reset all widgets to be insensitive.
-        super().set_widget_sensitivity(
+        super().do_set_widget_sensitivity(
             [
                 self.cmbApplication,
                 self.cmbType,
@@ -272,4 +272,4 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         # Set widget sensitivity based on hazard rate method
         if self._hazard_rate_method_id == 2:
             _sensitivity_list += [self.txtUtilization]
-        super().set_widget_sensitivity(_sensitivity_list)
+        super().do_set_widget_sensitivity(_sensitivity_list)
