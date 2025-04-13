@@ -294,10 +294,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_panel()
-        super().do_set_widget_callbacks()
-
-        self.cmbSpecification.connect("changed", self._do_load_insert)
-        self.cmbType.connect("changed", self._do_load_specification)
+        self._do_set_widget_callbacks()
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
@@ -349,6 +346,13 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         _type_id = int(combo.get_active())
         _specifications = CONNECTION_SPECIFICATION_DICT.get(_type_id, [])
         self.cmbSpecification.do_load_combo(_specifications)
+
+    def _do_set_widget_callbacks(self) -> None:
+        """Set the callbacks for the connection widgets."""
+        super().do_set_widget_callbacks()
+
+        self.cmbSpecification.connect("changed", self._do_load_insert)
+        self.cmbType.connect("changed", self._do_load_specification)
 
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of quality levels based on subcategory.

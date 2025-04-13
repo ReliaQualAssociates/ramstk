@@ -5,11 +5,15 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Meter MIL-HDBK-217F Constants Module."""
+"""Meter constants module."""
 
 # Standard Library Imports
 from typing import Dict, List
 
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _
+
+# Constants for MIL-HDBK-217FN2 models.
 PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
@@ -134,3 +138,15 @@ PI_E: Dict[int, List[float]] = {
     ],
 }
 PI_F: List[float] = [1.0, 1.0, 2.8]
+
+# Constants for GUI display.
+# Quality levels; key is the subcategory ID.
+METER_QUALITY_DICT: Dict[int, List[List[str]]] = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["MIL-SPEC"], [_("Lower")]],
+}
+# Meter types; key is the subcategory ID.
+METER_TYPE_DICT: Dict[int, List[List[str]]] = {
+    1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
+    2: [[_("Direct Current")], [_("Alternating Current")]],
+}
