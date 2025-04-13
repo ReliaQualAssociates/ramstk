@@ -34,7 +34,11 @@ class RAMSTKPlot(RAMSTKBaseWidget):
     axis: Incomplete
     def __init__(self) -> None: ...
     def do_load_plot(
-        self, x_values: list[float], y_values: list[float], plot_type: str = "scatter"
+        self,
+        x_values: list[float],
+        y_values: list[float],
+        marker: str,
+        plot_type: str = "scatter",
     ) -> None: ...
     def do_add_line(
         self,

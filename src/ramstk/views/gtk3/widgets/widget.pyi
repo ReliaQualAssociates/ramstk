@@ -19,9 +19,9 @@ class WidgetAttributes(TypedDict, total=False):
     format: str
     index: int
     label_text: str | None
-    listen_topic: str
+    listen_topic: str | None
     record_id: int
-    send_topic: str
+    send_topic: str | None
     subscribe: str
     x_pos: int
     y_pos: int
@@ -122,6 +122,11 @@ class WidgetConfig(TypedDict):
     attributes: WidgetAttributes
     properties: WidgetProperties
 
+def make_widget_config(
+    widget: RAMSTKBaseWidget,
+    attributes: WidgetAttributes,
+    properties: WidgetProperties,
+) -> WidgetConfig: ...
 def set_widget_sensitivity(
     widgets: list[RAMSTKBaseWidget | Gtk.Widget], sensitive: bool = True
 ) -> None: ...
