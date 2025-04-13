@@ -97,6 +97,7 @@ class RAMSTKPlot(RAMSTKBaseWidget):
         self,
         x_values: List[float],
         y_values: List[float],
+        marker: str,
         plot_type: str = "scatter",
     ) -> None:
         """Load the RAMSTKPlot.
@@ -112,13 +113,13 @@ class RAMSTKPlot(RAMSTKBaseWidget):
             'scatter' (default), and 'step'.
         """
         if plot_type == "step":
-            self._do_make_step_plot(x_values, y_values)
+            self._do_make_step_plot(x_values, y_values, marker)
         elif plot_type == "scatter":
-            self._do_make_scatter_plot(x_values, y_values)
+            self._do_make_scatter_plot(x_values, y_values, marker)
         elif plot_type == "histogram":
-            self._do_make_histogram(x_values, y_values)
+            self._do_make_histogram(x_values, y_values, marker)
         elif plot_type == "date":
-            self._do_make_date_plot(x_values, y_values)
+            self._do_make_date_plot(x_values, y_values, marker)
 
         _min, _max = self._get_minimax_ordinates()
 
@@ -235,6 +236,8 @@ class RAMSTKPlot(RAMSTKBaseWidget):
                 "verticalalignment": properties.get("horizontal_alignment", "center"),
                 "horizontalalignment": properties.get("vertical_alignment", "center"),
                 "rotation": properties.get("rotation", "vertical"),
+                "x": x_pos,
+                "y": y_pos,
             },
         )
 

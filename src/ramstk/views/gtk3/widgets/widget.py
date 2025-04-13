@@ -27,9 +27,9 @@ class WidgetAttributes(TypedDict, total=False):
     format: str
     index: int
     label_text: Optional[str]
-    listen_topic: str
+    listen_topic: Optional[str]
     record_id: int
-    send_topic: str
+    send_topic: Optional[str]
     subscribe: str
     x_pos: int
     y_pos: int
@@ -259,6 +259,22 @@ class WidgetConfig(TypedDict):
     widget: RAMSTKBaseWidget
     attributes: WidgetAttributes
     properties: WidgetProperties
+
+
+def make_widget_config(
+    widget: RAMSTKBaseWidget,
+    attributes: WidgetAttributes,
+    properties: WidgetProperties,
+) -> WidgetConfig:
+    """Create a widget configuration dictionary.
+
+    This is a helper function used to ensure type-safety.
+    """
+    return {
+        "widget": widget,
+        "attributes": attributes,
+        "properties": properties,
+    }
 
 
 def set_widget_sensitivity(

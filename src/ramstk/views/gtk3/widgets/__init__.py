@@ -51,4 +51,5 @@ from .widget import (  # noqa: F401
     WidgetAttributes,
     WidgetConfig,
     WidgetProperties,
+    make_widget_config,
 )
