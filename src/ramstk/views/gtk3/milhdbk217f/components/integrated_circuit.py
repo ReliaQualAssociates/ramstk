@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.milhdbk217f import MilHdbk217FResultPanel
-from ramstk.views.gtk3.widgets import RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKEntry, WidgetConfig, make_widget_config
 
 
 class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
@@ -22,7 +22,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     The Integrated Circuit assessment result view displays all the assessment
     results for the selected integrated circuit.  This includes, currently,
     results for MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress
-    methods.  The attributes of a integrated circuit assessment result view
+    methods.  The attributes of an integrated circuit assessment result view
     are:
 
     :ivar txtC1: displays the die complexity hazard rate of the integrated
@@ -46,12 +46,11 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiA: displays the application factor for the integrated circuit.
     """
 
+    # Define private class attributes.
     _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = "(C<sub>1</sub>\u03c0<sub>T</sub> + C<sub>2</sub>\u03c0<sub>E</sub>)"
     _function_2 = "\u03c0<sub>Q</sub>\u03c0<sub>L</sub></span>"
     _function_3 = "\u03bb<sub>CYC</sub>)" + _function_2
-
-    # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1: _lambda_p + _function_1 + _function_2,
         2: _lambda_p + _function_1 + _function_2,
@@ -69,19 +68,9 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         ">CD</sub> + \u03bb<sub>BP</sub>\u03c0<sub>E</sub>\u03c0<sub>Q</sub"
         ">\u03c0<sub>PT</sub> + \u03bb<sub>EOS</sub></span> ",
     }
-
-    # Define private class list class attributes.
-
-    # Define private scalar class attributes.
     _record_field: str = "hardware_id"
     _tag: str = "milhdbk217f"
     _title: str = _("Integrated Circuit MIL-HDBK-217F Results")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the IC assessment result view."""
@@ -101,247 +90,314 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiPT: RAMSTKEntry = RAMSTKEntry()
         self.txtPiT: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "hazard_rate_model": [
-                13,
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            make_widget_config(
                 self.lblModel,
-                "",
-                None,
-                "",
-                "",
+                {
+                    "datatype": "",
+                    "default": "",
+                    "field": "hazard_rate_model",
+                    "index": 13,
+                    "label_text": "",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The assessment model used to calculate the integrated circuit "
                         "hazard rate."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "",
-            ],
-            "lambda_b": [
-                23,
+            ),
+            make_widget_config(
                 self.txtLambdaB,
-                "",
-                None,
-                "",
-                0.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "lambda_b",
+                    "index": 23,
+                    "label_text": "\u03bb<sub>b</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The base hazard rate for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>b</sub>:",
-            ],
-            "pi_q": [
-                30,
+            ),
+            make_widget_config(
                 self.txtPiQ,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_q",
+                    "index": 30,
+                    "label_text": "\u03c0<sub>Q</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The quality factor for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>Q</sub>:",
-            ],
-            "pi_e": [
-                19,
+            ),
+            make_widget_config(
                 self.txtPiE,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_e",
+                    "index": 19,
+                    "label_text": "\u03c0<sub>E</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The environment factor for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>E</sub>:",
-            ],
-            "C1": [
-                6,
+            ),
+            make_widget_config(
                 self.txtC1,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "C1",
+                    "index": 6,
+                    "label_text": "C1:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The die complexity factor for the integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "C1:",
-            ],
-            "pi_t": [
-                33,
+            ),
+            make_widget_config(
                 self.txtPiT,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_t",
+                    "index": 33,
+                    "label_text": "\u03c0<sub>T</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The temperature correction factor for the integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>T</sub>:",
-            ],
-            "C2": [
-                7,
+            ),
+            make_widget_config(
                 self.txtC2,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "C2",
+                    "index": 7,
+                    "label_text": "C2:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The package hazard rate for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "C2:",
-            ],
-            "pi_l": [
-                23,
+            ),
+            make_widget_config(
                 self.txtPiL,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_l",
+                    "index": 23,
+                    "label_text": "\u03c0<sub>L</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The learning factor for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>L</sub>:",
-            ],
-            "lambdaCYC": [
-                10,
+            ),
+            make_widget_config(
                 self.txtLambdaCYC,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "lambdaCYC",
+                    "index": 10,
+                    "label_text": "\u03bb<sub>CYC</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
-                        "The read/write cycling induced hazard rate for the integrated "
-                        "circuit."
+                        "The read/write cycling induced hazard rate for the "
+                        "integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>CYC</sub>:",
-            ],
-            "lambdaBD": [
-                8,
+            ),
+            make_widget_config(
                 self.txtLambdaBD,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "lambdaBD",
+                    "index": 8,
+                    "label_text": "\u03bb<sub>BD</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The die base hazard rate for the integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>BD</sub>:",
-            ],
-            "pi_mfg": [
-                25,
+            ),
+            make_widget_config(
                 self.txtPiMFG,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_mfg",
+                    "index": 25,
+                    "label_text": "\u03c0<sub>MFG</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The manufacturing process correction factor for the "
                         "integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>MFG</sub>:",
-            ],
-            "pi_cd": [
-                14,
+            ),
+            make_widget_config(
                 self.txtPiCD,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_cd",
+                    "index": 14,
+                    "label_text": "\u03c0<sub>CD</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The die complexity correction factor for the integrated "
                         "circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>CD</sub>:",
-            ],
-            "lambdaBP": [
-                9,
+            ),
+            make_widget_config(
                 self.txtLambdaBP,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "lambdaBP",
+                    "index": 9,
+                    "label_text": "\u03bb<sub>BP</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The package base hazard rate for the integrated circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>BP</sub>:",
-            ],
-            "pi_pt": [
-                29,
+            ),
+            make_widget_config(
                 self.txtPiPT,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_pt",
+                    "index": 29,
+                    "label_text": "\u03c0<sub>PT</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The package type factor for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>PT</sub>:",
-            ],
-            "lambdaEOS": [
-                11,
+            ),
+            make_widget_config(
                 self.txtLambdaEOS,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "lambdaEOS",
+                    "index": 11,
+                    "label_text": "\u03bb<sub>EOS</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The electrical overstress hazard rate for the integrated "
                         "circuit."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>EOS</sub>:",
-            ],
-            "pi_a": [
-                12,
+            ),
+            make_widget_config(
                 self.txtPiA,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_a",
+                    "index": 12,
+                    "label_text": "\u03c0<sub>A</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The application factor for the integrated circuit."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>A</sub>:",
-            ],
-        }
+            ),
+        ]
 
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-
-        # Subscribe to PyPubSub messages.
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the integrated circuit assessment results page.
 
         :param attributes: the attributes dictionary for the selected Integrated
             Circuit.
-        :return: None
-        :rtype: None
         """
         super().do_load_entries(attributes)
 
@@ -359,19 +415,25 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiA.set_sensitive(False)
 
         if self.category_id == 1 and self._hazard_rate_method_id == 2:
-            self.txtC1.do_update(str(self.fmt.format(attributes["C1"])))
-            self.txtPiT.do_update(str(self.fmt.format(attributes["piT"])))
-            self.txtC2.do_update(str(self.fmt.format(attributes["C2"])))
-            self.txtPiL.do_update(str(self.fmt.format(attributes["piL"])))
+            self.txtC1.do_update({"C1": str(self.fmt.format(attributes["C1"]))})
+            self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
+            self.txtC2.do_update({"C2": str(self.fmt.format(attributes["C2"]))})
+            self.txtPiL.do_update({"piL": str(self.fmt.format(attributes["piL"]))})
             self.txtLambdaCYC.do_update(
-                str(self.fmt.format(attributes["lambdaCYC"])),
+                {"lambdaCYC": str(self.fmt.format(attributes["lambdaCYC"]))},
             )
-            self.txtLambdaBD.do_update(str(self.fmt.format(attributes["lambdaBD"])))
-            self.txtPiMFG.do_update(str(self.fmt.format(attributes["piMFG"])))
-            self.txtPiCD.do_update(str(self.fmt.format(attributes["piCD"])))
-            self.txtLambdaBP.do_update(str(self.fmt.format(attributes["lambdaBP"])))
-            self.txtPiPT.do_update(str(self.fmt.format(attributes["piPT"])))
+            self.txtLambdaBD.do_update(
+                {"lambdaBD": str(self.fmt.format(attributes["lambdaBD"]))}
+            )
+            self.txtPiMFG.do_update(
+                {"piMFG": str(self.fmt.format(attributes["piMFG"]))}
+            )
+            self.txtPiCD.do_update({"piCD": str(self.fmt.format(attributes["piCD"]))})
+            self.txtLambdaBP.do_update(
+                {"lambdaBP": str(self.fmt.format(attributes["lambdaBP"]))}
+            )
+            self.txtPiPT.do_update({"piPT": str(self.fmt.format(attributes["piPT"]))})
             self.txtLambdaEOS.do_update(
-                str(self.fmt.format(attributes["lambdaEOS"])),
+                {"lambdaEOS": str(self.fmt.format(attributes["lambdaEOS"]))},
             )
-            self.txtPiA.do_update(str(self.fmt.format(attributes["piA"])))
+            self.txtPiA.do_update({"piA": str(self.fmt.format(attributes["piA"]))})
