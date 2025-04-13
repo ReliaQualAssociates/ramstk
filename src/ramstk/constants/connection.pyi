@@ -1,0 +1,21 @@
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import _ as _
+
+PART_COUNT_LAMBDA_B: dict[int, dict[int, list[float]] | list[float]]
+PART_COUNT_PI_Q: list[float]
+PART_STRESS_LAMBDA_B: dict[int, list[float]]
+PART_STRESS_PI_Q: dict[int, list[float]]
+PI_E: dict[int, dict[int, list[float]] | list[float]]
+PI_K: list[float]
+REF_TEMPS: dict[int, float]
+INSERT_TEMP_FACTORS: dict[int, float]
+LAMBDA_B_FACTORS: dict[int, list[float]]
+FACTOR_KEYS: dict[int, dict[int, list[int]]]
+INSERT_A_LIST: list[list[str]]
+INSERT_B_LIST: list[list[str]]
+INSERT_C_LIST: list[list[str]]
+INSERT_D_LIST: list[list[str]]
+CONNECTION_INSERT_DICT: dict[int, dict[int, list[list[str]]]]
+CONNECTION_QUALITY_DICT: dict[int, list[list[str]]]
+CONNECTION_SPECIFICATION_DICT: dict[int, list[list[str]]]
+CONNECTION_TYPE_DICT: dict[int, list[list[str]]]

@@ -1,21 +1,23 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any
 
 # RAMSTK Package Imports
+from ramstk.constants.connection import CONNECTION_INSERT_DICT as CONNECTION_INSERT_DICT
+from ramstk.constants.connection import (
+    CONNECTION_QUALITY_DICT as CONNECTION_QUALITY_DICT,
+)
+from ramstk.constants.connection import (
+    CONNECTION_SPECIFICATION_DICT as CONNECTION_SPECIFICATION_DICT,
+)
+from ramstk.constants.connection import CONNECTION_TYPE_DICT as CONNECTION_TYPE_DICT
+from ramstk.utilities import do_subscribe_to_messages as do_subscribe_to_messages
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import WidgetConfig as WidgetConfig
 
 class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
-    _dic_quality: Dict[int, List[List[str]]]
-    _dic_type: Dict[int, List[List[str]]]
-    _dic_specification: Dict[int, List[List[str]]]
-    _lst_insert_A: List[List[str]]
-    _lst_insert_B: List[List[str]]
-    _lst_insert_C: List[List[str]]
-    _lst_insert_D: List[List[str]]
-    _dic_insert: Dict[int, Dict[int, List[List[str]]]]
     _record_field: str
     _select_msg: str
     _tag: str
@@ -31,18 +33,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     txtNWave: RAMSTKEntry
     txtNHand: RAMSTKEntry
     txtNPlanes: RAMSTKEntry
+    _lst_widget_configuration: list[WidgetConfig]
     _hazard_rate_method_id: int
     _quality_id: int
-    dic_attribute_widget_map: Dict[str, List[Any]]
     category_id: int
     subcategory_id: int
     def __init__(self) -> None: ...
-    def do_load_comboboxes(self, subcategory_id: int) -> None: ...
+    def on_subcategory_change(self, subcategory_id: int) -> None: ...
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None: ...
     def _do_load_specification(self, combo: RAMSTKComboBox) -> None: ...
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None: ...
-    def _do_set_sensitive(self) -> None: ...
-    def __do_set_circular_sensitive(self) -> None: ...
-    def __do_set_ic_socket_sensitive(self) -> None: ...
-    def __do_set_pwa_edge_sensitive(self) -> None: ...
-    def __do_set_pth_sensitive(self) -> None: ...
+    def _get_quality_list(self) -> list[list[str]]: ...
+    def _set_reliability_attributes(self, attributes: dict[str, Any]) -> None: ...
+    def _set_sensitive(self) -> None: ...
