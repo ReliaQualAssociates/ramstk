@@ -284,9 +284,6 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 3 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiR.do_update({"piR": str(self.fmt.format(attributes["piR"]))})
             self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
             self.txtPiNR.do_update({"piNR": str(self.fmt.format(attributes["piNR"]))})

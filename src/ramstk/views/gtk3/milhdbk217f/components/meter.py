@@ -197,9 +197,6 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 9 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiA.do_update({"piA": str(self.fmt.format(attributes["piA"]))})
             self.txtPiF.do_update({"piF": str(self.fmt.format(attributes["piF"]))})
             self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})

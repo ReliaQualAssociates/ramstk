@@ -231,9 +231,6 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
         # MIL-HDBK-217F, Parts Stress
         if self.category_id == 4 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiCV.do_update({"piCV": str(self.fmt.format(attributes["piCV"]))})
             self.txtPiCF.do_update({"piCF": str(self.fmt.format(attributes["piCF"]))})
             self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})

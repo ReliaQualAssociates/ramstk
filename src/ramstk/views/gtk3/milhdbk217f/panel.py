@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 MIL-HDBK-217F Panels."""
+"""The MIL-HDBK-217F panel module."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -32,20 +32,10 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
     :ivar subcategory_id: the hardware subcategory ID of the selected component.
     """
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field: str = "hardware_id"
     _select_msg: str = "succeed_get_milhdbk217f_attributes"
     _tag: str = "milhdbk217f"
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Hardware assessment result view."""
@@ -57,19 +47,11 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
         self.txtPiE: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
+        # Initialize private instance attributes.
         self._hazard_rate_method_id: int = 0
         self._lambda_b: float = 0.0
 
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize public instance attributes.
         self.category_id: int = 0
         self.subcategory_id: int = 0
 
@@ -85,31 +67,31 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         """Load the Hardware assessment results page.
 
         :param attributes: the attribute dict for the selected Hardware.
-        :return: None
-        :rtype: None
         """
-        self.txtLambdaB.set_sensitive(False)
-        self.txtPiE.set_sensitive(False)
-        self.txtPiQ.set_sensitive(False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtLambdaB,
+                self.txtPiE,
+                self.txtPiQ,
+            ],
+            False,
+        )
 
         # Display the correct calculation model.
         self.__do_set_model_label()
-
-        _entries = {
-            self.txtLambdaB: self._lambda_b or 0.0,
-            self.txtPiQ: attributes.get("piQ", 1.0),
-            self.txtPiE: attributes["piE"] or 1.0,
-        }
-
-        for _entry, _value in _entries.items():
-            _entry.do_update(str(self.fmt.format(_value)), signal="changed")
+        self.lblModel.do_update(
+            {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
+        )
+        self.txtLambdaB.do_update(
+            {"lambda_b": str(self.fmt.formant(self._lambda_b or 0.0))}
+        )
+        self.txtPiE.do_update({"piE": str(self.fmt.format(attributes["piE"] or 1.0))})
+        self.txtPiQ.do_update({"piQ": str(self.fmt.format(attributes["piQ"] or 1.0))})
 
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
         """
         self.category_id = attributes["category_id"]
         self.subcategory_id = attributes["subcategory_id"]
@@ -118,18 +100,12 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
         """
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._lambda_b = attributes["lambda_b"]
 
     def __do_set_model_label(self) -> None:
-        """Set the text displayed in the hazard rate model RAMSTKLabel().
-
-        :return: None
-        :rtype: None
-        """
+        """Set the text displayed in the hazard rate model RAMSTKLabel()."""
         _model_text = "No Model"
 
         if self._hazard_rate_method_id == 1:
@@ -140,4 +116,4 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         elif self._hazard_rate_method_id == 2:
             _model_text = self._dic_part_stress.get(self.subcategory_id, "No Model")
 
-        self.lblModel.set_markup(_model_text)
+        self.lblModel.do_update({"hazard_rate_model": _model_text})

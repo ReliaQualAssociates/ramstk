@@ -250,9 +250,6 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 7 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiCYC.do_update(
                 {"piCYC": str(self.fmt.format(attributes["piCYC"]))}
             )

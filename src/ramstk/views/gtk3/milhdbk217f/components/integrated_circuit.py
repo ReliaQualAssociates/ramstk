@@ -419,9 +419,6 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 1 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtC1.do_update({"C1": str(self.fmt.format(attributes["C1"]))})
             self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
             self.txtC2.do_update({"C2": str(self.fmt.format(attributes["C2"]))})

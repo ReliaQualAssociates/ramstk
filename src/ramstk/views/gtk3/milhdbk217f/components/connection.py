@@ -223,9 +223,6 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
         # MIL-HDBK-217F, Parts Stress
         if self.category_id == 8 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
             self.txtPiK.do_update({"piK": str(self.fmt.format(attributes["piK"]))})
             self.txtPiP.do_update({"piP": str(self.fmt.format(attributes["piP"]))})

@@ -156,11 +156,13 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         :param attributes: the dict of attributes for the selected inductor.
         """
         super().do_load_entries(attributes)
-        super().do_set_widget_sensitivity([self.txtPiC], False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtPiC,
+            ],
+            False,
+        )
 
         # MIL-HDBK-217F, Parts Stress
         if self.category_id == 5 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(
-                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
-            )
             self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
