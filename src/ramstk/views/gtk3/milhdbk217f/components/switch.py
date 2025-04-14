@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Switch Results Panel."""
+"""Switch Results panel module."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.milhdbk217f import MilHdbk217FResultPanel
-from ramstk.views.gtk3.widgets import RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKEntry, WidgetConfig, make_widget_config
 
 
 class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
@@ -31,7 +31,7 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiU: displays the use factor for the breaker.
     """
 
-    # Define private dict class attributes.
+    # Define private class attributes.
     _dic_part_stress: Dict[int, str] = {
         1: '<span foreground="blue">\u03bb<sub>p</sub> = '
         "\u03bb<sub>b</sub>\u03c0<sub>CYC</sub>\u03c0<sub>L</sub>\u03c0<sub"
@@ -49,19 +49,9 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         "\u03bb<sub>b</sub>\u03c0<sub>C</sub>\u03c0<sub>U</sub>\u03c0<sub>Q"
         "</sub>\u03c0<sub>E</sub></span> ",
     }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
     _record_field: str = "hardware_id"
     _tag: str = "milhdbk217f"
     _title: str = _("Switch MIL-HDBK-217F Results")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Switch assessment result view."""
@@ -74,157 +64,199 @@ class SwitchMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiN: RAMSTKEntry = RAMSTKEntry()
         self.txtPiU: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "hazard_rate_model": [
-                13,
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            make_widget_config(
                 self.lblModel,
-                "",
-                None,
-                "",
-                "",
+                {
+                    "datatype": "",
+                    "default": "",
+                    "field": "hazard_rate_model",
+                    "index": 13,
+                    "label_text": "",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The assessment model used to calculate the switch hazard rate."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "",
-            ],
-            "lambda_b": [
-                23,
+            ),
+            make_widget_config(
                 self.txtLambdaB,
-                "",
-                None,
-                "",
-                0.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "lambda_b",
+                    "index": 23,
+                    "label_text": "\u03bb<sub>b</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The base hazard rate for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>b</sub>:",
-            ],
-            "pi_q": [
-                30,
+            ),
+            make_widget_config(
                 self.txtPiQ,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_q",
+                    "index": 30,
+                    "label_text": "\u03c0<sub>Q</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The quality factor for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>Q</sub>:",
-            ],
-            "pi_e": [
-                19,
+            ),
+            make_widget_config(
                 self.txtPiE,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_e",
+                    "index": 19,
+                    "label_text": "\u03c0<sub>E</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The environment factor for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>E</sub>:",
-            ],
-            "pi_cyc": [
-                18,
+            ),
+            make_widget_config(
                 self.txtPiCYC,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_cyc",
+                    "index": 18,
+                    "label_text": "\u03c0<sub>CYC</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The cycling factor for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>CYC</sub>:",
-            ],
-            "pi_l": [
-                23,
+            ),
+            make_widget_config(
                 self.txtPiL,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_l",
+                    "index": 23,
+                    "label_text": "\u03c0<sub>L</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The load stress factor for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>L</sub>:",
-            ],
-            "pi_c": [
-                13,
+            ),
+            make_widget_config(
                 self.txtPiC,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_c",
+                    "index": 13,
+                    "label_text": "\u03c0<sub>C</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The number of active contacts factor for the switch."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>C</sub>:",
-            ],
-            "pi_n": [
-                26,
+            ),
+            make_widget_config(
                 self.txtPiN,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_n",
+                    "index": 26,
+                    "label_text": "\u03c0<sub>N</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _(
                         "The contact form and quantity factor for the switch.  This is "
                         "the configuration factor for a circuit breaker."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>N</sub>:",
-            ],
-            "pi_u": [
-                35,
+            ),
+            make_widget_config(
                 self.txtPiU,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_u",
+                    "index": 35,
+                    "label_text": "\u03c0<sub>U</sub>:",
+                    "listen_topic": None,
+                    "send_topic": None,
+                },
                 {
                     "tooltip": _("The use factor for the switch."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>U</sub>:",
-            ],
-        }
+            ),
+        ]
 
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-
-        # Subscribe to PyPubSub messages.
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the switch assessment results page.
 
-        :return: None
-        :rtype: None
+        :param attributes: the attributes of the selected switch assessment
         """
         super().do_load_entries(attributes)
-
-        self.txtPiCYC.set_sensitive(False)
-        self.txtPiL.set_sensitive(False)
-        self.txtPiC.set_sensitive(False)
-        self.txtPiN.set_sensitive(False)
-        self.txtPiU.set_sensitive(False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtPiCYC,
+                self.txtPiL,
+                self.txtPiC,
+                self.txtPiN,
+                self.txtPiU,
+            ],
+            False,
+        )
 
         if self.category_id == 7 and self._hazard_rate_method_id == 2:
-            self.txtPiCYC.do_update(str(self.fmt.format(attributes["piCYC"])))
-            self.txtPiL.do_update(str(self.fmt.format(attributes["piL"])))
-            self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))
-            self.txtPiN.do_update(str(self.fmt.format(attributes["piN"])))
-            self.txtPiU.do_update(str(self.fmt.format(attributes["piU"])))
+            self.lblModel.do_update(
+                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
+            )
+            self.txtPiCYC.do_update(
+                {"piCYC": str(self.fmt.format(attributes["piCYC"]))}
+            )
+            self.txtPiL.do_update({"piL": str(self.fmt.format(attributes["piL"]))})
+            self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
+            self.txtPiN.do_update({"piN": str(self.fmt.format(attributes["piN"]))})
+            self.txtPiU.do_update({"piU": str(self.fmt.format(attributes["piU"]))})
