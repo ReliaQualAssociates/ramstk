@@ -330,6 +330,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 2 and self._hazard_rate_method_id == 2:
+            self.lblModel.do_update(
+                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
+            )
             self.txtPiA.do_update({"piA": str(self.fmt.format(attributes["piA"]))})
             self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
             self.txtPiI.do_update({"piI": str(self.fmt.format(attributes["piI"]))})

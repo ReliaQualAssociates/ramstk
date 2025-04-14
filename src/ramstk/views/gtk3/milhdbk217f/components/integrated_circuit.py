@@ -400,21 +400,28 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
             Circuit.
         """
         super().do_load_entries(attributes)
-
-        self.txtC1.set_sensitive(False)
-        self.txtPiT.set_sensitive(False)
-        self.txtC2.set_sensitive(False)
-        self.txtPiL.set_sensitive(False)
-        self.txtLambdaCYC.set_sensitive(False)
-        self.txtLambdaBD.set_sensitive(False)
-        self.txtPiMFG.set_sensitive(False)
-        self.txtPiCD.set_sensitive(False)
-        self.txtLambdaBP.set_sensitive(False)
-        self.txtPiPT.set_sensitive(False)
-        self.txtLambdaEOS.set_sensitive(False)
-        self.txtPiA.set_sensitive(False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtC1,
+                self.txtPiT,
+                self.txtC2,
+                self.txtPiL,
+                self.txtLambdaCYC,
+                self.txtLambdaBD,
+                self.txtPiMFG,
+                self.txtPiCD,
+                self.txtLambdaBP,
+                self.txtPiPT,
+                self.txtLambdaEOS,
+                self.txtPiA,
+            ],
+            False,
+        )
 
         if self.category_id == 1 and self._hazard_rate_method_id == 2:
+            self.lblModel.do_update(
+                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
+            )
             self.txtC1.do_update({"C1": str(self.fmt.format(attributes["C1"]))})
             self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
             self.txtC2.do_update({"C2": str(self.fmt.format(attributes["C2"]))})

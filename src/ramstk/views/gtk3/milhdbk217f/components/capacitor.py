@@ -95,7 +95,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 13,
                     "label_text": "",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _(
@@ -115,7 +115,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 23,
                     "label_text": "\u03bb<sub>b</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The base hazard rate for the capacitor."),
@@ -132,7 +132,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 30,
                     "label_text": "\u03c0<sub>Q</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The quality factor for the capacitor."),
@@ -149,7 +149,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 19,
                     "label_text": "\u03c0<sub>E</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The environment factor for the capacitor."),
@@ -166,7 +166,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 17,
                     "label_text": "\u03c0<sub>CV</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The capacitance factor for the capacitor."),
@@ -183,7 +183,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 15,
                     "label_text": "\u03c0<sub>CF</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The configuration factor for the capacitor."),
@@ -200,7 +200,7 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 13,
                     "label_text": "\u03c0<sub>C</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The construction factor for the capacitor."),

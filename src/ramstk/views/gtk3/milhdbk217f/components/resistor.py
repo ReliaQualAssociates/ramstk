@@ -93,7 +93,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 13,
                     "label_text": "",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _(
@@ -113,7 +113,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 23,
                     "label_text": "\u03bb<sub>b</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The base hazard rate for the resistor."),
@@ -130,7 +130,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 30,
                     "label_text": "\u03c0<sub>Q</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The quality factor for the resistor."),
@@ -147,7 +147,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 19,
                     "label_text": "\u03c0<sub>E</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The environment factor for the resistor."),
@@ -164,7 +164,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 31,
                     "label_text": "\u03c0<sub>R</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The resistance factor for the resistor."),
@@ -181,7 +181,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 33,
                     "label_text": "\u03c0<sub>T</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The temperature factor for the resistor."),
@@ -198,7 +198,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 27,
                     "label_text": "\u03c0<sub>NR</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _(
@@ -217,7 +217,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 34,
                     "label_text": "\u03c0<sub>TAPS</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The potentiometer taps factor for the resistor."),
@@ -234,7 +234,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 36,
                     "label_text": "\u03c0<sub>V</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The voltage factor for the resistor."),
@@ -251,7 +251,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                     "index": 13,
                     "label_text": "\u03c0<sub>C</sub>:",
                     "listen_topic": None,
-                    "send_topic": "wvw_editing_milhdbk217f",
+                    "send_topic": None,
                 },
                 {
                     "tooltip": _("The construction class factor for the resistor."),
@@ -284,6 +284,9 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         )
 
         if self.category_id == 3 and self._hazard_rate_method_id == 2:
+            self.lblModel.do_update(
+                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
+            )
             self.txtPiR.do_update({"piR": str(self.fmt.format(attributes["piR"]))})
             self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
             self.txtPiNR.do_update({"piNR": str(self.fmt.format(attributes["piNR"]))})
