@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Capacitor Results Panel."""
+"""Capacitor Results panel module."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.milhdbk217f import MilHdbk217FResultPanel
-from ramstk.views.gtk3.widgets import RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKEntry, WidgetConfig, make_widget_config
 
 
 class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
@@ -37,14 +37,13 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiC: displays the construction factor for the capacitor.
     """
 
+    # Define private class attributes.
     _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = (
         "\u03bb<sub>b</sub>\u03c0<sub>CV</sub>\u03c0<sub>Q</sub>"
         "\u03c0<sub>E</sub></span>"
     )
     _function_2 = "\u03bb<sub>b</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>"
-
-    # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1: _lambda_p + _function_1,
         2: _lambda_p + _function_1,
@@ -72,19 +71,9 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         + "\u03bb<sub>b</sub>\u03c0<sub>CF</sub>\u03c0<sub>Q</sub>\u03c0<sub>E"
         "</sub></span>",
     }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
     _record_field: str = "hardware_id"
     _tag: str = "milhdbk217f"
     _title: str = _("Capacitor MIL-HDBK-217F Results")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Capacitor assessment result view."""
@@ -95,136 +84,156 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiCF: RAMSTKEntry = RAMSTKEntry()
         self.txtPiC: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "hazard_rate_model": [
-                13,
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            make_widget_config(
                 self.lblModel,
-                "",
-                None,
-                "",
-                "",
+                {
+                    "datatype": "",
+                    "default": "",
+                    "field": "hazard_rate_model",
+                    "index": 13,
+                    "label_text": "",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _(
                         "The assessment model used to calculate the capacitor hazard "
                         "rate."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "",
-            ],
-            "lambda_b": [
-                23,
+            ),
+            make_widget_config(
                 self.txtLambdaB,
-                "",
-                None,
-                "",
-                0.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "lambda_b",
+                    "index": 23,
+                    "label_text": "\u03bb<sub>b</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The base hazard rate for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>b</sub>:",
-            ],
-            "pi_q": [
-                30,
+            ),
+            make_widget_config(
                 self.txtPiQ,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_q",
+                    "index": 30,
+                    "label_text": "\u03c0<sub>Q</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The quality factor for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>Q</sub>:",
-            ],
-            "pi_e": [
-                19,
+            ),
+            make_widget_config(
                 self.txtPiE,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_e",
+                    "index": 19,
+                    "label_text": "\u03c0<sub>E</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The environment factor for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>E</sub>:",
-            ],
-            "pi_cv": [
-                17,
+            ),
+            make_widget_config(
                 self.txtPiCV,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_cv",
+                    "index": 17,
+                    "label_text": "\u03c0<sub>CV</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The capacitance factor for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>CV</sub>:",
-            ],
-            "pi_cf": [
-                15,
+            ),
+            make_widget_config(
                 self.txtPiCF,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_cf",
+                    "index": 15,
+                    "label_text": "\u03c0<sub>CF</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The configuration factor for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>CF</sub>:",
-            ],
-            "pi_c": [
-                13,
+            ),
+            make_widget_config(
                 self.txtPiC,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_c",
+                    "index": 13,
+                    "label_text": "\u03c0<sub>C</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The construction factor for the capacitor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>C</sub>:",
-            ],
-        }
+            ),
+        ]
 
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-
-        # Subscribe to PyPubSub messages.
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected capacitor.
 
-        :return: None
-        :rtype: None
+        :param attributes: the attributes of the selected capacitor assessment result.
         """
         super().do_load_entries(attributes)
-
-        self.txtPiCV.set_sensitive(False)
-        self.txtPiCF.set_sensitive(False)
-        self.txtPiC.set_sensitive(False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtPiCV,
+                self.txtPiCF,
+                self.txtPiC,
+            ],
+            False,
+        )
 
         # MIL-HDBK-217F, Parts Stress
         if self.category_id == 4 and self._hazard_rate_method_id == 2:
-            self.lblModel.do_update(self._dic_part_stress[self.subcategory_id])
-            self.txtPiCV.do_update(
-                str(self.fmt.format(attributes["piCV"])),
-                signal="changed",
+            self.lblModel.do_update(
+                {"hazard_rate_model": self._dic_part_stress[self.subcategory_id]}
             )
-            self.txtPiCF.do_update(
-                str(self.fmt.format(attributes["piCF"])),
-                signal="changed",
-            )
-            self.txtPiC.do_update(
-                str(self.fmt.format(attributes["piC"])),
-                signal="changed",
-            )
+            self.txtPiCV.do_update({"piCV": str(self.fmt.format(attributes["piCV"]))})
+            self.txtPiCF.do_update({"piCF": str(self.fmt.format(attributes["piCF"]))})
+            self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
