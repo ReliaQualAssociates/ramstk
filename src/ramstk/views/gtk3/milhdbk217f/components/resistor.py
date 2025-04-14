@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Resistor Results Panel."""
+"""Resistor Results panel module."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.milhdbk217f import MilHdbk217FResultPanel
-from ramstk.views.gtk3.widgets import RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKEntry, WidgetConfig, make_widget_config
 
 
 class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
@@ -31,6 +31,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiC: displays the construction class factor for the resistor.
     """
 
+    # Define private class attributes.
     _lambda_p = '<span foreground="blue">\u03bb<sub>p</sub> = '
     _function_1 = (
         "\u03bb<sub>b</sub>\u03c0<sub>R</sub>\u03c0<sub>Q</sub>"
@@ -40,8 +41,6 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         "\u03bb<sub>b</sub>\u03c0<sub>TAPS</sub>\u03c0<sub>R</sub>"
         "\u03c0<sub>V</sub>\u03c0<sub>Q</sub>\u03c0<sub>E</sub></span>"
     )
-
-    # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
         1: _lambda_p + _function_1,
         2: _lambda_p + _function_1,
@@ -67,19 +66,9 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         14: _lambda_p + _function_2,
         15: _lambda_p + _function_2,
     }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
     _record_field: str = "hardware_id"
     _tag: str = "milhdbk217f"
     _title: str = _("Resistor MIL-HDBK-217F Results")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Resistor assessment result view."""
@@ -93,170 +82,213 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiTAPS: RAMSTKEntry = RAMSTKEntry()
         self.txtPiV: RAMSTKEntry = RAMSTKEntry()
 
-        # Initialize private dict attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "hazard_rate_model": [
-                13,
+        # Initialize private instance attributes.
+        self._lst_widget_configuration: List[WidgetConfig] = [
+            make_widget_config(
                 self.lblModel,
-                "",
-                None,
-                "",
-                "",
+                {
+                    "datatype": "",
+                    "default": "",
+                    "field": "hazard_rate_model",
+                    "index": 13,
+                    "label_text": "",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _(
                         "The assessment model used to calculate the resistor hazard "
                         "rate."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "",
-            ],
-            "lambda_b": [
-                23,
+            ),
+            make_widget_config(
                 self.txtLambdaB,
-                "",
-                None,
-                "",
-                0.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 0.0,
+                    "field": "lambda_b",
+                    "index": 23,
+                    "label_text": "\u03bb<sub>b</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The base hazard rate for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03bb<sub>b</sub>:",
-            ],
-            "pi_q": [
-                30,
+            ),
+            make_widget_config(
                 self.txtPiQ,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_q",
+                    "index": 30,
+                    "label_text": "\u03c0<sub>Q</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The quality factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>Q</sub>:",
-            ],
-            "pi_e": [
-                19,
+            ),
+            make_widget_config(
                 self.txtPiE,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_e",
+                    "index": 19,
+                    "label_text": "\u03c0<sub>E</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The environment factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>E</sub>:",
-            ],
-            "pi_r": [
-                31,
+            ),
+            make_widget_config(
                 self.txtPiR,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_r",
+                    "index": 31,
+                    "label_text": "\u03c0<sub>R</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The resistance factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>R</sub>:",
-            ],
-            "pi_t": [
-                33,
+            ),
+            make_widget_config(
                 self.txtPiT,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_t",
+                    "index": 33,
+                    "label_text": "\u03c0<sub>T</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The temperature factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>T</sub>:",
-            ],
-            "pi_nr": [
-                27,
+            ),
+            make_widget_config(
                 self.txtPiNR,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_nr",
+                    "index": 27,
+                    "label_text": "\u03c0<sub>NR</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _(
                         "The number of resistors factor for the resistor network."
                     ),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>NR</sub>:",
-            ],
-            "pi_taps": [
-                34,
+            ),
+            make_widget_config(
                 self.txtPiTAPS,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_taps",
+                    "index": 34,
+                    "label_text": "\u03c0<sub>TAPS</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The potentiometer taps factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>TAPS</sub>:",
-            ],
-            "pi_v": [
-                36,
+            ),
+            make_widget_config(
                 self.txtPiV,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_v",
+                    "index": 36,
+                    "label_text": "\u03c0<sub>V</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The voltage factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>V</sub>:",
-            ],
-            "pi_c": [
-                13,
+            ),
+            make_widget_config(
                 self.txtPiC,
-                "",
-                None,
-                "",
-                1.0,
+                {
+                    "datatype": "gfloat",
+                    "default": 1.0,
+                    "field": "pi_c",
+                    "index": 13,
+                    "label_text": "\u03c0<sub>C</sub>:",
+                    "listen_topic": None,
+                    "send_topic": "wvw_editing_milhdbk217f",
+                },
                 {
                     "tooltip": _("The construction class factor for the resistor."),
+                    "editable": True,
+                    "visible": True,
                 },
-                "\u03c0<sub>C</sub>:",
-            ],
-        }
+            ),
+        ]
 
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        super().do_set_properties()
+        super().do_set_widget_attributes()
+        super().do_set_widget_properties()
         super().do_make_panel()
-
-        # Subscribe to PyPubSub messages.
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the Resistor assessment results page.
 
         :param attributes: the attributes dictionary for the selected Resistor.
-        :return: None
-        :rtype: None
         """
         super().do_load_entries(attributes)
-
-        self.txtPiC.set_sensitive(False)
-        self.txtPiNR.set_sensitive(False)
-        self.txtPiR.set_sensitive(False)
-        self.txtPiT.set_sensitive(False)
-        self.txtPiTAPS.set_sensitive(False)
-        self.txtPiV.set_sensitive(False)
+        super().do_set_widget_sensitivity(
+            [
+                self.txtPiC,
+                self.txtPiNR,
+                self.txtPiR,
+                self.txtPiT,
+                self.txtPiTAPS,
+                self.txtPiV,
+            ],
+            False,
+        )
 
         if self.category_id == 3 and self._hazard_rate_method_id == 2:
-            self.txtPiR.do_update(str(self.fmt.format(attributes["piR"])))
-            self.txtPiT.do_update(str(self.fmt.format(attributes["piT"])))
-            self.txtPiNR.do_update(str(self.fmt.format(attributes["piNR"])))
-            self.txtPiTAPS.do_update(str(self.fmt.format(attributes["piTAPS"])))
-            self.txtPiV.do_update(str(self.fmt.format(attributes["piV"])))
-            self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))
+            self.txtPiR.do_update({"piR": str(self.fmt.format(attributes["piR"]))})
+            self.txtPiT.do_update({"piT": str(self.fmt.format(attributes["piT"]))})
+            self.txtPiNR.do_update({"piNR": str(self.fmt.format(attributes["piNR"]))})
+            self.txtPiTAPS.do_update(
+                {"piTAPS": str(self.fmt.format(attributes["piTAPS"]))}
+            )
+            self.txtPiV.do_update({"piV": str(self.fmt.format(attributes["piV"]))})
+            self.txtPiC.do_update({"piC": str(self.fmt.format(attributes["piC"]))})
