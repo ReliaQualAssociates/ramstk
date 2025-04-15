@@ -349,59 +349,36 @@ class FMEAWorkView(RAMSTKWorkView):
             return 0
 
     def __do_load_action_lists(self) -> None:
-        """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlPanel.lst_action_category = [
-            x[1][1]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY.items()
-        ]
-        self._pnlPanel.lst_action_status = [
-            x[1][0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
-        ]
-        self._pnlPanel.lst_users = [
-            f"{x[1][0]}, {x[1][1]}"
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS.items()
-        ]
+        """Load the RAMSTKCellRendererCombos associated with FMEA actions."""
+        self._pnlPanel.do_load_action_category(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY
+        )
+        self._pnlPanel.do_load_action_status(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS
+        )
+        self._pnlPanel.do_load_users(self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS)
 
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
     def __do_load_rpn_lists(self) -> None:
-        """Load the Gtk.CellRendererCombo()s associated with RPNs.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlPanel.lst_rpn_detection = [
-            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION.items()
-        ]
-        self._pnlPanel.lst_rpn_detection.insert(0, "")
-        self._pnlPanel.lst_rpn_occurrence = [
-            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE.items()
-        ]
-        self._pnlPanel.lst_rpn_occurrence.insert(0, "")
-        self._pnlPanel.lst_rpn_severity = [
-            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY.items()
-        ]
-        self._pnlPanel.lst_rpn_severity.insert(0, "")
+        """Load the Gtk.CellRendererCombo()s associated with RPNs."""
+        self._pnlPanel.do_load_rpn_detection(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION
+        )
+        self._pnlPanel.do_load_rpn_occurrence(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
+        )
+        self._pnlPanel.do_load_rpn_severity(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
+        )
 
     def __do_load_severity_lists(self) -> None:
-        """Load the Gtk.CellRendererCombo()s associated with CA risk.
-
-        :return: None
-        :rtype: None
-        """
-        self._pnlPanel.lst_mode_probability = [x[0] for x in RAMSTK_FAILURE_PROBABILITY]
-        self._pnlPanel.lst_severity_class = [x[0] for x in RAMSTK_CRITICALITY]
+        """Load the Gtk.CellRendererCombo()s associated with CA risk."""
+        self._pnlPanel.do_load_mode_probability(RAMSTK_FAILURE_PROBABILITY)
+        self._pnlPanel.do_load_severity_class(RAMSTK_CRITICALITY)
 
     def __make_ui(self) -> None:
-        """Build the user interface for the FMEA tab.
-
-        :return: None
-        :rtype: None
-        """
+        """Build the user interface for the FMEA tab."""
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
         self._pnlPanel.dic_icons = self._dic_icons

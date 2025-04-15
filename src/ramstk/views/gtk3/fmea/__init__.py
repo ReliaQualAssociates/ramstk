@@ -5,8 +5,9 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 FMEA package."""
+"""The FMEA view package."""
 
 # RAMSTK Local Imports
-from .panel import FMEAMethodPanel, FMEATreePanel
-from .view import FMEAWorkView
+from .method_panel import FMEAMethodPanel  # noqa: F401
+from .tree_panel import FMEATreePanel  # noqa: F401
+from .view import FMEAWorkView  # noqa: F401

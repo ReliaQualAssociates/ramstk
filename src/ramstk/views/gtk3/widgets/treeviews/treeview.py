@@ -277,8 +277,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
 
     def do_set_visible_columns(self) -> None:
         """Set the treeview columns visible or hidden."""
-        # FIXME: Only the allocation and preferences dialog tree panel call this
-        #  method at this time.  The FMEA, usage profile, and similar item tree
+        # FIXME: Only the allocation, FMEA, and preferences dialog tree panel call this
+        #  method at this time.  The usage profile and similar item tree
         #  panels should also use this method to set the visibility of their columns.
         #  Also re-write this method to take a dict of column visibility as an
         #  argument where the key is the field name and the value is a True/False.
