@@ -13,6 +13,7 @@ from .baseview import RAMSTKBaseView, RAMSTKModuleView, RAMSTKWorkView  # noqa: 
 from .buttons import (  # noqa: F401
     RAMSTKButton,
     RAMSTKCheckButton,
+    RAMSTKColorButton,
     RAMSTKFileChooserButton,
     RAMSTKOptionButton,
     RAMSTKSpinButton,

@@ -510,7 +510,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["priority_id"]
+            self.tvwTreeView.dic_field_position_map["priority_id"]
         ).get_cells()[0]
         _adjustment = _cell.get_property("adjustment")
         _adjustment.configure(5, 1, 5, -1, 0, 0)

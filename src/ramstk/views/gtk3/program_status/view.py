@@ -161,7 +161,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
         super().do_make_layout()
 
         _frame: RAMSTKFrame = RAMSTKFrame()
-        _frame.do_set_properties(**{"title": _("Program Verification Effort")})
+        _frame.do_set_properties({"label": _("Program Verification Effort")})
         _frame.add(self._pnlPanel)
 
         self.pack_end(_frame, True, True, 0)
