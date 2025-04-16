@@ -31,6 +31,7 @@ class WidgetProperties(TypedDict, total=False):
     activatable: bool
     adjustment: Gtk.Adjustment | None
     alignment: Pango.Alignment | None
+    alpha: int
     always_show_image: bool
     angle: float
     background_rgba: Gdk.RGBA | None
@@ -68,12 +69,14 @@ class WidgetProperties(TypedDict, total=False):
     page_increment: float
     page_size: float
     parent: Gtk.Widget | None
+    rgba: Gdk.RGBA | None
     rubber_banding: bool
     sensitive: bool
     shadow_type: Gtk.ShadowType | None
     snap_to_ticks: bool
     step_increment: float
     text_column: int
+    title: str
     tooltip: str
     tooltip_column: int
     upper: float
