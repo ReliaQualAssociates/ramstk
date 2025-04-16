@@ -10,6 +10,7 @@
 # RAMSTK Local Imports
 from .base_button import RAMSTKButton, do_make_buttonbox  # noqa: F401
 from .check_button import RAMSTKCheckButton  # noqa: F401
+from .color_button import RAMSTKColorButton  # noqa: F401
 from .file_chooser_button import RAMSTKFileChooserButton  # noqa: F401
 from .option_button import RAMSTKOptionButton  # noqa: F401
 from .spin_button import RAMSTKSpinButton  # noqa: F401

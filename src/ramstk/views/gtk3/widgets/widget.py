@@ -42,6 +42,7 @@ class WidgetProperties(TypedDict, total=False):
     activatable: bool
     adjustment: Optional[Gtk.Adjustment]
     alignment: Optional[Pango.Alignment]
+    alpha: int
     always_show_image: bool
     angle: float
     background_rgba: Optional[Gdk.RGBA]
@@ -79,12 +80,14 @@ class WidgetProperties(TypedDict, total=False):
     page_increment: float
     page_size: float
     parent: Optional[Gtk.Widget]
+    rgba: Optional[Gdk.RGBA]
     rubber_banding: bool
     sensitive: bool
     shadow_type: Optional[Gtk.ShadowType]
     snap_to_ticks: bool
     step_increment: float
     text_column: int
+    title: str
     tooltip: str
     tooltip_column: int
     upper: float
