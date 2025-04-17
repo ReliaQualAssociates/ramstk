@@ -5,8 +5,8 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Program Status Views."""
+"""The Program Status view package."""
 
 # RAMSTK Local Imports
-from .panel import ProgramStatusPlotPanel
-from .view import ProgramStatusWorkView
+from .panel import ProgramStatusPlotPanel  # noqa: F401
+from .view import ProgramStatusWorkView  # noqa: F401

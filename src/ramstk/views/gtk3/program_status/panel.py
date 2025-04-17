@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""GTK3 Program Status Panels."""
+"""The Program Status panel module."""
 
 # Standard Library Imports
 from typing import Dict
@@ -28,35 +28,17 @@ register_matplotlib_converters()
 class ProgramStatusPlotPanel(RAMSTKPlotPanel):
     """Panel to display the Verification plan efforts."""
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field = "status_id"
     _select_msg = "selected_revision"
     _tag = "program_status"
     _title = _("Verification Plan Effort")
 
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
-
     def __init__(self) -> None:
         """Initialize an instance of the Burndown Curve panel."""
         super().__init__()
 
-        # Initialize private dict instance attributes.
-
-        # Initialize private list instance attributes.
-
-        # Initialize private scalar instance attributes.
-
-        # Initialize public dict instance attributes.
-
-        # Initialize public list instance attributes.
+        # Initialize public instance attributes.
         self.lst_axis_labels = [_(""), _("Total Time [hours]")]
         self.lst_legend = [
             _("Minimum Expected Time"),
@@ -64,8 +46,6 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
             _("Maximum Expected Time"),
             _("Actual Remaining Time"),
         ]
-
-        # Initialize public scalar instance attributes.
         self.plot_title = _("Total Verification Effort")
 
         super().do_make_panel()
@@ -83,7 +63,6 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
 
         :param attributes: a dict containing a pandas DataFrames() for each of planned
             burndown and assessment dates/targets.
-        :return: None
         """
         self._do_load_plan(attributes["plan"])
         self._do_load_assessment_milestones(
@@ -99,7 +78,6 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
 
         :param status: a Pandas dataframe containing a pandas DataFrames() for the
             actual progress.
-        :return: None
         """
         self.pltPlot.do_add_line(
             x_values=list(status.index),
@@ -113,11 +91,11 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
         """Add the reliability assessment milestones to the plot.
 
         This method will add a vertical line at all the dates identified as dates when a
-        reliability assessment is due.  Annotated along side these markers are the
+        reliability assessment is due.  Annotated alongside these markers are the
         reliability targets (lower, mean, upper) for that assessment date.
 
-        :return: None
-        :rtype: None
+        :param assessed: a pandas DataFrame() containing the reliability assessment.
+        :param y_max: the maximum value of the y-axis.
         """
         _y_max = max(1.0, y_max)
 
@@ -164,8 +142,6 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
 
         :param plan: the pandas DataFrame() containing the planned task end dates and
             remaining hours of work (lower, mean, upper).
-        :return: None
-        :rtype: None
         """
         self.pltPlot.axis.cla()
         self.pltPlot.axis.grid(True, which="both")
