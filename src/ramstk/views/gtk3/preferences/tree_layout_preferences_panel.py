@@ -137,7 +137,7 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         # Make a fixed type panel.
         super().do_set_widget_attributes()
         self._do_set_widget_properties()
-        self._do_make_panel()
+        self._do_make_tree_panel()
         self._do_set_widget_callbacks()
         self._do_load_format_files()
 
@@ -251,9 +251,9 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         """Load the current preference values."""
         self._configuration = configuration
 
-    def _do_make_panel(self) -> None:
+    def _do_make_tree_panel(self) -> None:
         """Build the UI for the Preferences assistant."""
-        super().do_make_panel()
+        super().do_make_tree_panel()
 
         _scrollwindow = self.get_child()
         self.remove(_scrollwindow)

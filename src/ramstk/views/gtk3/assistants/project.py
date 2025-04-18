@@ -169,6 +169,8 @@ class OpenProject:
                     + "/icons/32x32/view-refresh.png",
                     "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
                     + "/icons/32x32/save.png",
+                    "db-disconnected": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                    + "/icons/32x32/db-disconnected.png",
                 }
             )
 

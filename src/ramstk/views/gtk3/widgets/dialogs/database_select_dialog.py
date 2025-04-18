@@ -372,7 +372,7 @@ class RAMSTKDatabaseSelectTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
 
     # ----- ----- Standard RAMSTKTreePanel methods. ----- ----- #
     def on_row_change(self, selection) -> str:

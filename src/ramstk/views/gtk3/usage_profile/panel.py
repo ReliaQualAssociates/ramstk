@@ -312,7 +312,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
 
         # FIXME: Is this line necessary?

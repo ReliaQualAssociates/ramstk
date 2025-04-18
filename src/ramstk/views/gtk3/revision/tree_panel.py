@@ -415,7 +415,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of revisions."))

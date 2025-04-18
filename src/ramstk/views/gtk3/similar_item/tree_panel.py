@@ -1020,7 +1020,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         self._do_load_environments()
         self._do_load_quality()
         super().do_set_widget_callbacks()
@@ -1130,7 +1130,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
     def _do_subscribe_to_messages(self) -> None:
         """Subscribe to messages for Similar Item worksheet."""
-        pub.subscribe(super().do_load_panel, "succeed_calculate_similar_item")
+        pub.subscribe(super().do_load_tree_panel, "succeed_calculate_similar_item")
         pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
         pub.subscribe(
             self._do_set_reliability_attributes, "succeed_get_reliability_tree"

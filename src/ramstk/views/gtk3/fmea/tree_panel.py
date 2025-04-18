@@ -1173,7 +1173,7 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
         self._do_load_control_types()
 
@@ -1194,8 +1194,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "succeed_retrieve_fmeca": super().do_load_panel,
-                "succeed_calculate_rpn": super().do_load_panel,
+                "succeed_retrieve_fmeca": super().do_load_tree_panel,
+                "succeed_calculate_rpn": super().do_load_tree_panel,
                 "selected_hardware": self._on_select_hardware,
                 "hardware_category_changed": self.__do_clear_modes_on_category_change,
                 "changed_subcategory": self.__do_clear_modes_on_subcategory_change,

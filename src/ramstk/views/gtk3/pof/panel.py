@@ -383,7 +383,7 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
         self._do_load_priorities()
 
@@ -405,7 +405,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                "succeed_retrieve_pof": super().do_load_panel,
+                "succeed_retrieve_pof": super().do_load_tree_panel,
                 "selected_hardware": self._on_select_hardware,
             }
         )

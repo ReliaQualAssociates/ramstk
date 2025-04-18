@@ -692,7 +692,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
 
         # FIXME: Is this line necessary?
@@ -706,7 +706,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
             {
-                f"succeed_calculate_{self._tag}": super().do_load_panel,
+                f"succeed_calculate_{self._tag}": super().do_load_tree_panel,
                 "selected_function": self._on_select_function,
             }
         )

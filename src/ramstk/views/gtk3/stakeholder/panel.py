@@ -330,7 +330,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
 
         # FIXME: Is this line needed?
@@ -341,7 +341,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         do_subscribe_to_messages(
             {
-                "succeed_calculate_stakeholder": super().do_load_panel,
+                "succeed_calculate_stakeholder": super().do_load_tree_panel,
                 "succeed_retrieve_all_requirement": self._do_load_requirements,
             }
         )

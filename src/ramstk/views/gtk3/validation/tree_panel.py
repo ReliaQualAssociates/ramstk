@@ -500,7 +500,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_tree_panel()
         super().do_set_widget_callbacks()
 
         # FIXME: Is this line necessary?
@@ -592,7 +592,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
     def _do_subscribe_to_messages(self) -> None:
         """Subscribe to PyPubSub messages."""
         pub.subscribe(
-            super().do_load_panel,
+            super().do_load_tree_panel,
             "succeed_calculate_all_validation_tasks",
         )
 
