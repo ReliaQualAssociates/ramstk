@@ -9,7 +9,6 @@
 
 
 # Standard Library Imports
-import contextlib
 from datetime import date
 from typing import Dict, List, Union
 
@@ -19,6 +18,7 @@ from typing import Dict, List, Union
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.widgets.buttons import RAMSTKCheckButton
 
@@ -46,15 +46,20 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
         self.fixed = Gtk.Fixed()
 
         # Subscribe to PyPubSub messages.
-        self.do_subscribe_to_messages()
+        do_subscribe_to_messages(
+            {
+                "request_clear_views": self.do_clear_fixed_panel,
+                f"selected_{self._tag}": self.do_load_fixed_panel,
+                f"succeed_get_{self._tag}_attributes": self.do_load_fixed_panel,
+            }
+        )
 
-    # ----- ----- Standard panel methods. ----- ----- #
-    def do_clear_panel(self) -> None:
+    def do_clear_fixed_panel(self) -> None:
         """Clear the contents of the widgets on a RAMSTKFixedPanel."""
         for _widget in self._lst_widget_configuration:
             _widget["widget"].do_update(_widget["widget"].default)
 
-    def do_load_panel(
+    def do_load_fixed_panel(
         self,
         attributes: Dict[str, Union[bool, date, float, int, str]],
     ) -> None:
@@ -71,7 +76,7 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_make_panel(
+    def do_make_fixed_panel(
         self, justify: Gtk.Justification = Gtk.Justification.RIGHT, n_columns: int = 1
     ) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed.
@@ -94,17 +99,6 @@ class RAMSTKFixedPanel(RAMSTKBasePanel):
             )
 
         self.add(RAMSTKScrolledWindow(self.fixed))
-
-    # ----- ----- RAMSTKFixedPanel specific methods. ----- ----- #
-    def do_subscribe_to_messages(self) -> None:
-        """Subscribe to relevant PyPubSub messages."""
-        pub.subscribe(self.do_clear_panel, "request_clear_views")
-        pub.subscribe(self.do_load_panel, f"selected_{self._tag}")
-        pub.subscribe(self.do_load_panel, f"succeed_get_{self._tag}_attributes")
-
-        # FIXME: Move this to the actual panel instance and remove from here.
-        with contextlib.suppress(AttributeError):
-            pub.subscribe(self._do_load_entries, f"succeed_get_{self._tag}_attributes")
 
     def _do_create_widgets_for_column(
         self,

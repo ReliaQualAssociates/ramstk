@@ -21,7 +21,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.utilities import string_to_boolean
+from ramstk.utilities import do_subscribe_to_messages, string_to_boolean
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, _
 
 # RAMSTK Local Imports
@@ -76,17 +76,57 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
         }
 
         # Subscribe to PyPubSub messages.
-        self._do_subscribe_to_messages()
+        do_subscribe_to_messages(
+            {
+                "request_clear_views": self.do_clear_tree_panel,
+                f"succeed_insert_{self._tag}": self.do_load_tree_panel,
+                f"succeed_delete_{self._tag}": self.on_delete_row,
+            }
+        )
+        if self._select_msg is not None:
+            do_subscribe_to_messages(
+                {
+                    self._select_msg: self.do_load_tree_panel,
+                }
+            )
+
+        if hasattr(self, "_on_module_switch"):
+            do_subscribe_to_messages(
+                {
+                    "mvwSwitchedPage": self._on_module_switch,
+                }
+            )
+
+        if hasattr(self, "_on_workview_edit"):
+            do_subscribe_to_messages(
+                {
+                    f"wvw_editing_{self._tag}": self._on_workview_edit,
+                }
+            )
 
     # ----- ----- Standard panel methods. ----- ----- #
-    def do_clear_panel(self) -> None:
+    def do_set_widget_properties(self) -> None:
+        """Set properties of the RAMSTKTreePanel widgets."""
+        super().do_set_widget_properties()
+
+        self.tvwTreeView.do_set_properties(
+            {
+                "enable_grid_lines": True,
+                "enable_tree_lines": True,
+                "level_indentation": 2,
+                "rubber_banding": True,
+            }
+        )
+
+    # ----- ----- RAMSTKTreePanel specific methods. ----- ----- #
+    def do_clear_tree_panel(self) -> None:
         """Clear the contents of the RAMSTKTreePanel."""
         try:
             self.tvwTreeView.get_model().clear()
         except AttributeError:
             self.tvwTreeView.get_model().get_model().clear()
 
-    def do_load_panel(self, tree: treelib.Tree) -> None:
+    def do_load_tree_panel(self, tree: treelib.Tree) -> None:
         """Load data into the RAMSTKTreePanel.
 
         :param tree: the treelib Tree containing the module to load.
@@ -120,7 +160,7 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_make_panel(self) -> None:
+    def do_make_tree_panel(self) -> None:
         """Create a panel with a RAMSTKTreeView."""
         for _widget in self._lst_widget_configuration:
             self.tvwTreeView.do_make_column(
@@ -136,35 +176,6 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
         self.add(_scrollwindow)
         self.show_all()
 
-    def do_set_widget_properties(self) -> None:
-        """Set properties of the RAMSTKTreePanel widgets."""
-        super().do_set_widget_properties()
-
-        self.tvwTreeView.do_set_properties(
-            {
-                "enable_grid_lines": True,
-                "enable_tree_lines": True,
-                "level_indentation": 2,
-                "rubber_banding": True,
-            }
-        )
-
-    def _do_subscribe_to_messages(self) -> None:
-        """Subscribe to relevant PyPubSub messages."""
-        pub.subscribe(self.do_clear_panel, "request_clear_views")
-        pub.subscribe(self.do_load_panel, f"succeed_insert_{self._tag}")
-        pub.subscribe(self.on_delete_row, f"succeed_delete_{self._tag}")
-
-        if self._select_msg is not None:
-            pub.subscribe(self.do_load_panel, self._select_msg)
-
-        if hasattr(self, "_on_module_switch"):
-            pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
-
-        if hasattr(self, "_on_workview_edit"):
-            pub.subscribe(self._on_workview_edit, f"wvw_editing_{self._tag}")
-
-    # ----- ----- RAMSTKTreePanel specific methods. ----- ----- #
     def do_make_treeview(self, format_file: str) -> None:
         """Make the RAMSTKTreeView instance for this panel.
 
@@ -216,17 +227,6 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
         self.tvwTreeView.do_delete_row(self._filtered_tree)
 
         pub.sendMessage("request_set_cursor_active")
-
-    @staticmethod
-    def do_set_title(title: str) -> None:
-        """Set the title of the RAMSTKPanel parent view.
-
-        :param title: the title to set.
-        """
-        pub.sendMessage(
-            "request_set_title",
-            title=title,
-        )
 
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Get the attributes for the newly selected row.

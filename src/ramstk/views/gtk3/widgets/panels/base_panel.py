@@ -56,7 +56,7 @@ class RAMSTKBasePanel(RAMSTKFrame):
 
     # Define private class attributes.
     _record_field: str = ""
-    _select_msg: str = "selected_revision"
+    _select_msg: str = "selected_nothing"
     _tag: str = ""
     _title: str = ""
 
@@ -101,3 +101,14 @@ class RAMSTKBasePanel(RAMSTKFrame):
         """
         for _widget in widgets:
             _widget.set_sensitive(sensitive)
+
+    @staticmethod
+    def do_set_title(title: str) -> None:
+        """Set the title of the RAMSTKBasePanel parent view.
+
+        :param title: the title to set.
+        """
+        pub.sendMessage(
+            "request_set_title",
+            title=title,
+        )

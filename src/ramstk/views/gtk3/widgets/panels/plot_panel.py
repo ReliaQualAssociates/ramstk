@@ -15,9 +15,9 @@ from typing import List
 # pylint: disable=ungrouped-imports
 # noinspection PyPackageValidations
 from pandas.plotting import register_matplotlib_converters
-from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 
 # RAMSTK Local Imports
@@ -55,15 +55,19 @@ class RAMSTKPlotPanel(RAMSTKBasePanel):
         super().do_set_properties({"bold": True, "label": self._title})
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_clear_panel, "request_clear_views")
+        do_subscribe_to_messages(
+            {
+                "request_clear_views": self.do_clear_plot_panel,
+            }
+        )
 
-    def do_clear_panel(self) -> None:
+    def do_clear_plot_panel(self) -> None:
         """Clear the contents of the RAMSTKPlot on a plot type panel."""
         self.pltPlot.axis.cla()
         self.pltPlot.figure.clf()
         self.pltPlot.plot.draw()
 
-    def do_load_panel(self) -> None:
+    def do_load_plot_panel(self) -> None:
         """Load data into the RAMSTKPlot on a plot type panel."""
         self.pltPlot.do_make_title(
             self.plot_title,
@@ -99,7 +103,7 @@ class RAMSTKPlotPanel(RAMSTKBasePanel):
         )
         self.pltPlot.figure.canvas.draw()
 
-    def do_make_panel(self) -> None:
+    def do_make_plot_panel(self) -> None:
         """Create a panel with a RAMSTKPlot."""
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)

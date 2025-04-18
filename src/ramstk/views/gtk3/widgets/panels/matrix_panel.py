@@ -18,6 +18,7 @@ from typing import Dict, List, Tuple, Union
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 
 # RAMSTK Local Imports
@@ -28,7 +29,7 @@ from . import RAMSTKBasePanel, do_log_message
 
 
 class RAMSTKMatrixPanel(RAMSTKBasePanel):
-    """The RAMSTKmatrixPanel class."""
+    """The RAMSTKMatrixPanel class."""
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTKMatrixPanel."""
@@ -38,17 +39,18 @@ class RAMSTKMatrixPanel(RAMSTKBasePanel):
         self.grdMatrixView: RAMSTKMatrixView = RAMSTKMatrixView()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_clear_panel,
-            "request_clear_views",
+        do_subscribe_to_messages(
+            {
+                "request_clear_views": self.do_clear_matrix_panel,
+            }
         )
 
-    def do_clear_panel(self) -> None:
+    def do_clear_matrix_panel(self) -> None:
         """Clear the contents of the matrix."""
         for _row_idx in range(self.grdMatrixView.n_rows):
             self.grdMatrixView.remove_row(_row_idx)
 
-    def do_load_panel(
+    def do_load_matrix_panel(
         self,
         attribute_dic: Dict[str, Union[List[int], Tuple[int]]],
     ) -> None:
@@ -76,7 +78,7 @@ class RAMSTKMatrixPanel(RAMSTKBasePanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_make_panel(self) -> None:
+    def do_make_matrix_panel(self) -> None:
         """Create a panel with an embedded RAMSTKMatrixView()."""
         _scrollwindow_obj: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
             self.grdMatrixView
@@ -96,7 +98,7 @@ class RAMSTKMatrixPanel(RAMSTKBasePanel):
                 if _combo_obj is not None:  # Ensure we don't call .connect() on None
                     _combo_obj.connect("changed", self.on_changed_combo, _combo_obj)
 
-    def on_changed_combo(
+    def on_combo_changed(
         self,
         combo_obj: RAMSTKComboBox,
     ) -> int:
