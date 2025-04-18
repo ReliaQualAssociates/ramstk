@@ -60,6 +60,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
             {
                 "selected_hardware": self._do_set_hardware_attributes,
                 "succeed_get_reliability_attributes": self._do_set_reliability_attributes,  # noqa
+                "succeed_get_milhdbk217f_attributes": self._do_load_entries,
             }
         )
 

@@ -11,6 +11,7 @@
 from typing import Any, Dict, List
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, WidgetConfig
 
@@ -436,6 +437,12 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         super().do_make_panel()
         super().do_set_widget_callbacks()
         self.__do_nudge_widgets()
+
+        do_subscribe_to_messages(
+            {
+                "succeed_get_reliability_attributes": self._do_load_entries,
+            }
+        )
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.

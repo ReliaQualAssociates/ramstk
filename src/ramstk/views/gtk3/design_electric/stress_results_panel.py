@@ -193,7 +193,10 @@ class StressResultPanel(RAMSTKFixedPanel):
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(
-            {"selected_hardware": self._do_set_hardware_attributes}
+            {
+                "selected_hardware": self._do_set_hardware_attributes,
+                "succeed_get_design_electric_attributes": self._do_load_entries,
+            }
         )
 
     def _do_load_derating_curve(

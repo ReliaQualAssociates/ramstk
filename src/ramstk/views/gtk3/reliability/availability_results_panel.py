@@ -219,6 +219,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "succeed_get_hardware_attributes": self._do_load_entries_hardware,
+                "succeed_get_reliability_attributes": self._do_load_entries,
             }
         )
 
