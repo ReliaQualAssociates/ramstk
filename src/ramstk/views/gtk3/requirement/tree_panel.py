@@ -15,13 +15,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKTreePanel, WidgetConfig
-from ramstk.views.gtk3.widgets.treeviews.cellrenderercombo import (
+from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererCombo,
-)
-from ramstk.views.gtk3.widgets.treeviews.cellrenderertext import RAMSTKCellRendererText
-from ramstk.views.gtk3.widgets.treeviews.cellrenderertoggle import (
+    RAMSTKCellRendererText,
     RAMSTKCellRendererToggle,
+    RAMSTKTreePanel,
+    WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -39,9 +39,9 @@ class RequirementTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -49,14 +49,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "requirement_id",
@@ -64,14 +64,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Requirement ID"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "derived",
@@ -79,14 +79,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Derived?"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -94,14 +94,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Description"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "figure_number",
@@ -109,14 +109,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Figure Number"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "owner",
@@ -124,14 +124,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Owner"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "page_number",
@@ -139,14 +139,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Page Number"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "parent_id",
@@ -154,14 +154,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Parent ID"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "priority",
@@ -169,14 +169,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Priority"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": 0,
                     "field": "requirement_code",
@@ -184,14 +184,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Code"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "specification",
@@ -199,14 +199,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Specification"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "requirement_type",
@@ -214,14 +214,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Type"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "validated",
@@ -229,14 +229,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Validated?"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "validated_date",
@@ -244,11 +244,11 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "label_text": _("Validated Date"),
                     "listen_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         # Initialize public instance attributes.

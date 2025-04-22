@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererToggle,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -36,7 +37,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private instance attributes.
-        self._dic_visible_mask: Dict[int, Dict[str, str]] = {
+        self._dic_visible_mask: Dict[int, Dict[str, bool]] = {
             0: {
                 "revision_id": False,
                 "hardware_id": False,
@@ -164,9 +165,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
             },
         }
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -175,14 +176,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hardware_id",
@@ -191,14 +192,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -207,14 +208,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "included",
@@ -223,14 +224,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "n_sub_systems",
@@ -239,14 +240,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "n_sub_elements",
@@ -255,14 +256,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1,
                     "field": "mission_time",
@@ -271,14 +272,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1,
                     "field": "duty_cycle",
@@ -287,14 +288,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "int_factor",
@@ -303,14 +304,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "soa_factor",
@@ -319,14 +320,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "op_time_factor",
@@ -335,14 +336,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "env_factor",
@@ -351,14 +352,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1,
                     "field": "weight_factor",
@@ -367,14 +368,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1,
                     "field": "percent_weight_factor",
@@ -383,14 +384,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_logistics",
@@ -399,14 +400,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_alloc",
@@ -415,14 +416,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_logistics",
@@ -431,14 +432,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_alloc",
@@ -447,14 +448,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "reliability_logistics",
@@ -463,14 +464,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "reliability_alloc",
@@ -479,14 +480,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "availability_logistics",
@@ -495,14 +496,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "availability_alloc",
@@ -511,14 +512,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "parent_id",
@@ -527,11 +528,11 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_allocation",
                     "send_topic": "mvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._filtered_tree = True
         self._goal_id: int = 0

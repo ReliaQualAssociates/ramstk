@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -53,9 +54,9 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         # Initialize private instance attributes.
         self._dic_task_types: Dict[int, List[str]] = {}
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtMinTime,
-                "attributes": {
+            make_widget_config(
+                self.txtMinTime,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_minimum",
@@ -64,7 +65,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Minimum person-time needed to complete the selected task."
@@ -72,10 +73,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtExpTime,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtExpTime,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_average",
@@ -84,7 +85,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Most likely person-time needed to complete the selected task."
@@ -92,10 +93,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMaxTime,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMaxTime,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_maximum",
@@ -104,7 +105,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Maximum person-time needed to complete the selected task."
@@ -112,10 +113,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanTimeLL,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanTimeLL,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_ll",
@@ -123,7 +124,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": "",
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated lower confidence limit on the time needed to "
@@ -132,10 +133,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanTime,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanTime,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_mean",
@@ -143,7 +144,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": _("Task Time (95% Confidence):"),
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated mean for the time needed to complete the "
@@ -152,10 +153,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanTimeUL,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanTimeUL,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_ul",
@@ -163,7 +164,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": "",
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated upper confidence limit on the time needed to "
@@ -172,10 +173,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMinCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMinCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_minimum",
@@ -184,16 +185,16 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("Minimum cost to complete the selected task."),
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtExpCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtExpCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_average",
@@ -202,16 +203,16 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("Most likely cost to complete the selected task."),
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMaxCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMaxCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_maximum",
@@ -220,16 +221,16 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("Maximum cost to complete the selected task."),
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanCostLL,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanCostLL,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_ll",
@@ -237,7 +238,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": "",
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated lower confidence limit on the cost to complete "
@@ -246,10 +247,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_mean",
@@ -257,7 +258,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": _("Task Cost (95% Confidence):"),
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated mean for the cost to complete the selected "
@@ -266,10 +267,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanCostUL,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanCostUL,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_ul",
@@ -277,7 +278,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "label_text": "",
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "The calculated upper confidence limit on the cost to complete "
@@ -286,7 +287,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 100,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

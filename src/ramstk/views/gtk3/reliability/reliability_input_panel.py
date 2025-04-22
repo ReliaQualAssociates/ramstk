@@ -17,6 +17,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -51,21 +52,11 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
         variance of the specified MTBF for the selected hardware item.
     """
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
     # Define private scalar class attributes.
     _record_field: str = "hardware_id"
     _select_msg: str = "succeed_get_reliability_attributes"
     _tag: str = "reliability"
     _title: str = _("Reliability Assessment Inputs")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Assessment Input panel."""
@@ -87,9 +78,9 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbHRType,
-                "attributes": {
+            make_widget_config(
+                self.cmbHRType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hazard_rate_type_id",
@@ -98,7 +89,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The type of reliability assessment for the selected hardware "
@@ -107,10 +98,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 200,
                 },
-            },
-            {
-                "widget": self.cmbHRMethod,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbHRMethod,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hazard_rate_method_id",
@@ -119,7 +110,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The assessment method to use for the selected hardware item."
@@ -127,10 +118,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 200,
                 },
-            },
-            {
-                "widget": self.txtSpecifiedHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecifiedHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_specified",
@@ -139,16 +130,16 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The stated hazard rate."),
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtSpecifiedHtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecifiedHtVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hr_specified_variance",
@@ -157,16 +148,16 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The variance of the stated hazard rate."),
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtSpecifiedMTBF,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecifiedMTBF,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_specified",
@@ -175,16 +166,16 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The stated mean time between failure (MTBF)."),
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtSpecifiedMTBFVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecifiedMTBFVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_specified_variance",
@@ -193,7 +184,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The variance of the stated mean time between failure (MTBF)."
@@ -201,10 +192,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.cmbFailureDist,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbFailureDist,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "failure_distribution_id",
@@ -213,7 +204,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The statistical failure distribution of the selected "
@@ -222,10 +213,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 200,
                 },
-            },
-            {
-                "widget": self.txtFailScale,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFailScale,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "scale_parameter",
@@ -234,7 +225,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The scale parameter of the statistical failure distribution."
@@ -242,10 +233,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtFailShape,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFailShape,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "shape_parameter",
@@ -254,7 +245,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The shape parameter of the statistical failure distribution."
@@ -262,10 +253,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtFailLocation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFailLocation,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "location_parameter",
@@ -274,7 +265,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The location parameter of the statistical failure "
@@ -283,10 +274,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtAddAdjFactor,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtAddAdjFactor,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "add_adj_factor",
@@ -295,7 +286,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "An adjustment factor to add to the assessed hazard rate."
@@ -303,10 +294,10 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
-            {
-                "widget": self.txtMultAdjFactor,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMultAdjFactor,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "mult_adj_factor",
@@ -315,7 +306,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "An adjustment factor to multiply the assessed hazard rate."
@@ -323,7 +314,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width": 125,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

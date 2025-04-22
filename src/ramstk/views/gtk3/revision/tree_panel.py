@@ -15,11 +15,12 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
 class RevisionTreePanel(RAMSTKTreePanel):
-    """Panel to display flat list of revisions."""
+    """Panel to display a flat list of revisions."""
 
     # Define private class attributes.
     _select_msg = "succeed_retrieve_all_revision"
@@ -32,384 +33,384 @@ class RevisionTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
                     "index": 0,
                     "label_text": _("Revision ID"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "availability_logistics",
                     "index": 1,
                     "label_text": _("Logistics A(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "availability_mission",
                     "index": 2,
                     "label_text": _("Mission A(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost",
                     "index": 3,
                     "label_text": _("Cost"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_failure",
                     "index": 4,
                     "label_text": _("Cost/Failure"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_hour",
                     "index": 5,
                     "label_text": _("Cost/Hour"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_active",
                     "index": 6,
                     "label_text": _("Active h(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_dormant",
                     "index": 7,
                     "label_text": _("Dormant h(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_logistics",
                     "index": 8,
                     "label_text": _("Logistics h(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_mission",
                     "index": 9,
                     "label_text": _("Mission h(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_software",
                     "index": 10,
                     "label_text": _("Software h(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mmt",
                     "index": 11,
                     "label_text": _("MMT"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mcmt",
                     "index": 12,
                     "label_text": "MCMT",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mpmt",
                     "index": 13,
                     "label_text": "MPMT",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_logistics",
                     "index": 14,
                     "label_text": _("Logistics MTBF"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_mission",
                     "index": 15,
                     "label_text": _("Mission MTBF"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mttr",
                     "index": 16,
                     "label_text": "MTTR",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "name",
                     "index": 17,
                     "label_text": _("Revision Name"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_logistics",
                     "index": 18,
                     "label_text": _("Logistics R(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_mission",
                     "index": 19,
                     "label_text": _("Mission R(t)"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "remarks",
                     "index": 20,
                     "label_text": _("Remarks"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "total_part_count",
                     "index": 21,
                     "label_text": _("Part Count"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "revision_code",
                     "index": 22,
                     "label_text": _("Cost"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "program_time",
                     "index": 23,
                     "label_text": _("Program Time"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "program_time_sd",
                     "index": 24,
                     "label_text": _("Program Time SE"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "program_cost",
                     "index": 25,
                     "label_text": _("Total Cost"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "program_cost_sd",
                     "index": 26,
                     "label_text": _("Total Cost SE"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._on_edit_message: str = f"mvw_editing_{self._tag}"
 

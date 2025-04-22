@@ -23,6 +23,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 PART_COUNT = 1
@@ -69,9 +70,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -80,15 +81,15 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the inductive device."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbSpecification,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "specification_id",
@@ -97,17 +98,17 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The governing specification for the inductive device."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbInsulation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbInsulation,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "insulation_id",
@@ -116,15 +117,15 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The insulation class of the inductive device."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtArea,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtArea,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "area",
@@ -133,7 +134,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The case radiating surface (in square inches) of the "
@@ -141,10 +142,10 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtWeight,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtWeight,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "weight",
@@ -153,15 +154,15 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The transformer weight (in lbf)."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbFamily,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbFamily,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "family_id",
@@ -170,15 +171,15 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application family of the transformer."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -187,12 +188,12 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The method of construction of the coil."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

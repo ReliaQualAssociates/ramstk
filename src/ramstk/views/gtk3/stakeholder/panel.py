@@ -22,11 +22,12 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
 class StakeholderTreePanel(RAMSTKTreePanel):
-    """Panel to display list of stakeholder inputs."""
+    """Panel to display a list of stakeholder inputs."""
 
     # Define private class attributes.
     _select_msg = "succeed_retrieve_all_stakeholder"
@@ -39,9 +40,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -50,15 +51,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "stakeholder_id",
@@ -67,15 +68,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererSpin(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererSpin(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "customer_rank",
@@ -84,19 +85,19 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                     "digits": 0,
                     "lower": 1,
-                    "step": 1,
+                    "step_increment": 1,
                     "upper": 5,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -105,15 +106,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "group",
@@ -122,15 +123,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "improvement",
@@ -139,15 +140,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": "",
                     "field": "overall_weight",
@@ -156,15 +157,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererSpin(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererSpin(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "planned_rank",
@@ -173,19 +174,19 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                     "digits": 0,
                     "lower": 1,
-                    "step": 1,
+                    "step_increment": 1,
                     "upper": 5,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererSpin(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererSpin(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "priority",
@@ -194,19 +195,19 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                     "digits": 0,
                     "lower": 1,
-                    "step": 1,
+                    "step_increment": 1,
                     "upper": 5,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "requirement_id",
@@ -215,15 +216,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "stakeholder",
@@ -232,15 +233,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": "",
                     "field": "user_float_1",
@@ -249,15 +250,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_2",
@@ -266,15 +267,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_3",
@@ -283,15 +284,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "user_float_4",
@@ -300,15 +301,15 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "user_float_5",
@@ -317,12 +318,12 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_stakeholder",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._lst_groups: List[str] = []
         self._lst_stakeholders: List[str] = []
@@ -373,8 +374,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     def _do_load_requirements(self, tree: treelib.Tree) -> None:
         """Load the requirement ID list when Requirements are retrieved.
 
-        :param tree: the treelib Tree() containing the Stakeholder data records.
-        :return: None
+        :param tree: the treelib.Tree containing the Stakeholder data records.
         """
         _cell = self.tvwTreeView.get_column(
             self.tvwTreeView.position["requirement_id"]
@@ -392,11 +392,10 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         """Wrap the do_load_panel() method when an element is inserted.
 
         The do_set_cursor_active() method responds to the same message, but one less
-        argument in it's call.  This results in a PyPubSub error and is the reason this
+        argument in its call.  This results in a PyPubSub error and is the reason this
         wrapper method is needed.
 
-        :param tree: the module's treelib Tree().
-        :return: None
+        :param tree: the module's treelib.Tree.
         """
         super().do_load_panel(tree)
 
@@ -404,7 +403,6 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         """Respond to changes in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
-        :return: None
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
@@ -422,7 +420,6 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         activated/changed.
 
         :param selection: the Stakeholder class Gtk.TreeSelection().
-        :return: None
         """
         _attributes = super().on_row_change(selection)
 

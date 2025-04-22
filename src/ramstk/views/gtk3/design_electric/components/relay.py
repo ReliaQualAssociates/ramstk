@@ -27,6 +27,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -68,9 +69,9 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -79,15 +80,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -96,15 +97,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The relay type."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbLoadType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbLoadType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "technology_id",
@@ -113,15 +114,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of load the relay is switching."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbContactForm,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbContactForm,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "contact_form_id",
@@ -130,15 +131,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The contact form of the relay."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbContactRating,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbContactRating,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "contact_rating_id",
@@ -147,15 +148,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The rating of the relay contacts."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -164,15 +165,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of relay application."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -181,15 +182,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The method of construction of the relay."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtCycles,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCycles,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "n_cycles",
@@ -198,12 +199,12 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of relay on/off cycles per hour."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

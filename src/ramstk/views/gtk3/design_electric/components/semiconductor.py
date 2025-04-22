@@ -25,6 +25,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -75,9 +76,9 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -86,15 +87,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbPackage,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbPackage,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "package_id",
@@ -103,15 +104,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The package type for the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -120,15 +121,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -137,15 +138,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application of the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -154,15 +155,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The method of construction of the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbMatching,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbMatching,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "matching_id",
@@ -171,15 +172,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The matching network of the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtFrequencyOperating,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFrequencyOperating,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "frequency_operating",
@@ -188,15 +189,15 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The operating frequency of the semiconductor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNElements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNElements,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_elements",
@@ -205,17 +206,17 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of characters in the optoelectronic display."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtThetaJC,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtThetaJC,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "theta_jc",
@@ -224,14 +225,14 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The junction-case thermal resistance of the semiconductor."
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

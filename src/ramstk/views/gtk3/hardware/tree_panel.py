@@ -23,6 +23,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererToggle,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -42,9 +43,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
         # Initialize private instance attributes.
         self._lst_cost_types: List[str] = ["", "Assessed", "Specified"]
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -52,14 +53,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "listen_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hardware_id",
@@ -67,14 +68,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "label_text": _("Hardware ID"),
                     "listen_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "alt_part_number",
@@ -83,14 +84,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "cage_code",
@@ -99,14 +100,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "comp_ref_des",
@@ -115,14 +116,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost",
@@ -131,14 +132,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_per_failure",
@@ -147,14 +148,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_hour",
@@ -163,14 +164,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -179,14 +180,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 100.0,
                     "field": "duty_cycle",
@@ -195,14 +196,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "figure_number",
@@ -211,14 +212,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "lcn",
@@ -227,14 +228,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "level",
@@ -243,14 +244,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "manufacturer_id",
@@ -259,14 +260,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "mission_time",
@@ -275,14 +276,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -291,14 +292,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "nsn",
@@ -307,14 +308,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "page_number",
@@ -323,14 +324,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "parent_id",
@@ -339,14 +340,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "part",
@@ -355,14 +356,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "part_number",
@@ -371,14 +372,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "quantity",
@@ -387,14 +388,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "ref_des",
@@ -403,14 +404,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "Remarks",
@@ -419,14 +420,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "repairable",
@@ -435,14 +436,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "specification_number",
@@ -451,14 +452,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "tagged_part",
@@ -467,14 +468,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "total_part_count",
@@ -483,14 +484,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "total_power_dissipation",
@@ -499,14 +500,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": date.today().year,
                     "field": "year_of_manufacture",
@@ -515,14 +516,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "cost_type_id",
@@ -531,14 +532,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "attachments",
@@ -547,14 +548,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "category_id",
@@ -563,14 +564,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "subcategory_id",
@@ -579,11 +580,11 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hardware",
                     "send_topic": "mvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._category_id: int = 0
 
@@ -764,7 +765,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
             _cell = _column.get_cells()[-1]
 
-            if isinstance(_cell, Gtk.CellRendererCombo) and isinstance(_value, int):
+            if isinstance(_cell, RAMSTKCellRendererCombo) and isinstance(_value, int):
                 if _key == "manufacturer_id":
                     package[_key] = self.lst_manufacturers[_value]
                 elif _key == "cost_type_id":
@@ -777,11 +778,11 @@ class HardwareTreePanel(RAMSTKTreePanel):
             super().do_refresh_tree(node_id, package)
 
     def _on_category_change(
-        self, __combo: Gtk.CellRendererCombo, path: str, new_text: str
+        self, __combo: RAMSTKCellRendererCombo, path: str, new_text: str
     ) -> None:
         """Load the subcategories whenever the category combo is changed.
 
-        :param __combo: the category list Gtk.CellRendererCombo(). Unused in this
+        :param __combo: the category list RAMSTKCellRendererCombo(). Unused in this
             method.
         :param path: the path identifying the edited cell.
         :param new_text: the new text (category description).

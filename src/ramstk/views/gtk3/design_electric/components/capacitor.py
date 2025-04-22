@@ -24,6 +24,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -35,13 +36,12 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a
     Capacitor assessment input view are:
 
-    :ivar list _lst_labels: list of label text to display for the capacitor
+    :ivar list _lst_labels: list of strings for labels to display for the capacitor
         MIL-HDBK-217 input parameters.
 
     :ivar cmbConfiguration: select and display the configuration of the
         capacitor.
-    :ivar cmbConstruction: select and display the method of construction of the
-        capacitor.
+    :ivar cmbConstruction: select and display the capacitor's method of construction.
     :ivar cmbSpecification: select and display the governing specification of
         the capacitor.
     :ivar cmbStyle: select and display the style of the capacitor.
@@ -71,9 +71,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -82,15 +82,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the capacitor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtCapacitance,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCapacitance,
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "capacitance",
@@ -99,17 +99,17 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The capacitance rating (in farads) of the capacitor."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbSpecification,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "specification_id",
@@ -118,15 +118,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The governing specification for the capacitor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbStyle,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbStyle,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -135,15 +135,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The style of the capacitor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConfiguration,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConfiguration,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "configuration_id",
@@ -152,15 +152,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The configuration of the capacitor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -169,15 +169,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The method of construction of the capacitor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtESR,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtESR,
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "resistance",
@@ -186,12 +186,12 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The equivalent series resistance of the capacitor."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

@@ -18,6 +18,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -57,9 +58,9 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -68,15 +69,15 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -85,15 +86,15 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application of the lamp."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -102,15 +103,15 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of electronic filter."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtFrequency,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFrequency,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "frequency_operating",
@@ -119,15 +120,15 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The operating frequency of the crystal."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtUtilization,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtUtilization,
+                {
                     "datatype": "gfloat",
                     "default": 100.0,
                     "field": "duty_cycle",
@@ -136,7 +137,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The utilization factor (illuminate hours / equipment operate "
@@ -144,7 +145,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._duty_cycle: float = 100.0
         self._hazard_rate_method_id: int = 0

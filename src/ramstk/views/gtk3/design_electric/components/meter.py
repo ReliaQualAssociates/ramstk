@@ -14,7 +14,12 @@ from typing import Any, Dict, List
 from ramstk.constants.meter import METER_QUALITY_DICT, METER_TYPE_DICT
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -45,9 +50,9 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -56,15 +61,15 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the meter."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -73,15 +78,15 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of meter."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -90,12 +95,12 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application of the panel meter."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

@@ -21,6 +21,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -38,9 +39,9 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -48,14 +49,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "function_id",
@@ -63,14 +64,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function ID"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hazard_id",
@@ -78,14 +79,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Hazard ID"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "potential_hazard",
@@ -94,14 +95,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "potential_cause",
@@ -110,14 +111,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_effect",
@@ -126,14 +127,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_severity",
@@ -142,14 +143,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_probability",
@@ -158,14 +159,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "assembly_hri",
@@ -173,14 +174,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Assembly HRI"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_mitigation",
@@ -189,14 +190,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_severity_f",
@@ -205,14 +206,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "assembly_probability_f",
@@ -221,14 +222,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "assembly_hri_f",
@@ -236,14 +237,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Final Assembly HRI"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_effect",
@@ -252,14 +253,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_severity",
@@ -268,14 +269,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_probability",
@@ -284,14 +285,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "system_hri",
@@ -299,14 +300,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("System HRI"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_mitigation",
@@ -315,14 +316,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_severity_f",
@@ -331,14 +332,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "system_probability_f",
@@ -347,14 +348,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "system_hri_f",
@@ -362,14 +363,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Final System HRI"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "remarks",
@@ -378,14 +379,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_1",
@@ -394,14 +395,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_2",
@@ -410,14 +411,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_3",
@@ -426,14 +427,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_4",
@@ -442,14 +443,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_5",
@@ -458,14 +459,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "result_1",
@@ -473,14 +474,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Result 1"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "result_2",
@@ -488,14 +489,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Result 2"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "result_3",
@@ -503,14 +504,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Result 3"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "result_4",
@@ -518,14 +519,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Result 4"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "result_5",
@@ -533,14 +534,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "label_text": _("Result 5"),
                     "listen_topic": "wvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_1",
@@ -549,14 +550,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_2",
@@ -565,14 +566,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_3",
@@ -581,14 +582,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_1",
@@ -597,14 +598,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_2",
@@ -613,14 +614,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_3",
@@ -629,14 +630,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_1",
@@ -645,14 +646,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_2",
@@ -661,14 +662,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_3",
@@ -677,11 +678,11 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_hazard",
                     "send_topic": "mvw_editing_hazard",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._filtered_tree = True
 
@@ -749,7 +750,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         return model[row][1] == self._parent_id
 
     def do_load_hazards(self, hazards: Dict[int, Tuple[str, str]]) -> None:
-        """Load the hazards list.
+        """Load the hazard list.
 
         :param hazards: the list of hazards to load into the hazards combo box.
         """
@@ -759,7 +760,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         self.tvwTreeView.do_load_cellrenderercombo("potential_hazard", self.lst_hazards)
 
     def do_load_probabilities(self, probabilities: List[List[str]]) -> None:
-        """Load the probabilities list.
+        """Load the probability list.
 
         :param probabilities: the list of probabilities to load into the probabilities
             combo box.
@@ -776,7 +777,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
             self.tvwTreeView.do_load_cellrenderercombo(_field, self.lst_probability)
 
     def do_load_severities(self, severities: Dict[int, Tuple[str, str, int]]) -> None:
-        """Load the severities list.
+        """Load the severity list.
 
         :param severities: the list of severities to load into the severities combo box.
         """

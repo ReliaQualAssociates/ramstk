@@ -11,7 +11,12 @@ from typing import List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class RequirementConsistencyPanel(RAMSTKFixedPanel):
@@ -40,9 +45,9 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.chkConsistentQ0,
-                "attributes": {
+            make_widget_config(
+                self.chkConsistentQ0,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_0",
@@ -54,7 +59,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -63,10 +68,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ1,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ1,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_1",
@@ -78,7 +83,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -87,10 +92,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ2,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ2,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_2",
@@ -102,7 +107,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -110,10 +115,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ3,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ3,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_3",
@@ -125,7 +130,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -134,10 +139,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ4,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ4,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_4",
@@ -149,7 +154,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -158,10 +163,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ5,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ5,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_5",
@@ -173,7 +178,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -182,10 +187,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ6,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ6,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_6",
@@ -196,7 +201,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -204,10 +209,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ7,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ7,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_7",
@@ -218,7 +223,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -226,10 +231,10 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkConsistentQ8,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkConsistentQ8,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_consistent_8",
@@ -238,13 +243,13 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _("The requirement is in scope for the project."),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

@@ -16,27 +16,18 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
 class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
     """Panel to display general data about the selected Hardware task."""
 
-    # Define private dictionary class attributes.
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
+    # Define private class attributes.
     _record_field = "hardware_id"
     _select_msg = "selected_hardware"
     _tag = "hardware"
     _title = _("Hardware Miscellaneous Information")
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
 
     def __init__(self) -> None:
         """Initialize an instance of the Hardware Task Description panel."""
@@ -49,9 +40,9 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtAttachments,
-                "attributes": {
+            make_widget_config(
+                self.txtAttachments,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "Attachments",
@@ -60,7 +51,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 150,
                     "tooltip": _(
@@ -69,10 +60,10 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.txtRemarks,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtRemarks,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "remarks",
@@ -81,7 +72,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 150,
                     "tooltip": _(
@@ -90,10 +81,10 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.chkTagged,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkTagged,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "tagged_part",
@@ -102,12 +93,12 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("Tag the selected hardware item."),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_properties()

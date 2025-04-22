@@ -25,6 +25,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -66,9 +67,9 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -77,15 +78,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the resistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtResistance,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtResistance,
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "resistance",
@@ -94,15 +95,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The resistance (in \u03a9) of the resistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbSpecification,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "specification_id",
@@ -111,15 +112,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The governing specification for the resistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -128,15 +129,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of thermistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbStyle,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbStyle,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "family_id",
@@ -145,15 +146,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The style of resistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -162,15 +163,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The method of construction of the resistor."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNElements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNElements,
+                {
                     "datatype": "gint",
                     "default": 0.0,
                     "field": "n_elements",
@@ -179,7 +180,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of active resistors in a resistor network or the "
@@ -187,7 +188,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

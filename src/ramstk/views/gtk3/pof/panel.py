@@ -22,6 +22,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -131,9 +132,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hardware_id",
@@ -141,14 +142,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Hardware ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "mode_id",
@@ -156,14 +157,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mode ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "mechanism_id",
@@ -171,14 +172,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mechanism ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "opload_id",
@@ -186,14 +187,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Load ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "opstress_id",
@@ -201,14 +202,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Stress ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "test_method_id",
@@ -216,14 +217,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Test ID"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -231,14 +232,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Description"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "effect_end",
@@ -246,14 +247,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("End Effect"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "severity_class",
@@ -261,14 +262,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Severity"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mode_probability",
@@ -276,14 +277,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mode Probability"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "damage_model",
@@ -291,14 +292,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Damage Model"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "measurable_parameter",
@@ -306,14 +307,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Measurable Parameter"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "load_history",
@@ -321,14 +322,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Load History Method"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "boundary_conditions",
@@ -336,14 +337,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Boundary Conditions"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererSpin(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererSpin(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "priority_id",
@@ -351,14 +352,14 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Priority"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "remarks",
@@ -366,11 +367,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "label_text": _("Remarks"),
                     "listen_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"

@@ -16,6 +16,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -39,9 +40,9 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtCode,
-                "attributes": {
+            make_widget_config(
+                self.txtCode,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "revision_code",
@@ -50,14 +51,14 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_revision",
                     "send_topic": "wvw_editing_revision",
                 },
-                "properties": {
-                    "tooltip_markup": _("A unique code for the selected revision."),
+                {
+                    "tooltip": _("A unique code for the selected revision."),
                     "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtName,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtName,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "revision_code",
@@ -66,14 +67,14 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_revision",
                     "send_topic": "wvw_editing_revision",
                 },
-                "properties": {
-                    "tooltip_markup": _("The name of the selected revision."),
+                {
+                    "tooltip": _("The name of the selected revision."),
                     "width_request": 800,
                 },
-            },
-            {
-                "widget": self.txtRemarks,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtRemarks,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "revision_code",
@@ -82,14 +83,14 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_revision",
                     "send_topic": "wvw_editing_revision",
                 },
-                "properties": {
+                {
                     "height_request": 100,
-                    "tooltip_markup": _(
+                    "tooltip": _(
                         "Enter any remarks associated with the selected revision."
                     ),
                     "width_request": 800,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_properties()

@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -74,9 +75,9 @@ class OptionsPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtSiteID,
-                "attributes": {
+            make_widget_config(
+                self.txtSiteID,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "site_id",
@@ -85,15 +86,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.txtSiteName,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSiteName,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "site_name",
@@ -102,15 +103,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.txtProductKey,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtProductKey,
+                {
                     "datatype": "gchararray",
                     "default": 0,
                     "field": "product_key",
@@ -119,15 +120,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.txtExpireDate,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtExpireDate,
+                {
                     "datatype": "gchararray",
                     "default": 0,
                     "field": "expire_on",
@@ -136,15 +137,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkFunctions,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkFunctions,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "function_enabled",
@@ -153,15 +154,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkRequirements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkRequirements,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "requirement_enabled",
@@ -170,15 +171,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkHardware,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkHardware,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hardware_enabled",
@@ -187,15 +188,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkValidation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkValidation,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "validation_enabled",
@@ -204,15 +205,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkHazards,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkHazards,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hazard_enabled",
@@ -221,15 +222,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkStakeholder,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkStakeholder,
+                {
                     "datatype": "gint",
                     "default": 0.0,
                     "field": "stakeholder_enabled",
@@ -238,15 +239,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkAllocation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkAllocation,
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "allocation_enabled",
@@ -255,15 +256,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkSimilarItem,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkSimilarItem,
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "similar_item_enabled",
@@ -272,15 +273,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkFMEA,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkFMEA,
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "fmea_enabled",
@@ -289,15 +290,15 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkPoF,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkPoF,
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "pof_enabled",
@@ -306,12 +307,12 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": "",
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

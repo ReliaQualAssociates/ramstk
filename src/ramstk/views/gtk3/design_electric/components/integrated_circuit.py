@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -94,9 +95,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -105,15 +106,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_reliability",
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the integrated circuit."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbPackage,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbPackage,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "package_id",
@@ -122,15 +123,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of package housing the integrated circuit."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtArea,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtArea,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "area",
@@ -139,18 +140,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The die area (in mil<sup>2</sup>) of the integrated circuit."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtNElements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNElements,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_elements",
@@ -159,18 +160,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of active elements in the integrated circuit."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtThetaJC,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtThetaJC,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "theta_jc",
@@ -179,16 +180,16 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The junction to case thermal resistance."),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtNActivePins,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNActivePins,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_active_pins",
@@ -197,18 +198,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of active pins on the integrated circuit."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.cmbTechnology,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbTechnology,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "technology_id",
@@ -217,17 +218,17 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The technology used to construct the integrated circuit."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtYearsInProduction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtYearsInProduction,
+                {
                     "datatype": "gfloat",
                     "default": 2,
                     "field": "years_in_production",
@@ -236,19 +237,19 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of years the generic device type has been in "
                         "production."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -257,17 +258,17 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The method of construction of the integrated circuit."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNCycles,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNCycles,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_cycles",
@@ -276,18 +277,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The total number of programming cycles over the EEPROM life."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtOperatingLife,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtOperatingLife,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "operating_life",
@@ -296,16 +297,16 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The system lifetime operating hours."),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.cmbECC,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbECC,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "family_id",
@@ -314,15 +315,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The error correction code used by the EEPROM."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -331,15 +332,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application of the integrated circuit."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -348,15 +349,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of GaAs or VLSI device."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtFeatureSize,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFeatureSize,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "feature_size",
@@ -365,16 +366,16 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The feature size (in microns) of the VLSI device."),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.cmbManufacturing,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbManufacturing,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "manufacturing_id",
@@ -383,15 +384,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The manufacturing process for the VLSI device."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtVoltageESD,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtVoltageESD,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "voltage_esd",
@@ -400,15 +401,15 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The ESD susceptibility threshold voltage of the VLSI device."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

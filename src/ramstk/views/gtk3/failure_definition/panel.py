@@ -19,6 +19,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -36,9 +37,9 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -46,14 +47,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "listen_topic": "wvw_editing_definition",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "function_id",
@@ -61,14 +62,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function ID"),
                     "listen_topic": "wvw_editing_definition",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "definition_id",
@@ -76,14 +77,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Definition ID"),
                     "listen_topic": "wvw_editing_definition",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "definition",
@@ -91,11 +92,11 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Definition"),
                     "listen_topic": "wvw_editing_definition",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"

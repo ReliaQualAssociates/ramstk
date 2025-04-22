@@ -12,7 +12,12 @@ from typing import List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
@@ -38,9 +43,9 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.chkVerifiableQ0,
-                "attributes": {
+            make_widget_config(
+                self.chkVerifiableQ0,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_0",
@@ -52,7 +57,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -61,10 +66,10 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkVerifiableQ1,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkVerifiableQ1,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_1",
@@ -77,7 +82,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -87,10 +92,10 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkVerifiableQ2,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkVerifiableQ2,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_2",
@@ -102,7 +107,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -111,10 +116,10 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkVerifiableQ3,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkVerifiableQ3,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_3",
@@ -126,7 +131,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -135,10 +140,10 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkVerifiableQ4,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkVerifiableQ4,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_4",
@@ -150,7 +155,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -159,10 +164,10 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkVerifiableQ5,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkVerifiableQ5,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_verifiable_5",
@@ -174,7 +179,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -183,7 +188,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

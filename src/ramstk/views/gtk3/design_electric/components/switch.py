@@ -24,6 +24,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -61,9 +62,9 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -72,15 +73,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the switch."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbApplication,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbApplication,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "application_id",
@@ -89,15 +90,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The application of the switch."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbConstruction,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbConstruction,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "construction_id",
@@ -106,15 +107,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The construction method for the switch."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbContactForm,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbContactForm,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "contact_form_id",
@@ -123,15 +124,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The contact form and quantity of the switch."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNCycles,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNCycles,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "n_cycles",
@@ -140,15 +141,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of cycles per hour of the switch."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNElements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNElements,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "n_elements",
@@ -157,12 +158,12 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of active contacts in the switch."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0

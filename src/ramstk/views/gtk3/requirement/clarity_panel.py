@@ -11,7 +11,12 @@ from typing import List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class RequirementClarityPanel(RAMSTKFixedPanel):
@@ -40,9 +45,9 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.chkClarityQ0,
-                "attributes": {
+            make_widget_config(
+                self.chkClarityQ0,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_0",
@@ -53,7 +58,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -61,10 +66,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ1,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ1,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_1",
@@ -76,7 +81,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -84,10 +89,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ2,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ2,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_2",
@@ -99,7 +104,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -108,10 +113,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ3,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ3,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_3",
@@ -123,7 +128,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -132,10 +137,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ4,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ4,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_4",
@@ -147,7 +152,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -155,10 +160,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ5,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ5,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_5",
@@ -170,7 +175,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -179,10 +184,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ6,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ6,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_6",
@@ -193,16 +198,16 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _("Stakeholders understand the requirement as written."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ7,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ7,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_7",
@@ -214,7 +219,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -223,10 +228,10 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkClarityQ8,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkClarityQ8,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_clarity_8",
@@ -238,7 +243,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -247,7 +252,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

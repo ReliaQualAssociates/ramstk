@@ -25,6 +25,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKSpinButton,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -62,9 +63,9 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         self._dic_task_types: Dict[int, List[str]] = {}
         self._dic_units: Dict[int, str] = {}
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtTaskID,
-                "attributes": {
+            make_widget_config(
+                self.txtTaskID,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "validation_id",
@@ -72,14 +73,14 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "label_text": _("Task ID:"),
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "width_request": 50,
                 },
-            },
-            {
-                "widget": self.txtCode,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCode,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -87,14 +88,14 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "label_text": _("Task Code"),
                     "listen_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "width_request": 50,
                 },
-            },
-            {
-                "widget": self.txtTask,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtTask,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -103,17 +104,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "height_request": 100,
                     "tooltip": _(
                         "Displays the description of the selected V&amp;V activity."
                     ),
                     "width_request": 500,
                 },
-            },
-            {
-                "widget": self.cmbTaskType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbTaskType,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "task_type",
@@ -122,16 +123,16 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Selects and displays the type of task for the selected "
                         "V&amp;V activity."
                     ),
                 },
-            },
-            {
-                "widget": self.txtSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecification,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "task_specification",
@@ -140,16 +141,16 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the internal or industry specification or procedure "
                         "governing the selected V&amp;V activity."
                     ),
                 },
-            },
-            {
-                "widget": self.cmbMeasurementUnit,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbMeasurementUnit,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "measurement_unit",
@@ -158,16 +159,16 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Selects and displays the measurement unit for the selected "
                         "V&amp;V activity acceptance parameter."
                     ),
                 },
-            },
-            {
-                "widget": self.txtMinAcceptable,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMinAcceptable,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_minimum",
@@ -176,17 +177,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the minimum acceptable value for the selected "
                         "V&amp;V activity."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMaxAcceptable,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMaxAcceptable,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_maximum",
@@ -195,17 +196,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the maximum acceptable value for the selected "
                         "V&amp;V activity."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtMeanAcceptable,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMeanAcceptable,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_mean",
@@ -214,17 +215,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the mean acceptable value for the selected V&amp;V "
                         "activity."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtVarAcceptable,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtVarAcceptable,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_variance",
@@ -233,17 +234,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the acceptable variance for the selected V&amp;V "
                         "activity."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtStartDate,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtStartDate,
+                {
                     "datatype": "gchararray",
                     "default": date.today(),
                     "field": "date_start",
@@ -252,17 +253,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the date the selected V&amp;V activity is scheduled "
                         "to start."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.txtEndDate,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtEndDate,
+                {
                     "datatype": "gchararray",
                     "default": date.today(),
                     "field": "date_end",
@@ -271,17 +272,17 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "tooltip": _(
                         "Displays the date the selected V&amp;V activity is scheduled "
                         "to end."
                     ),
                     "width_request": 100,
                 },
-            },
-            {
-                "widget": self.spnStatus,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.spnStatus,
+                {
                     "datatype": "float",
                     "default": 0.0,
                     "field": "status",
@@ -290,19 +291,19 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_validation",
                     "send_topic": "wvw_editing_validation",
                 },
-                "properties": {
+                {
                     "lower": 0.0,
                     "numeric": True,
                     "page_increment": 0.1,
                     "page_size": 1.0,
                     "step_increment": 1.0,
-                    "ticks": True,
+                    "snap_to_ticks": True,
                     "tooltip": _(
                         "Displays % complete of the selected V&amp;V activity."
                     ),
                     "upper": 100.0,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()
@@ -317,7 +318,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
 
         :param measurement_unit: the list of measurement units to load. The key is an
             integer representing the ID field in the database. The value is a tuple with
-            a unit abbreviation, unit name, and generic unit type. For example: ('lbf',
+            a unit abbreviation, unit name, and generic unit type. For example, ('lbf',
             'Pounds Force', 'unit')
         """
         _model = self.cmbMeasurementUnit.get_model()

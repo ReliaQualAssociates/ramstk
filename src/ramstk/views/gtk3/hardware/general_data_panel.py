@@ -24,6 +24,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -57,9 +58,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtRefDes,
-                "attributes": {
+            make_widget_config(
+                self.txtRefDes,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "ref_des",
@@ -68,17 +69,17 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The reference designator of the selected hardware item."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtCompRefDes,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCompRefDes,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "comp_ref_des",
@@ -87,7 +88,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The composite reference designator of the selected hardware "
@@ -95,10 +96,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtName,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtName,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -107,16 +108,16 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The name of the selected hardware item."),
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.txtDescription,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtDescription,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -125,16 +126,16 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The description of the selected hardware item."),
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.txtPartNumber,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtPartNumber,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "part_number",
@@ -143,16 +144,16 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The part number of the selected hardware item."),
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.txtAltPartNum,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtAltPartNum,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "alt_part_number",
@@ -161,16 +162,16 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The part number of the selected hardware item."),
                     "visible": True,
                     "width_request": 600,
                 },
-            },
-            {
-                "widget": self.cmbCategory,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbCategory,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "category_id",
@@ -179,17 +180,17 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The hazard rate model category of the selected hardware item."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbSubcategory,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbSubcategory,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "subcategory_id",
@@ -198,7 +199,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The hazard rate model subcategory of the selected hardware "
@@ -206,10 +207,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecification,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "specification_number",
@@ -218,7 +219,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The specification (if any) governing the selected hardware "
@@ -226,10 +227,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtPageNumber,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtPageNumber,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "page_number",
@@ -238,7 +239,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The page number in the governing specification for the "
@@ -246,10 +247,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtFigureNumber,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFigureNumber,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "figure_number",
@@ -258,7 +259,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The figure number in the governing specification for the "
@@ -266,10 +267,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtLCN,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLCN,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "lcn",
@@ -278,7 +279,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The Logistics Control Number (LCN) of the selected hardware "
@@ -286,10 +287,10 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkRepairable,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkRepairable,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "repairable",
@@ -298,7 +299,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Indicates whether or not the selected hardware item is "
@@ -306,7 +307,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         # Initialize public instance attributes.

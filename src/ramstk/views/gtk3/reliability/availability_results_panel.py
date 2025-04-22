@@ -14,7 +14,12 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class AvailabilityResultsPanel(RAMSTKFixedPanel):
@@ -42,9 +47,9 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtLogisticsAt,
-                "attributes": {
+            make_widget_config(
+                self.txtLogisticsAt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "availability_logistics",
@@ -53,19 +58,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the logistics availability for the selected hardware "
                         "item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsAtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsAtVar,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "avail_log_variance",
@@ -74,19 +79,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the logistics availability for the "
                         "selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionAt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionAt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "availability_mission",
@@ -95,19 +100,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the mission availability for the selected hardware "
                         "item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionAtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionAtVar,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "avail_mis_variance",
@@ -116,19 +121,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the mission availability for the "
                         "selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtTotalCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtTotalCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "total_cost",
@@ -137,18 +142,18 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the total cost of the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtCostFailure,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCostFailure,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_failure",
@@ -157,18 +162,18 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the cost per failure of the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtCostHour,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCostHour,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "cost_hour",
@@ -177,19 +182,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the failure cost per life time hour for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtPartCount,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtPartCount,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "total_part_count",
@@ -198,15 +203,15 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the total part count for the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

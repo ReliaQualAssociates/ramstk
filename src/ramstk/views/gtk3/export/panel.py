@@ -21,6 +21,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKLabel,
     RAMSTKMessageDialog,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -78,9 +79,9 @@ class ExportPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.chkRevisions,
-                "attributes": {
+            make_widget_config(
+                self.chkRevisions,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_revision",
@@ -89,15 +90,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
-                    "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkFunctions,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkFunctions,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_function",
@@ -106,15 +106,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
-                    "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkRequirements,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkRequirements,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_requirement",
@@ -123,15 +122,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkHardware,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkHardware,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_hardware",
@@ -140,15 +138,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkValidation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkValidation,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_validation",
@@ -157,15 +154,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
-                    "tooltip": "",
                     "visible": False,
                 },
-            },
-            {
-                "widget": self.chkHazards,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkHazards,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_hazards",
@@ -174,15 +170,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkStakeholder,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkStakeholder,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_stakeholder",
@@ -191,15 +186,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkAllocation,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkAllocation,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_allocation",
@@ -208,15 +202,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkSimilarItem,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkSimilarItem,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_similar_item",
@@ -225,15 +218,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkFMEA,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkFMEA,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_fmea",
@@ -242,15 +234,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkPoF,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkPoF,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_pof",
@@ -259,15 +250,14 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkUsageProfile,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkUsageProfile,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "export_usage_profile",
@@ -276,12 +266,11 @@ class ExportPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": True,
-                    "tooltip": "",
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._analysis_path: str = analysis_path
         self._parent: Gtk.Window = parent

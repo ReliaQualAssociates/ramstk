@@ -14,7 +14,12 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class SimilarItemMethodPanel(RAMSTKFixedPanel):
@@ -35,9 +40,9 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbSimilarItemMethod,
-                "attributes": {
+            make_widget_config(
+                self.cmbSimilarItemMethod,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "similar_item_method_id",
@@ -46,12 +51,12 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("Select the similar item analysis method."),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._method_id: int = 0
         self._on_edit_message = f"wvw_editing_{self._tag}"

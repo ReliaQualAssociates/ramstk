@@ -17,6 +17,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -43,9 +44,9 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtCode,
-                "attributes": {
+            make_widget_config(
+                self.txtCode,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_code",
@@ -53,16 +54,16 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "label_text": _("Function Code:"),
                     "listen_topic": f"mvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _("A unique code for the selected function."),
                     "visible": True,
                     "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtName,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtName,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -70,16 +71,16 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "label_text": _("Function Name:"),
                     "listen_topic": f"mvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The name of the selected function."),
                     "visible": True,
                     "width_request": 800,
                 },
-            },
-            {
-                "widget": self.txtRemarks,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtRemarks,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "remarks",
@@ -87,7 +88,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "label_text": _("Remarks:"),
                     "listen_topic": f"mvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 100,
                     "tooltip": _(
@@ -96,10 +97,10 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "visible": True,
                     "width_request": 800,
                 },
-            },
-            {
-                "widget": self.chkSafetyCritical,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkSafetyCritical,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "safet_critical",
@@ -107,7 +108,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "label_text": _("Function Name:"),
                     "listen_topic": f"mvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Indicates whether or not the selected function is safety "
@@ -115,7 +116,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_properties()

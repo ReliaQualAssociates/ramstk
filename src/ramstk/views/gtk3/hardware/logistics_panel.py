@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -50,9 +51,9 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbManufacturer,
-                "attributes": {
+            make_widget_config(
+                self.cmbManufacturer,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "manufacturer_id",
@@ -61,15 +62,15 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The manufacturer of the selected hardware item."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtCAGECode,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCAGECode,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "cage_code",
@@ -78,7 +79,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The Commercial and Government Entity (CAGE) Code of the "
@@ -86,10 +87,10 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNSN,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNSN,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "nsn",
@@ -98,17 +99,17 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The National Stock Number (NSN) of the selected hardware item."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtYearMade,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtYearMade,
+                {
                     "datatype": "gchararray",
                     "default": date.today().year - 2,
                     "field": "year_of_manufacture",
@@ -117,7 +118,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The year the selected hardware item was introduced to "
@@ -125,10 +126,10 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtQuantity,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtQuantity,
+                {
                     "datatype": "gint",
                     "default": 1,
                     "field": "quantity",
@@ -137,17 +138,17 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of the selected hardware items in the design."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtCost,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtCost,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost",
@@ -156,15 +157,15 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The unit cost of the selected hardware item."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbCostType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbCostType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "cost_type_id",
@@ -173,7 +174,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_hardware",
                     "send_topic": "wvw_editing_hardware",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The method for calculating total cost of the selected "
@@ -181,7 +182,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_properties()

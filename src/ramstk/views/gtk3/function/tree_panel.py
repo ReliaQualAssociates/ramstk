@@ -16,6 +16,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererToggle,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -33,9 +34,9 @@ class FunctionTreePanel(RAMSTKTreePanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -43,14 +44,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "background_" "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "function_id",
@@ -58,14 +59,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function ID"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "availability_logistics",
@@ -73,14 +74,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Logistics A(t)"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.00,
                     "field": "availability_mission",
@@ -88,14 +89,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission A(t)"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost",
@@ -103,14 +104,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Cost"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_code",
@@ -118,14 +119,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function Code"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_logistics",
@@ -133,14 +134,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Logistics h(t)"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_mission",
@@ -148,14 +149,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission h(t)"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "level",
@@ -163,14 +164,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Level"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mmt",
@@ -178,14 +179,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": "MMT",
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mcmt",
@@ -193,14 +194,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": "MCMT",
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mpmt",
@@ -208,14 +209,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": "MPMT",
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_logistics",
@@ -223,14 +224,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Logistics MTBF"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_mission",
@@ -238,14 +239,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission MTBF"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mttr",
@@ -253,14 +254,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": "MTTR",
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -268,14 +269,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function Name"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "parent_id",
@@ -283,14 +284,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Parent ID"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "remarks",
@@ -298,14 +299,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Remarks"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererToggle(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererToggle(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "safety_critical",
@@ -313,14 +314,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Safety Critical"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "total_mode_count",
@@ -328,14 +329,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mode Count"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "total_part_count",
@@ -343,14 +344,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Total Parts"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": "",
                     "field": "type_id",
@@ -358,11 +359,11 @@ class FunctionTreePanel(RAMSTKTreePanel):
                     "label_text": _("Function Type"),
                     "listen_topic": f"wvw_editing_{self._tag}",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._on_edit_message: str = f"mvw_editing_{self._tag}"
 

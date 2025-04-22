@@ -12,7 +12,12 @@ from typing import List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class RequirementCompletenessPanel(RAMSTKFixedPanel):
@@ -42,9 +47,9 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.chkCompleteQ0,
-                "attributes": {
+            make_widget_config(
+                self.chkCompleteQ0,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_0",
@@ -56,7 +61,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -65,10 +70,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ1,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ1,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_1",
@@ -79,7 +84,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -87,10 +92,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ2,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ2,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_2",
@@ -99,16 +104,16 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _("The requirement has been assigned a priority."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ3,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ3,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_3",
@@ -120,7 +125,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -129,10 +134,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ4,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ4,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_4",
@@ -144,7 +149,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -153,10 +158,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ5,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ5,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_5",
@@ -168,7 +173,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -177,10 +182,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ6,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ6,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_6",
@@ -192,7 +197,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -200,10 +205,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ7,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ7,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_7",
@@ -214,16 +219,16 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _("The requirement contains no implied design details."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ8,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ8,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_8",
@@ -235,7 +240,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -244,10 +249,10 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkCompleteQ9,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkCompleteQ9,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "q_complete_9",
@@ -259,7 +264,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 30,
                     "tooltip": _(
@@ -268,7 +273,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

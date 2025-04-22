@@ -13,7 +13,12 @@ from typing import Any, Dict, List
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, WidgetConfig
+from ramstk.views.gtk3.widgets import (
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    WidgetConfig,
+    make_widget_config,
+)
 
 
 class ReliabilityResultsPanel(RAMSTKFixedPanel):
@@ -51,9 +56,9 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtActiveHt,
-                "attributes": {
+            make_widget_config(
+                self.txtActiveHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_active",
@@ -62,19 +67,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the active failure intensity for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtActiveHtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtActiveHtVar,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "hr_active_variance",
@@ -83,19 +88,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the active failure intensity for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtDormantHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtDormantHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_dormant",
@@ -104,19 +109,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the dormant failure intensity for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtDormantHtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtDormantHtVar,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "hr_dormant_variance",
@@ -125,19 +130,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the dormant failure intensity for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtSoftwareHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSoftwareHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_software",
@@ -146,19 +151,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the software failure intensity for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_logistics",
@@ -167,7 +172,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the logistics failure intensity for the selected "
@@ -175,12 +180,12 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                         "software hazard rates."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsHtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsHtVar,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "hr_logistics_variance",
@@ -189,19 +194,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the logistics failure intensity for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_mission",
@@ -210,19 +215,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the mission failure intensity for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionHtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionHtVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hr_mission_variance",
@@ -231,19 +236,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the mission failure intensity for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtPercentHt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtPercentHt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_percent",
@@ -252,19 +257,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the percentage of the system failure intensity the "
                         "selected hardware item represents."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsMTBF,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsMTBF,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_logistics",
@@ -273,19 +278,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the logistics mean time between failure (MTBF) for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsMTBFVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsMTBFVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_logistics_variance",
@@ -294,19 +299,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the logistics MTBF for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionMTBF,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionMTBF,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_mission",
@@ -315,19 +320,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the mission mean time between failure (MTBF) for "
                         "the selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionMTBFVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionMTBFVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_mission_variance",
@@ -336,19 +341,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the mission MTBF for the selected "
                         "hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsRt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsRt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_logistics",
@@ -357,19 +362,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the logistics reliability for the selected hardware "
                         "item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtLogisticsRtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtLogisticsRtVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_log_variance",
@@ -378,19 +383,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the logistics reliability for the "
                         "selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionRt,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionRt,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_mission",
@@ -399,19 +404,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the mission reliability for the selected hardware "
                         "item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
-            {
-                "widget": self.txtMissionRtVar,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMissionRtVar,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "reliability_miss_variance",
@@ -420,16 +425,16 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "tooltip": _(
                         "Displays the variance on the mission reliability for the "
                         "selected hardware item."
                     ),
                     "visible": True,
-                    "width": 125,
+                    "width_request": 125,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()
@@ -463,70 +468,70 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         self.txtActiveHt.do_update(
             {
                 "hazard_rate_active": str(
-                    self.fmt.format(attributes["hazard_rate_active"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_active", 0.0))
                 )
             },
         )
         self.txtActiveHtVar.do_update(
             {
                 "hr_active_variance": str(
-                    self.fmt.format(attributes["hr_active_variance"] or 0.0)
+                    self.fmt.format(attributes.get("hr_active_variance", 0.0))
                 )
             },
         )
         self.txtDormantHt.do_update(
             {
                 "hazard_rate_dormant": str(
-                    self.fmt.format(attributes["hazard_rate_dormant"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_dormant", 0.0))
                 )
             },
         )
         self.txtDormantHtVar.do_update(
             {
                 "hr_dormant_variance": str(
-                    self.fmt.format(attributes["hr_dormant_variance"] or 0.0)
+                    self.fmt.format(attributes.get("hr_dormant_variance", 0.0))
                 )
             },
         )
         self.txtSoftwareHt.do_update(
             {
                 "hazard_rate_software": str(
-                    self.fmt.format(attributes["hazard_rate_software"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_software", 0.0))
                 )
             },
         )
         self.txtLogisticsHt.do_update(
             {
                 "hazard_rate_logistics": str(
-                    self.fmt.format(attributes["hazard_rate_logistics"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_logistics", 0.0))
                 )
             },
         )
         self.txtLogisticsHtVar.do_update(
             {
                 "hr_logistics_variance": str(
-                    self.fmt.format(attributes["hr_logistics_variance"] or 0.0)
+                    self.fmt.format(attributes.get("hr_logistics_variance", 0.0))
                 )
             },
         )
         self.txtMissionHt.do_update(
             {
                 "hazard_rate_mission": str(
-                    self.fmt.format(attributes["hazard_rate_mission"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_mission", 0.0))
                 )
             },
         )
         self.txtMissionHtVar.do_update(
             {
                 "hr_mission_variance": str(
-                    self.fmt.format(attributes["hr_mission_variance"] or 0.0)
+                    self.fmt.format(attributes.get("hr_mission_variance", 0.0))
                 )
             },
         )
         self.txtPercentHt.do_update(
             {
                 "hazard_rate_percent": str(
-                    self.fmt.format(attributes["hazard_rate_percent"] or 0.0)
+                    self.fmt.format(attributes.get("hazard_rate_percent", 0.0))
                 )
             },
         )
@@ -538,24 +543,28 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         self.txtLogisticsMTBF.do_update(
             {
                 "mtbf_logistics": str(
-                    self.fmt.format(attributes["mtbf_logistics"] or 0.0)
+                    self.fmt.format(attributes.get("mtbf_logistics", 0.0))
                 )
             },
         )
         self.txtLogisticsMTBFVar.do_update(
             {
                 "mtbf_logistics_variance": str(
-                    self.fmt.format(attributes["mtbf_logistics_variance"] or 0.0)
+                    self.fmt.format(attributes.get("mtbf_logistics_variance", 0.0))
                 )
             },
         )
         self.txtMissionMTBF.do_update(
-            {"mtbf_mission": str(self.fmt.format(attributes["mtbf_mission"] or 0.0))},
+            {
+                "mtbf_mission": str(
+                    self.fmt.format(attributes.get("mtbf_mission", 0.0))
+                ),
+            },
         )
         self.txtMissionMTBFVar.do_update(
             {
                 "mtbf_mission_variance": str(
-                    self.fmt.format(attributes["mtbf_mission_variance"] or 0.0)
+                    self.fmt.format(attributes.get("mtbf_mission_variance", 0.0))
                 )
             },
         )
@@ -567,34 +576,36 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         self.txtLogisticsRt.do_update(
             {
                 "reliability_logistics": str(
-                    self.fmt.format(attributes["reliability_logistics"] or 1.0)
+                    self.fmt.format(attributes.get("reliability_logistics", 1.0))
                 )
             },
         )
         self.txtLogisticsRtVar.do_update(
             {
                 "reliability_log_variance": str(
-                    self.fmt.format(attributes["reliability_log_variance"] or 0.0)
+                    self.fmt.format(attributes.get("reliability_log_variance", 0.0))
                 )
             },
         )
         self.txtMissionRt.do_update(
             {
                 "reliability_mission": str(
-                    self.fmt.format(attributes["reliability_mission"] or 1.0)
+                    self.fmt.format(attributes.get("reliability_mission", 1.0))
                 )
             },
         )
         self.txtMissionRtVar.do_update(
             {
                 "reliability_miss_variance": str(
-                    self.fmt.format(attributes["reliability_miss_variance"] or 0.0)
+                    self.fmt.format(attributes.get("reliability_miss_variance", 0.0))
                 )
             },
         )
 
     def __do_nudge_widgets(self) -> None:
         """Adjust widgets from their default positions."""
+        # HACK: This method is a hack to adjust the positions of the widgets on the
+        #     RAMSTKFixedPanel.
         _lst_labels: List[object] = []
         _x_pos: List[int] = [
             0,

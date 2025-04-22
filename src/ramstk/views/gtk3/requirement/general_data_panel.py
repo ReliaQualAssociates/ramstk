@@ -23,6 +23,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKFixedPanel,
     RAMSTKTextView,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -59,9 +60,9 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.txtCode,
-                "attributes": {
+            make_widget_config(
+                self.txtCode,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "requirement_code",
@@ -70,16 +71,16 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width_request": 125,
                     "tooltip": _("A unique code for the selected requirement."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtName,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtName,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -88,17 +89,17 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "height_request": 100,
                     "width_request": 800,
                     "tooltip": _("The description of the selected requirement."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbRequirementType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbRequirementType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "requirement_type",
@@ -107,15 +108,15 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of requirement."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkDerived,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkDerived,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "derived",
@@ -124,7 +125,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_requirement",
                     "send_topic": "mvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width_request": 400,
                     "tooltip": _(
@@ -132,10 +133,10 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecification,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "specification",
@@ -144,17 +145,17 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The governing specification, if any, for the requirement."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtSpecification,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "page_number",
@@ -163,17 +164,17 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The applicable page number in the governing specification."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtFigNum,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtFigNum,
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "figure_number",
@@ -182,17 +183,17 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The applicable figure number in the governing specification."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbPriority,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbPriority,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "priority",
@@ -201,15 +202,15 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width_request": 50,
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbOwner,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbOwner,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "owner",
@@ -218,15 +219,15 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The organization responsible for the requirement."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.chkValidated,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.chkValidated,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "validated",
@@ -235,7 +236,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width_request": 400,
                     "tooltip": _(
@@ -244,10 +245,10 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtValidatedDate,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtValidatedDate,
+                {
                     "datatype": "gchararray",
                     "default": date.today(),
                     "field": "validated_date",
@@ -256,12 +257,12 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "listen_topic": "wvw_editing_requirement",
                     "send_topic": "wvw_editing_requirement",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The date the selected requirement was validated."),
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

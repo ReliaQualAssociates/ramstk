@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -229,790 +230,790 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             },
         }
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
                     "index": 0,
                     "label_text": _("Revision ID"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "hardware_id",
                     "index": 1,
                     "label_text": _("Hardware ID"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
                     "index": 2,
                     "label_text": _("Assembly"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_active",
                     "index": 3,
                     "label_text": _("Current Hazard Rate"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "quality_from_id",
                     "index": 4,
                     "label_text": _("From Quality"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "quality_to_id",
                     "index": 5,
                     "label_text": _("To Quality"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "environment_from_id",
                     "index": 6,
                     "label_text": _("From Environment"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "environment_to_id",
                     "index": 7,
                     "label_text": _("To Environment"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 25.0,
                     "field": "temperature_from",
                     "index": 8,
                     "label_text": _("From Temperature"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 25.0,
                     "field": "temperature_to",
                     "index": 9,
                     "label_text": _("To Temperature"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_1",
                     "index": 10,
                     "label_text": _("Change Description 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_1",
                     "index": 11,
                     "label_text": _("Change Factor 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_2",
                     "index": 12,
                     "label_text": _("Change Description 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_2",
                     "index": 13,
                     "label_text": _("Change Factor 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_3",
                     "index": 14,
                     "label_text": _("Change Description 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_3",
                     "index": 15,
                     "label_text": _("Change Factor 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_4",
                     "index": 16,
                     "label_text": _("Change Description 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_4",
                     "index": 17,
                     "label_text": _("Change Factor 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_5",
                     "index": 18,
                     "label_text": _("Change Description 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_5",
                     "index": 19,
                     "label_text": _("Change Factor 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_6",
                     "index": 20,
                     "label_text": _("Change Description 6"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_6",
                     "index": 21,
                     "label_text": _("Change Factor 6"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_7",
                     "index": 22,
                     "label_text": _("Change Description 7"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_7",
                     "index": 23,
                     "label_text": _("Change Factor 7"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_8",
                     "index": 24,
                     "label_text": _("Change Description 8"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_8",
                     "index": 25,
                     "label_text": _("Change Factor 8"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_9",
                     "index": 26,
                     "label_text": _("Change Description 9"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_9",
                     "index": 27,
                     "label_text": _("Change Factor 9"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "change_description_10",
                     "index": 28,
                     "label_text": _("Change Description 10"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "change_factor_10",
                     "index": 29,
                     "label_text": _("Change Factor 10"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_1",
                     "index": 30,
                     "label_text": _("Function 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_2",
                     "index": 31,
                     "label_text": _("Function 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_3",
                     "index": 32,
                     "label_text": _("Function 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_4",
                     "index": 33,
                     "label_text": _("Function 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "function_5",
                     "index": 34,
                     "label_text": _("Function 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "result_1",
                     "index": 35,
                     "label_text": _("Result 1"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "result_2",
                     "index": 36,
                     "label_text": _("Result 2"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "result_3",
                     "index": 37,
                     "label_text": _("Result 3"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "result_4",
                     "index": 38,
                     "label_text": _("Result 4"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "result_5",
                     "index": 39,
                     "label_text": _("Result 5"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_1",
                     "index": 40,
                     "label_text": _("User Text 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_2",
                     "index": 41,
                     "label_text": _("User Text 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_3",
                     "index": 42,
                     "label_text": _("User Text 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_4",
                     "index": 43,
                     "label_text": _("User Text 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "user_blob_5",
                     "index": 44,
                     "label_text": _("User Text 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_1",
                     "index": 45,
                     "label_text": _("User Float 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_2",
                     "index": 46,
                     "label_text": _("User Float 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_3",
                     "index": 47,
                     "label_text": _("User Float 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_4",
                     "index": 48,
                     "label_text": _("User Float 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "user_float_5",
                     "index": 49,
                     "label_text": _("User Float 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_1",
                     "index": 50,
                     "label_text": _("User Integer 1"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_2",
                     "index": 51,
                     "label_text": _("User Integer 2"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_3",
                     "index": 52,
                     "label_text": _("User Integer 3"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_4",
                     "index": 53,
                     "label_text": _("User Integer 4"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "user_int_5",
                     "index": 54,
                     "label_text": _("User Integer 5"),
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "parent_id",
                     "index": 55,
                     "label_text": _("Parent ID"),
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
+            ),
         ]
         self._filtered_tree = True
         self._method_id: int = 0
@@ -1177,7 +1178,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         :param node: the treelib Node() with the mode data to load.
         :param row: the parent row of the mode to load into the hardware tree.
-        :return: _new_row; the row that was just populated with hardware data.
+        :return: _new_row; the row just populated with hardware data.
         :rtype: :class:`Gtk.TreeIter`
         """
         _entity = node.data["similar_item"]

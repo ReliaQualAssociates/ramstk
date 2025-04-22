@@ -21,6 +21,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -41,39 +42,41 @@ class ValidationTreePanel(RAMSTKTreePanel):
         self._lst_measurement_units: List[str] = []
         self._lst_verification_types: List[str] = []
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
                     "index": 0,
                     "label_text": _("Revision ID"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "validation_id",
                     "index": 1,
                     "label_text": _("Validation ID"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_maximum",
@@ -83,13 +86,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_mean",
@@ -99,13 +103,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_minimum",
@@ -115,13 +120,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "acceptable_variance",
@@ -131,13 +137,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 95.0,
                     "field": "confidence",
@@ -147,13 +154,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_average",
@@ -163,29 +171,31 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_ll",
                     "format": "{0.0.2g}",
                     "index": 8,
                     "label_text": _("Cost _LCL"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_maximum",
@@ -195,29 +205,31 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_mean",
                     "format": "{0.0.2g}",
                     "index": 10,
                     "label_text": _("Mean Cost"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_minimum",
@@ -227,45 +239,48 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_ul",
                     "format": "{0.0.2g}",
                     "index": 12,
                     "label_text": _("Cost UCL"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "cost_variance",
                     "format": "{0.0.4g}",
                     "index": 13,
                     "label_text": _("Cost Variance"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": date.today(),
                     "field": "date_end",
@@ -274,13 +289,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": date.today(),
                     "field": "date_start",
@@ -289,13 +305,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -304,13 +321,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "measurement_unit",
@@ -319,13 +337,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -334,13 +353,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "status",
@@ -350,13 +370,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "task_specification",
@@ -365,13 +386,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "task_type",
@@ -380,13 +402,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_average",
@@ -396,29 +419,31 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_ll",
                     "format": "{0.0.2g}",
                     "index": 23,
                     "label_text": _("Acceptable Max."),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_maximum",
@@ -428,29 +453,31 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_mean",
                     "format": "{0.0.2g}",
                     "index": 25,
                     "label_text": _("Mean Task Time"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_minimum",
@@ -460,42 +487,45 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "listen_topic": "wvw_editing_validation",
                     "send_topic": "mvw_editing_validation",
                 },
-                "properties": {
+                {
+                    "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_ul",
                     "format": "{0.0.2g}",
                     "index": 27,
                     "label_text": _("Task Time UCL"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "time_variance",
                     "format": "{0.0.4g}",
                     "index": 28,
                     "label_text": _("Task Time Variance"),
-                    "listen_topic": "wvw_editing_validation",
+                    "listen_topic": None,
+                    "send_topic": None,
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": True,
                 },
-            },
+            ),
         ]
 
         super().do_set_widget_attributes()

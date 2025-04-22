@@ -19,6 +19,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -44,9 +45,9 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbAllocationGoal,
-                "attributes": {
+            make_widget_config(
+                self.cmbAllocationGoal,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "goal_measure_id",
@@ -55,17 +56,17 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Selects the goal measure for the selected hardware assembly."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbAllocationMethod,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbAllocationMethod,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "allocation_method_id",
@@ -74,17 +75,17 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "Selects the goal measure for the selected hardware assembly."
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtReliabilityGoal,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtReliabilityGoal,
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "reliability_goal",
@@ -93,7 +94,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width": 125,
                     "tooltip": _(
@@ -101,10 +102,10 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtHazardRateGoal,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtHazardRateGoal,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "hazard_rate_goal",
@@ -113,7 +114,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width": 125,
                     "tooltip": _(
@@ -121,10 +122,10 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtMTBFGoal,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMTBFGoal,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mtbf_goal",
@@ -133,7 +134,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     "listen_topic": "mvw_editing_allocation",
                     "send_topic": "wvw_editing_allocation",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "width": 125,
                     "tooltip": _(
@@ -141,7 +142,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._goal_id: int = 0
 

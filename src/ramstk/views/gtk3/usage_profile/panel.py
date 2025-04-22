@@ -20,6 +20,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKCellRendererText,
     RAMSTKTreePanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -88,9 +89,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         # Initialize private instance attributes.
         self._lst_units: List[str] = []
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "revision_id",
@@ -98,14 +99,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Revision ID"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "mission_id",
@@ -113,14 +114,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission ID"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "mission_phase_id",
@@ -128,14 +129,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Phase ID"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "environment_id",
@@ -143,14 +144,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Environment ID"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "name",
@@ -158,14 +159,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission Phase Name"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "description",
@@ -173,14 +174,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Description"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": False,
                     "visible": False,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 1.0,
                     "field": "mission_time",
@@ -188,14 +189,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mission Time"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererCombo(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererCombo(),
+                {
                     "datatype": "gchararray",
                     "default": "",
                     "field": "units",
@@ -203,14 +204,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Units"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "phase_start",
@@ -218,14 +219,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Phase Start"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "phase_end",
@@ -233,14 +234,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Phase End"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "minimum",
@@ -248,14 +249,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Minimum"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "maximum",
@@ -263,14 +264,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Maximum"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "mean",
@@ -278,14 +279,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Mean"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
-            {
-                "widget": RAMSTKCellRendererText(),
-                "attributes": {
+            ),
+            make_widget_config(
+                RAMSTKCellRendererText(),
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "variance",
@@ -293,11 +294,11 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "label_text": _("Variance"),
                     "send_topic": "wvw_editing_usage_profile",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 

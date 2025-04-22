@@ -24,6 +24,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
     RAMSTKFixedPanel,
     WidgetConfig,
+    make_widget_config,
 )
 
 
@@ -91,9 +92,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private instance attributes.
         self._lst_widget_configuration: List[WidgetConfig] = [
-            {
-                "widget": self.cmbQuality,
-                "attributes": {
+            make_widget_config(
+                self.cmbQuality,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "quality_id",
@@ -102,15 +103,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_reliability",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The quality level of the connector/connection."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbType,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbType,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "type_id",
@@ -119,15 +120,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The type of connector/connection."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbSpecification,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbSpecification,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "specification_id",
@@ -136,15 +137,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The governing specification for the connection."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.cmbInsert,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.cmbInsert,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "insert_id",
@@ -153,15 +154,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The connector insert material."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtContactGauge,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtContactGauge,
+                {
                     "datatype": "gint",
                     "default": 22,
                     "field": "contact_gauge",
@@ -170,15 +171,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The gauge of the contacts in the connector."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtActivePins,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtActivePins,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_active_pins",
@@ -187,15 +188,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of active pins in the connector."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtAmpsContact,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtAmpsContact,
+                {
                     "datatype": "gfloat",
                     "default": 0.0,
                     "field": "current_operating",
@@ -204,15 +205,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The amperes per active contact."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtMating,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtMating,
+                {
                     "datatype": "gfloat",
                     "default": 0,
                     "field": "n_cycles",
@@ -221,7 +222,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of connector mate and unmate cycles per 1000 "
@@ -229,10 +230,10 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNWave,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNWave,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_wave_soldered",
@@ -241,15 +242,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of wave soldered PTH connections."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNHand,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNHand,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_hand_soldered",
@@ -258,15 +259,15 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _("The number of hand soldered PTH connections."),
                     "visible": True,
                 },
-            },
-            {
-                "widget": self.txtNPlanes,
-                "attributes": {
+            ),
+            make_widget_config(
+                self.txtNPlanes,
+                {
                     "datatype": "gint",
                     "default": 0,
                     "field": "n_circuit_planes",
@@ -275,14 +276,14 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "listen_topic": None,
                     "send_topic": "wvw_editing_design_electric",
                 },
-                "properties": {
+                {
                     "editable": True,
                     "tooltip": _(
                         "The number of circuit planes for wave soldered connections."
                     ),
                     "visible": True,
                 },
-            },
+            ),
         ]
         self._hazard_rate_method_id: int = 0
         self._quality_id: int = 0
