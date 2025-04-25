@@ -169,9 +169,9 @@ class TestRAMSTKMatrixView:
         """Should build a 3 row by 3 column matrix."""
         dut = RAMSTKMatrixView()
         for _icon_str in ["none", "partial", "complete"]:
-            dut.icons_dic[
-                _icon_str
-            ] = f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
+            dut.icons_dic[_icon_str] = (
+                f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
+            )
 
         assert dut.n_columns == 0
         assert dut.n_rows == 0
@@ -229,6 +229,7 @@ class TestRAMSTKMatrixView:
         assert isinstance(dut.get_child_at(2, 1).get_model(), Gtk.ListStore)
 
         _row_obj = dut.get_child_at(1, 2).get_model().get_iter_first()
+        _row_obj = dut.get_child_at(1, 2).get_model().iter_next(_row_obj)
 
         assert dut.get_child_at(1, 2).get_model().get_value(_row_obj, 0) == "NONE"
         assert isinstance(
@@ -240,9 +241,9 @@ class TestRAMSTKMatrixView:
         """Should retrieve the widget at the column/row intersection."""
         dut = RAMSTKMatrixView()
         for _icon_str in ["none", "partial", "complete"]:
-            dut.icons_dic[
-                _icon_str
-            ] = f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
+            dut.icons_dic[_icon_str] = (
+                f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
+            )
         dut.do_build_matrix(
             COLUMN_HEADINGS,
             ROW_HEADINGS,

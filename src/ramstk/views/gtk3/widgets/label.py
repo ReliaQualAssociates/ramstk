@@ -50,7 +50,9 @@ class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
         self.dic_properties["angle"] = properties.get("angle", 0.0)
         self.dic_properties["bold"] = properties.get("bold", True)
         self.dic_properties["ellipsize"] = properties.get("ellipsize", True)
-        self.dic_properties["label"] = properties.get("label", "")
+        self.dic_properties["label"] = (
+            "<span>" + properties.get("label", "") + "</span>"
+        )
         self.dic_properties["lines"] = properties.get("lines", -1)
         self.dic_properties["justify"] = properties.get(
             "justify", Gtk.Justification.RIGHT
@@ -70,6 +72,10 @@ class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
         if self.dic_properties["bold"]:
             self.dic_properties["label"] = "<b>" + self.dic_properties["label"] + "</b>"
         self.set_markup(self.dic_properties["label"])
+        self.set_property(
+            "tooltip-markup",
+            self.dic_properties["tooltip"],
+        )
 
     def do_update(self, package: Dict[str, Union[bool, date, float, int, str]]) -> None:
         """Update the RAMSTKLabel to a new value.

@@ -69,15 +69,21 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         """
         super().do_set_properties(properties)
 
-        self.dic_properties["model"] = properties.get("model", Gtk.ListStore())
+        self.dic_properties["model"] = properties.get("model", None)
 
-        if not self._simple:
-            self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
-                [GObject.TYPE_STRING] * self._n_items
-            )
-        else:
-            self.dic_properties["model"].set_column_types([GObject.TYPE_STRING])  # type: ignore[union-attr] # noqa
+        if not self.dic_properties[("model")]:
+            if not self._simple:
+                self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
+                    [GObject.TYPE_STRING] * self._n_items
+                )
+            else:
+                self.dic_properties["model"].set_column_types([GObject.TYPE_STRING])  # type: ignore[union-attr] # noqa
+
         self.set_model(self.dic_properties["model"])
+        self.set_property(
+            "tooltip-markup",
+            self.dic_properties["tooltip"],
+        )
 
     def do_update(
         self, package: Dict[str, Union[bool, date, float, int, str, None]]
@@ -161,11 +167,11 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         self.handler_block(self.dic_handler_id[self._edit_signal])
 
         if not simple:
-            _model.append([""] * self._n_items)
+            _model.append([None] * self._n_items)
             for _entry in entries:
                 _model.append(list(_entry))
         else:
-            _model.append([""])
+            _model.append([None])
             for _entry in entries:
                 _model.append([_entry[self._index]])
 

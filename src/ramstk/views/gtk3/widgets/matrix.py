@@ -171,7 +171,9 @@ class RAMSTKMatrixView(Gtk.Grid, RAMSTKBaseWidget):
         _label.do_set_properties(
             {
                 "angle": 90,
+                "bold": True,
                 "can_focus": False,
+                "label": heading,
                 "tooltip": tooltip,
                 "wrap": False,
             },
@@ -206,19 +208,12 @@ class RAMSTKMatrixView(Gtk.Grid, RAMSTKBaseWidget):
         :return: _combo_obj; the RAMSTKComboBox() created by this method.
         :rtype: :class:`RAMSTKComboBox()`
         """
-        _combo = RAMSTKComboBox(1)
+        _combo = RAMSTKComboBox(index=1, simple=False, n_items=2)
+        _combo.do_set_callbacks()
         _model = Gtk.ListStore(*[GObject.TYPE_STRING, GdkPixbuf.Pixbuf])
-
-        for _pixbuf_key_str in ["none", "partial", "complete"]:
-            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self.icons_dic[_pixbuf_key_str], 22, 22
-            )
-            _model.append(
-                [_pixbuf_key_str.upper(), _pixbuf],
-            )
-        _combo.set_model(_model)
         _combo.do_set_properties(
             {
+                "model": _model,
                 "tooltip": _(
                     "Shows the strength of the relationship between the intersecting "
                     "column and row with a blank meaning no relationship, a P meaning "
@@ -227,6 +222,17 @@ class RAMSTKMatrixView(Gtk.Grid, RAMSTKBaseWidget):
                 "width_request": 25,
             }
         )
+        _entries = []
+
+        for _pixbuf_key in ["none", "partial", "complete"]:
+            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                self.icons_dic[_pixbuf_key], 22, 22
+            )
+            _entries.append(
+                [_pixbuf_key.upper(), _pixbuf],
+            )
+        _combo.do_load_combo(_entries, simple=False)
+
         _cell = Gtk.CellRendererPixbuf()
         _combo.pack_start(_cell, True)
         _combo.add_attribute(_cell, "pixbuf", 1)

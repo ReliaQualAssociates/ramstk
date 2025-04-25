@@ -13,45 +13,45 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.widgets import (
-    RAMSTKDateSelect,
-    RAMSTKDialog,
-    RAMSTKFileChooser,
+    RAMSTKBaseDialog,
+    RAMSTKDateSelectDialog,
+    RAMSTKFileChooserDialog,
     RAMSTKMessageDialog,
 )
 
 
-class TestRAMSTKDateSelect:
-    """Test class for the RAMSTKDateSelect."""
+class TestRAMSTKDateSelectDialog:
+    """Test class for the RAMSTKDateSelectDialog."""
 
     @pytest.mark.gui
     def test_create_date_select(self):
-        """__init__() should create a RAMSTKDialog."""
-        DUT = RAMSTKDateSelect()
+        """__init__() should create a RAMSTKDateSelectDialog."""
+        dut = RAMSTKDateSelectDialog()
 
-        assert isinstance(DUT, RAMSTKDateSelect)
-        assert DUT.get_title() == "Select Date"
+        assert isinstance(dut, RAMSTKDateSelectDialog)
+        assert dut.get_title() == "Select Date"
 
 
-class TestRAMSTKDialog:
-    """Test class for the RAMSTKDialog."""
+class TestRAMSTKBaseDialog:
+    """Test class for the RAMSTKBaseDialog."""
 
     @pytest.mark.gui
     def test_create_dialog(self):
         """__init__() should create a RAMSTKDialog."""
-        DUT = RAMSTKDialog("Test Dialog Title")
+        dut = RAMSTKBaseDialog("Test Dialog Title")
 
-        assert isinstance(DUT, RAMSTKDialog)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_title() == "Test Dialog Title"
+        assert isinstance(dut, RAMSTKBaseDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_title() == "Test Dialog Title"
 
     @pytest.mark.gui
     def test_destroy_dialog(self):
         """do_destroy() should return a when the dialog is run."""
-        DUT = RAMSTKDialog("Test Dialog Title")
+        dut = RAMSTKBaseDialog("Test Dialog Title")
 
-        assert DUT.do_destroy() is None
+        assert dut.do_destroy() is None
 
 
 class TestRAMSTKFileChooser:
@@ -60,15 +60,15 @@ class TestRAMSTKFileChooser:
     @pytest.mark.gui
     def test_create_file_chooser(self):
         """__init__() should create a RAMSTKFileChooser."""
-        DUT = RAMSTKFileChooser("Test File Chooser Dialog", None)
+        dut = RAMSTKFileChooserDialog("Test File Chooser Dialog", None)
 
-        assert isinstance(DUT, RAMSTKFileChooser)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_title() == "Test File Chooser Dialog"
-        assert DUT.get_action() == Gtk.FileChooserAction.SAVE
-        assert DUT.get_current_folder() is None
+        assert isinstance(dut, RAMSTKFileChooserDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_title() == "Test File Chooser Dialog"
+        assert dut.get_action() == Gtk.FileChooserAction.SAVE
+        assert dut.get_current_folder() is None
 
 
 class TestRAMSTKMessageDialog:
@@ -77,16 +77,16 @@ class TestRAMSTKMessageDialog:
     @pytest.mark.gui
     def test_create_error_message_dialog(self):
         """__init__() should create an error type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog()
-        DUT.do_set_message("Test Prompt")
-        DUT.do_set_message_type("error")
+        dut = RAMSTKMessageDialog()
+        dut.do_set_message("Test Prompt")
+        dut.do_set_message_type("error")
 
-        assert isinstance(DUT, RAMSTKMessageDialog)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_property("message-type") == Gtk.MessageType.ERROR
-        assert DUT.get_property("text") == (
+        assert isinstance(dut, RAMSTKMessageDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_property("message-type") == Gtk.MessageType.ERROR
+        assert dut.get_property("text") == (
             "<b>Test Prompt  Check the error log for additional information "
             "(if any).  Please e-mail <span foreground='blue' "
             "underline='single'><a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
@@ -101,41 +101,41 @@ class TestRAMSTKMessageDialog:
     @pytest.mark.gui
     def test_create_warning_message_dialog(self):
         """__init__() should create a warning type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog()
-        DUT.do_set_message("Test Warning Prompt")
-        DUT.do_set_message_type("warning")
+        dut = RAMSTKMessageDialog()
+        dut.do_set_message("Test Warning Prompt")
+        dut.do_set_message_type("warning")
 
-        assert isinstance(DUT, RAMSTKMessageDialog)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_property("message-type") == Gtk.MessageType.WARNING
-        assert DUT.get_property("text") == ("Test Warning Prompt")
+        assert isinstance(dut, RAMSTKMessageDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_property("message-type") == Gtk.MessageType.WARNING
+        assert dut.get_property("text") == "Test Warning Prompt"
 
     @pytest.mark.gui
     def test_create_info_message_dialog(self):
         """__init__() should create an info type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog()
-        DUT.do_set_message("Test Info Prompt")
-        DUT.do_set_message_type("info")
+        dut = RAMSTKMessageDialog()
+        dut.do_set_message("Test Info Prompt")
+        dut.do_set_message_type("info")
 
-        assert isinstance(DUT, RAMSTKMessageDialog)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_property("message-type") == Gtk.MessageType.INFO
-        assert DUT.get_property("text") == ("Test Info Prompt")
+        assert isinstance(dut, RAMSTKMessageDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_property("message-type") == Gtk.MessageType.INFO
+        assert dut.get_property("text") == "Test Info Prompt"
 
     @pytest.mark.gui
     def test_create_question_message_dialog(self):
         """__init__() should create a question type RAMSTKMessageDialog."""
-        DUT = RAMSTKMessageDialog()
-        DUT.do_set_message("Test Question Prompt")
-        DUT.do_set_message_type("question")
+        dut = RAMSTKMessageDialog()
+        dut.do_set_message("Test Question Prompt")
+        dut.do_set_message_type("question")
 
-        assert isinstance(DUT, RAMSTKMessageDialog)
-        assert DUT.get_destroy_with_parent()
-        assert DUT.get_modal()
-        assert DUT.get_parent() is None
-        assert DUT.get_property("message-type") == Gtk.MessageType.QUESTION
-        assert DUT.get_property("text") == ("Test Question Prompt")
+        assert isinstance(dut, RAMSTKMessageDialog)
+        assert dut.get_destroy_with_parent()
+        assert dut.get_modal()
+        assert dut.get_parent() is None
+        assert dut.get_property("message-type") == Gtk.MessageType.QUESTION
+        assert dut.get_property("text") == "Test Question Prompt"
