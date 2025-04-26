@@ -43,7 +43,8 @@ class RAMSTKBaseDialog(Gtk.Dialog, RAMSTKBaseWidget):
                 Gtk.ResponseType.CANCEL,
             )
         self.add_buttons(*buttons)
-        self.set_parent(parent)
+        if not parent in Gtk.Window.list_toplevels():
+            self.set_parent(parent)
         self.set_title(title)
 
     # ----- ----- Standard widget methods. ----- ----- #

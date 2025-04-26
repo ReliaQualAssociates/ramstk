@@ -174,7 +174,7 @@ class OpenProject:
                 }
             )
 
-            _response = _dialog.do_run()
+            _response, _save = _dialog.do_run()
             if _response == Gtk.ResponseType.OK:
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = _dialog.database
 
@@ -190,7 +190,7 @@ class OpenProject:
                         sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",  # noqa
                     )
 
-                if _dialog.btnSave.get_active():
+                if _save:
                     self.RAMSTK_USER_CONFIGURATION.set_user_configuration()
 
             _dialog.do_destroy()

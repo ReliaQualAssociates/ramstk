@@ -886,7 +886,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "validationfg": self.RAMSTK_COLORS["validationfg"],
             },
             "stress": {
-                "integratedcircuit": self.RAMSTK_STRESS_LIMITS["integrated_circuit"],
+                "integratedcircuit": self.RAMSTK_STRESS_LIMITS["integratedcircuit"],
                 "semiconductor": self.RAMSTK_STRESS_LIMITS["semiconductor"],
                 "resistor": self.RAMSTK_STRESS_LIMITS["resistor"],
                 "capacitor": self.RAMSTK_STRESS_LIMITS["capacitor"],

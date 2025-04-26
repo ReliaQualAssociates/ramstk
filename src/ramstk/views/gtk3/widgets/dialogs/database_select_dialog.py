@@ -37,6 +37,7 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
         """Initialize an instance of the RAMSTKDatabaseSelectDialog widget.
 
         :param title: the title text for the RAMSTKDatabaseSelectDialog.
+        :param parent: the parent window for the RAMSTKDatabaseSelectDialog.
         :param buttons: a tuple containing the buttons and their associated response
             type.
         """
@@ -67,20 +68,22 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
         )
         self._pnlTreePanel.tvwTreeView.selection.connect("changed", self._on_row_change)
 
-    def do_run(self) -> Gtk.ResponseType:
+    def do_run(self) -> Tuple[Gtk.ResponseType, bool]:
         """Run the RAMSTKDatabaseSelectDialog.
 
-        :return: _return
-        :rtype: Gtk.ResponseType
+        :return: _return, _save
+        :rtype: Gtk.ResponseType and bool
         """
         _return = Gtk.ResponseType.CANCEL
+        _save = False
 
         if self.run() == Gtk.ResponseType.OK:
             self._get_database()
             self.exists = self.database["database"] in self._lst_databases
             _return = Gtk.ResponseType.OK
+            _save = self._pnlSelectPanel.btnSave.get_active()
 
-        return _return
+        return _return, _save
 
     # ----- ----- RAMSTKDatabaseSelectDialog specific methods. ----- ----- #
     def do_load_database_parameters(self) -> None:

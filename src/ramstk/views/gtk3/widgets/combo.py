@@ -113,11 +113,14 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         except KeyError:
             self.set_active(_value)
 
-    def on_changed(self) -> None:
+    def on_changed(self, __combo) -> None:
         """Retrieve the data package for the RAMSTKComboBox on value changes.
 
         This method also sends a PyPubSub message along with the data package for
         listeners to update with the new value.
+
+        :param __combo: the RAMSTKComboBox that was changed. Unused but required to
+            satisfy the Gtk.ComboBox() callback method structure.
         """
         try:
             self.handler_block(self.dic_handler_id[self._edit_signal])
@@ -126,7 +129,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         except KeyError:
             _package = {self.field: self.get_value()}
 
-        pub.sendMessage(self.topic, node_id=self.record_id, package=_package)
+        pub.sendMessage(self.send_topic, node_id=self.record_id, package=_package)
 
     # ----- ----- RAMSTKComboBox specific methods. ----- ----- #
     def do_get_options(self) -> Dict[int, Any]:
