@@ -19,7 +19,7 @@ from ramstk.utilities import none_to_default
 from ramstk.views.gtk3 import GObject, Gtk
 
 # RAMSTK Local Imports
-from .widget import RAMSTKBaseWidget, WidgetProperties
+from .widget import RAMSTKBaseWidget, WidgetAttributes, WidgetProperties
 
 
 class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
@@ -52,7 +52,8 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         self._n_items: int = n_items
         self._simple: bool = simple
 
-        self.set_model(Gtk.ListStore())
+        # Initialize public attributes.
+        self.column_types: List[GObject.GType] = [GObject.TYPE_STRING]
 
         _cell = Gtk.CellRendererText()
         self.pack_start(_cell, True)
@@ -61,6 +62,16 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         self.show()
 
     # ----- ----- Standard widget methods. ----- ----- #
+    def do_set_attributes(self, attributes: WidgetAttributes) -> None:
+        """Set the attributes of the RAMSTKComboBox.
+
+        :param attributes: the WidgetAttributes dict with the attribute values to set
+            for the RAMSTKComboBox.
+        """
+        super().do_set_attributes(attributes)
+
+        self.column_types = attributes.get("column_types", [GObject.TYPE_STRING])
+
     def do_set_properties(self, properties: WidgetProperties) -> None:
         """Set the properties of the RAMSTKComboBox.
 
@@ -69,17 +80,13 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         """
         super().do_set_properties(properties)
 
-        self.dic_properties["model"] = properties.get("model", None)
+        self.dic_properties["model"] = properties.get("model", Gtk.ListStore())
+        if self.dic_properties["model"]:
+            self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
+                self.column_types
+            )
+            self.set_model(self.dic_properties["model"])
 
-        if not self.dic_properties[("model")]:
-            if not self._simple:
-                self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
-                    [GObject.TYPE_STRING] * self._n_items
-                )
-            else:
-                self.dic_properties["model"].set_column_types([GObject.TYPE_STRING])  # type: ignore[union-attr] # noqa
-
-        self.set_model(self.dic_properties["model"])
         self.set_property(
             "tooltip-markup",
             self.dic_properties["tooltip"],
@@ -144,21 +151,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
     def do_load_combo(
         self,
         entries: List[List[Union[str, int]]],
-        simple: bool = True,
     ) -> None:
         """Load the RAMSTKComboBox widget.
 
         :param entries: the information to load into the Gtk.ComboBox(). This is always
             a list of lists where each internal list contains the information to be
-            displayed and there is one internal list for each RAMSTKComboBox line.
-        :param simple: indicates whether this is a simple (one item) or complex (three
-            item) RAMSTKComboBox. A simple (default) RAMSTKComboBox contains and
-            displays one field only. A 'complex' RAMSTKComboBox contains three str
-            fields, but only displays the first field. The other two fields are hidden
-            and used to store information associated with the items displayed in the
-            RAMSTKComboBox. For example, if the name of an item is displayed, the other
-            two fields might contain a code and an index. These could be extracted for
-            use in the RAMSTK Views.
+            displayed, and there is one internal list for each RAMSTKComboBox line.
         :raises: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()
@@ -166,7 +164,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
 
         self.handler_block(self.dic_handler_id[self._edit_signal])
 
-        if not simple:
+        if not self._simple:
             _model.append([None] * self._n_items)
             for _entry in entries:
                 _model.append(list(_entry))

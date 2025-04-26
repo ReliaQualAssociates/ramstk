@@ -21,6 +21,7 @@ from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 class WidgetAttributes(TypedDict, total=False):
     """Type for the widget attributes."""
 
+    column_types: List[GObject.GType]
     datatype: Union[bool, date, float, int, str, None]
     default: Union[bool, date, float, int, str, None]
     field: str
