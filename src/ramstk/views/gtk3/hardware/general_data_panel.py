@@ -16,6 +16,7 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
@@ -315,11 +316,17 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         self._do_set_widget_callbacks()
 
         # Subscribe to PyPubSub messages.
-        self._do_subscribe_to_messages()
+        do_subscribe_to_messages(
+            {
+                "request_load_categories": self.do_load_categories,
+                "changed_category": self._do_load_subcategories,
+                "succeed_make_comp_ref_des": self._do_set_comp_ref_des,
+            }
+        )
 
     # ----- ----- HardwareGeneralDataPanel specific methods. ----- ----- #
     def do_load_categories(self, category: Dict[int, Tuple[str]]) -> None:
@@ -363,14 +370,6 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
             "changed",
             self._request_load_component,
         )
-
-    def _do_subscribe_to_messages(self) -> None:
-        """Subscribe to relevant PyPubSub messages."""
-        super().do_subscribe_to_messages()
-
-        pub.subscribe(self.do_load_categories, "request_load_categories")
-        pub.subscribe(self._do_load_subcategories, "changed_category")
-        pub.subscribe(self._do_set_comp_ref_des, "succeed_make_comp_ref_des")
 
     def _request_load_component(self, combo: RAMSTKComboBox) -> None:
         """Request to load the component widgets.

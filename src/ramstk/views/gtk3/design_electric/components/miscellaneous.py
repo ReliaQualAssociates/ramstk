@@ -157,7 +157,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         super().do_set_widget_callbacks()
         self._do_load_application()
         self._do_load_quality()

@@ -151,7 +151,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         self._do_set_widget_callbacks()
         self._do_load_allocation_goal()
         self._do_load_allocation_methods()
@@ -164,7 +164,6 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                 [_("Hazard Rate"), 1],
                 [_("MTBF"), 2],
             ],
-            simple=True,
         )
 
     def _do_load_allocation_methods(self) -> None:
@@ -176,7 +175,6 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                 [_("ARINC Apportionment"), 2],
                 [_("Feasibility of Objectives"), 3],
             ],
-            simple=True,
         )
 
     def _do_set_sensitive(self, attributes: Dict[str, Union[float, int, str]]) -> None:

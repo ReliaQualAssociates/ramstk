@@ -319,7 +319,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         super().do_set_widget_callbacks()
 
     def do_load_hr_distributions(self, distributions: List[List[str]]) -> None:

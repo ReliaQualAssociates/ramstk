@@ -215,7 +215,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         self._do_set_widget_callbacks()
         self._do_load_contact_form()
         self._do_load_contact_rating()

@@ -199,7 +199,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the Relay assessment results widgets.

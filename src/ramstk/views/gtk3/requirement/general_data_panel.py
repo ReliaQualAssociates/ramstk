@@ -13,7 +13,7 @@ from typing import Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
-from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3 import Gdk, GObject, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton,
     RAMSTKCheckButton,
@@ -49,8 +49,8 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
             label=_("Requirement is validated.")
         )
         self.cmbOwner: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(index=1, simple=False)
         self.cmbPriority: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(index=1, simple=False)
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
         self.txtFigNum: RAMSTKEntry = RAMSTKEntry()
         self.txtName: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
@@ -100,6 +100,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
             make_widget_config(
                 self.cmbRequirementType,
                 {
+                    "column_types": [GObject.TYPE_STRING, GObject.TYPE_STRING],
                     "datatype": "gint",
                     "default": 0,
                     "field": "requirement_type",
@@ -154,7 +155,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 },
             ),
             make_widget_config(
-                self.txtSpecification,
+                self.txtPageNum,
                 {
                     "datatype": "gchararray",
                     "default": "",
@@ -204,8 +205,9 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 },
                 {
                     "editable": True,
-                    "width_request": 50,
+                    "tooltip": _("The priority of efforts to satisfy the requirement."),
                     "visible": True,
+                    "width_request": 50,
                 },
             ),
             make_widget_config(
@@ -267,7 +269,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         super().do_set_widget_callbacks()
 
         self.btnValidateDate.do_set_properties(
@@ -303,7 +305,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         """
         _requirement_types: List[Tuple[str]] = list(requirement_types.values())
 
-        self.cmbRequirementType.do_load_combo(entries=_requirement_types, simple=False)
+        self.cmbRequirementType.do_load_combo(_requirement_types)
 
     def do_load_workgroups(self, workgroups: Dict[int, Tuple[str]]) -> None:
         """Load the workgroups RAMSTKComboBox.

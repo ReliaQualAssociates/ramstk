@@ -294,7 +294,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         self._do_set_widget_callbacks()
 
         # Subscribe to PyPubSub messages.

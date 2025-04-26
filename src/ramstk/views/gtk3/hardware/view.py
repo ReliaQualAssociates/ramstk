@@ -508,7 +508,6 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         )
         _hpaned.pack1(self._pnlGeneralData, True, True)
 
-        self._pnlLogistics.do_load_cost_types()
         self._pnlLogistics.do_load_manufacturers(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS
         )

@@ -257,5 +257,5 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel(justify=Gtk.Justification.LEFT)
+        super().do_make_fixed_panel(justify=Gtk.Justification.LEFT)
         super().do_set_widget_callbacks()

@@ -308,7 +308,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
 
         super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         self._do_set_widget_callbacks()
 
     def do_load_measurement_units(
@@ -328,7 +328,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         for _index, _key in enumerate(measurement_unit):
             self._dic_units[_index + 1] = measurement_unit[_key][1]
             _units.append([measurement_unit[_key][1]])
-        self.cmbMeasurementUnit.do_load_combo(entries=_units)
+        self.cmbMeasurementUnit.do_load_combo(_units)
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]
@@ -352,7 +352,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 validation_type[_key][1],
             ]
             _task_types.append([validation_type[_key][1]])
-        self.cmbTaskType.do_load_combo(entries=_task_types)
+        self.cmbTaskType.do_load_combo(_task_types)
 
     def _do_make_task_code(self, combo: RAMSTKComboBox) -> None:
         """Create the validation task code.

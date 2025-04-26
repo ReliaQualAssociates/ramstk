@@ -14,7 +14,7 @@ from typing import Dict, List, Union
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import _
+from ramstk.views.gtk3 import GObject, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKComboBox,
     RAMSTKEntry,
@@ -54,6 +54,11 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
             make_widget_config(
                 self.cmbManufacturer,
                 {
+                    "column_types": [
+                        GObject.TYPE_STRING,
+                        GObject.TYPE_STRING,
+                        GObject.TYPE_STRING,
+                    ],
                     "datatype": "gint",
                     "default": 0,
                     "field": "manufacturer_id",
@@ -185,9 +190,11 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
             ),
         ]
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
-        super().do_make_panel()
+        super().do_make_fixed_panel()
         super().do_set_widget_callbacks()
+        self.do_load_cost_types()
 
         self.cmbManufacturer.connect("changed", self._do_load_cage_code)
 
@@ -210,8 +217,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         """
         _manufacturer = list(manufacturers.values())
         self.cmbManufacturer.do_load_combo(
-            entries=_manufacturer,
-            simple=False,
+            _manufacturer,
         )
 
     def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
