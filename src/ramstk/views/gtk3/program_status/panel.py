@@ -48,7 +48,7 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
         ]
         self.plot_title = _("Total Verification Effort")
 
-        super().do_make_panel()
+        super().do_make_plot_panel()
 
         # Subscribe to PyPubSub messages.
         do_subscribe_to_messages(

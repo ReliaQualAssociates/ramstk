@@ -107,9 +107,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         _value = none_to_default(_value, self.default)
 
         try:
-            self.handler_block(self.handler_id)
+            self.handler_block(self.dic_handler_id[self._edit_signal])
             self.set_active(_value)
-            self.handler_unblock(self.handler_id)
+            self.handler_unblock(self.dic_handler_id[self._edit_signal])
         except KeyError:
             self.set_active(_value)
 

@@ -1,6 +1,6 @@
 # Standard Library Imports
 from datetime import date
-from typing import TypedDict
+from typing import List, TypedDict
 
 # Third Party Imports
 from _typeshed import Incomplete
@@ -13,6 +13,7 @@ from ramstk.views.gtk3 import Pango as Pango
 from ramstk.views.gtk3 import _ as _
 
 class WidgetAttributes(TypedDict, total=False):
+    column_types: List[GObject.GType]
     datatype: bool | date | float | int | str | None
     default: bool | date | float | int | str | None
     field: str
@@ -97,7 +98,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
     _default_width: int
     _edit_signal: str
     dic_handler_id: dict[str, int]
-    dic_properties: Incomplete
+    dic_properties: WidgetProperties
     datatype: bool | date | float | int | str | None
     default: bool | date | float | int | str | None
     field: str

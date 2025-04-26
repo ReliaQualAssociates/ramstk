@@ -75,9 +75,9 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKBaseWidget):
             _value = datetime.strftime(_value, "%Y-%m-%d")
 
         try:
-            self.handler_block(self.handler_id)
+            self.handler_block(self.dic_handler_id[self._edit_signal])
             self.set_text(_value)
-            self.handler_unblock(self.handler_id)
+            self.handler_unblock(self.dic_handler_id[self._edit_signal])
         except KeyError:
             self.set_text(_value)
 
@@ -92,9 +92,9 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKBaseWidget):
         :param __entry: the RAMSTKEntry whose edited signal called this method.
         """
         try:
-            self.handler_block(self.handler_id)
+            self.handler_block(self.dic_handler_id[self._edit_signal])
             _package = {self.field: self.do_get_text()}
-            self.handler_unblock(self.handler_id)
+            self.handler_unblock(self.dic_handler_id[self._edit_signal])
         except KeyError:
             _package = {self.field: self.do_get_text()}
 
@@ -165,6 +165,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKBaseWidget):
             "wrap_mode", Gtk.WrapMode.WORD
         )
 
+        self.set_buffer(self.dic_properties["buffer"])
         self.set_editable(self.dic_properties["editable"])
         self.set_justification(self.dic_properties["justify"])
         self.set_wrap_mode(self.dic_properties["wrap_mode"])
@@ -180,9 +181,13 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKBaseWidget):
             return
 
         try:
-            self.dic_properties["buffer"].handler_block(self.handler_id)  # type: ignore[union-attr] # noqa
+            self.dic_properties["buffer"].handler_block(  # type: ignore[union-attr]
+                self.dic_handler_id[self._edit_signal]
+            )
             self.dic_properties["buffer"].set_text(str(_value))  # type: ignore[union-attr] # noqa
-            self.dic_properties["buffer"].handler_unblock(self.handler_id)  # type: ignore[union-attr] # noqa
+            self.dic_properties["buffer"].handler_unblock(  # type: ignore[union-attr]
+                self.dic_handler_id[self._edit_signal]
+            )
         except KeyError:
             self.dic_properties["buffer"].set_text(str(_value))  # type: ignore[union-attr] # noqa
 
@@ -193,9 +198,13 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKBaseWidget):
         listeners to update with the new value.
         """
         try:
-            self.dic_properties["buffer"].handler_block(self.handler_id)
+            self.dic_properties["buffer"].handler_block(  # type: ignore[union-attr]
+                self.dic_handler_id[self._edit_signal]
+            )
             _package = {self.field: self.do_get_text()}
-            self.dic_properties["buffer"].handler_unblock(self.handler_id)
+            self.dic_properties["buffer"].handler_unblock(  # type: ignore[union-attr]
+                self.dic_handler_id[self._edit_signal]
+            )
         except KeyError:
             _package = {self.field: self.do_get_text()}
 

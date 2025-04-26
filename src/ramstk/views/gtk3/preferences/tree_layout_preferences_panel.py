@@ -205,7 +205,6 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
                     "validation",
                 ],
             ],
-            simple=False,
         )
 
     def _do_load_format(self, module: str) -> None:
