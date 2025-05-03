@@ -865,7 +865,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError) as exc:
             _message = _(
                 f"An error occurred when loading hardware item {node.identifier} "

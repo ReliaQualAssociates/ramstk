@@ -444,7 +444,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _message = _(
                 "An error occurred when loading environment {0:s} in the "
@@ -497,7 +497,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _message = _(
                 "An error occurred when loading mission {0:s} in the usage "
@@ -549,7 +549,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _message = _(
                 "An error occurred when loading mission phase {0:s} in the "

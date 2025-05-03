@@ -162,4 +162,4 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         :param attributes: the dict of Function attributes for the selected Function.
         """
         self._parent_id = attributes["function_id"]
-        self.tvwTreeView.filt_model.refilter()
+        self.tvwTreeView.filtered_model.refilter()

@@ -1325,7 +1325,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         :param attributes: the dict of attributes for the selected Hardware.
         """
         self._parent_id = attributes["hardware_id"]
-        self.tvwTreeView.filt_model.refilter()
+        self.tvwTreeView.filtered_model.refilter()
 
     def __do_clear_modes(self) -> None:
         """Clear existing failure modes from the FMEA worksheet and RAMSTK database."""
@@ -1458,7 +1458,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1572,7 +1572,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1659,7 +1659,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1759,7 +1759,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1900,7 +1900,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfiltered_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _message = _(
                 f"An error occurred when loading failure mode {node.identifier} in the "

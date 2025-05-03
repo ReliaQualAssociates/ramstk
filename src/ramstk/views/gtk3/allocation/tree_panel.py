@@ -616,7 +616,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
             _hardware = _node.data["hardware"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     2,
                     _hardware.name,
@@ -631,22 +631,22 @@ class AllocationTreePanel(RAMSTKTreePanel):
             _reliability = _node.data["reliability"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     14,
                     _reliability.hazard_rate_logistics,
                 )
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     16,
                     _reliability.mtbf_logistics,
                 )
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     18,
                     _reliability.reliability_logistics,
                 )
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     20,
                     _reliability.availability_logistics,
@@ -668,7 +668,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         :param attributes: the dict of attributes for the selected Hardware.
         """
         self._parent_id = attributes["hardware_id"]
-        self.tvwTreeView.filt_model.refilter()
+        self.tvwTreeView.filt_modelered.refilter()
         pub.sendMessage("request_get_allocation_attributes", node_id=self._parent_id)
 
     def __do_load_allocation(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
@@ -710,7 +710,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
             ]
 
             try:
-                self.tvwTreeView.unfilt_model.append(row, _attributes)
+                self.tvwTreeView.unfiltered_model.append(row, _attributes)
                 pub.sendMessage("request_get_hardware_tree")
                 pub.sendMessage("request_get_reliability_tree")
             except (AttributeError, TypeError, ValueError):

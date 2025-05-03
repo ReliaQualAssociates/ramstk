@@ -1128,7 +1128,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             _hardware = _node.data["hardware"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     2,
                     _hardware.name,
@@ -1143,7 +1143,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             _reliability = _node.data["reliability"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(
+                self.tvwTreeView.unfiltered_model.set_value(
                     _row,
                     3,
                     _reliability.hazard_rate_active,
@@ -1190,7 +1190,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         :param attributes: the dict of attributes for the selected Hardware.
         """
         self._parent_id = attributes["hardware_id"]
-        self.tvwTreeView.filt_model.refilter()
+        self.tvwTreeView.filtered_model.refilter()
         pub.sendMessage("request_get_similar_item_attributes", node_id=self._parent_id)
 
     def __do_load_similar_item(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
@@ -1264,7 +1264,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             ]
 
             try:
-                self.tvwTreeView.unfilt_model.append(row, _attributes)
+                self.tvwTreeView.unfiltered_model.append(row, _attributes)
                 pub.sendMessage("request_get_hardware_tree")
                 pub.sendMessage("request_get_reliability_tree")
             except (AttributeError, TypeError, ValueError):
