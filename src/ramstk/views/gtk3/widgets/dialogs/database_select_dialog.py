@@ -155,7 +155,9 @@ class RAMSTKDatabaseSelectDialog(RAMSTKBaseDialog):
 
     def _make_ui(self) -> None:
         """Build the RAMSTKDatabaseSelectDialog."""
-        self._pnlTreePanel.tvwTreeView.do_make_model(["gchararray"], "list")
+        self._pnlTreePanel.tvwTreeView.do_make_model(
+            ["gchararray", GdkPixbuf.Pixbuf], "list"
+        )
         self.vbox.pack_start(self._pnlSelectPanel, True, True, 10)
         self.vbox.pack_end(self._pnlTreePanel, True, True, 0)
         self.set_property("height-request", 850)

@@ -52,7 +52,8 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "field": "function_code",
                     "index": 5,
                     "label_text": _("Function Code:"),
-                    "listen_topic": f"mvw_editing_{self._tag}",
+                    "listen_topic": "mvw_editing_function",
+                    "send_topic": "wvw_editing_function",
                 },
                 {
                     "editable": False,
@@ -69,7 +70,8 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "field": "name",
                     "index": 15,
                     "label_text": _("Function Name:"),
-                    "listen_topic": f"mvw_editing_{self._tag}",
+                    "listen_topic": "mvw_editing_function",
+                    "send_topic": "wvw_editing_function",
                 },
                 {
                     "editable": True,
@@ -86,7 +88,8 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "field": "remarks",
                     "index": 17,
                     "label_text": _("Remarks:"),
-                    "listen_topic": f"mvw_editing_{self._tag}",
+                    "listen_topic": "mvw_editing_function",
+                    "send_topic": "wvw_editing_function",
                 },
                 {
                     "editable": True,
@@ -103,10 +106,11 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                 {
                     "datatype": "gint",
                     "default": 0,
-                    "field": "safet_critical",
+                    "field": "safety_critical",
                     "index": 15,
-                    "label_text": _("Function Name:"),
-                    "listen_topic": f"mvw_editing_{self._tag}",
+                    "label_text": _("Safety Critical:"),
+                    "listen_topic": "mvw_editing_function",
+                    "send_topic": "wvw_editing_function",
                 },
                 {
                     "editable": True,
@@ -119,6 +123,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
             ),
         ]
 
+        super().do_set_widget_attributes()
         super().do_set_widget_properties()
         super().do_make_fixed_panel()
         super().do_set_widget_callbacks()

@@ -81,6 +81,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
         # Initialize public instance attributes.
         self.dic_field_position_map: Dict[str, int] = {}
         self.filtered_model: Gtk.TreeModelFilter = Gtk.TreeModelFilter()
+        self.icon = GdkPixbuf.Pixbuf()
         self.selection = self.get_selection()
         self.unfiltered_model = self.get_model()
 
@@ -173,6 +174,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
         """Retrieve the Gtk.TreeModel from a Gtk.CellRendererCombo.
 
         :param column: the column number to retrieve the cell's model.
+        :param entries: the list of entries to load into the Gtk.CellRendererCombo.
         :param clear: whether to clear the Gtk.TreeModel().  Default is True.
         """
         _index = self.dic_field_position_map[column]
@@ -202,21 +204,20 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
         _node = None
         _row = None
 
-        if nid is None:
-            _node = tree.get_node(tree.root)
-        else:
-            _node = tree.get_node(nid)
+        for _node in tree.all_nodes():
+            if _node.data is not None:
+                [[__, _entity]] = _node.data.items()
+                _attributes = _entity.get_attributes()
+                _data = [
+                    _attributes.get(_key, None) for _key in self.dic_field_position_map
+                ]
+                # FIXME: This is a hack to get the icon to display in the first
+                #  column.  We need to add the icon to the data dict in the tree maybe?
+                _data.append(self.icon)
+                _row = self.unfiltered_model.append(row, _data)
 
-        if _node.data is not None:
-            [[__, _entity]] = _node.data.items()
-            _attributes = _entity.get_attributes()
-            _data = [
-                _attributes.get(_key, None) for _key in self.dic_field_position_map
-            ]
-            _row = self.unfiltered_model.append(row, _data)
-
-        for _n in tree.children(_node.identifier):
-            self.do_load_tree(tree.subtree(_n.identifier), _row, _n.identifier)
+            for _n in tree.children(_node.identifier):
+                self.do_load_tree(tree.subtree(_n.identifier), _row, _n.identifier)
 
     def do_make_column(self, cellrenderer: Gtk.CellRenderer, n_fields: int) -> None:
         """Make a column for the RAMSTKTreeView.
@@ -264,8 +265,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
         :param store_type: the type of store for the RAMSTKTreeView to display. Default
             is 'tree', other option is 'list'.
         """
-        column_types.append(GdkPixbuf.Pixbuf)
-
         if store_type == "tree":
             self.unfiltered_model = Gtk.TreeStore(*column_types)
         else:
@@ -352,7 +351,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKBaseWidget):
         #  corresponding to a particular attribute to update in the RAMSTKTreeView.
         #  There is likely a better way to update the RAMSTKTreeView than that and
         #  this method is probably not needed.
-        _row = self.unfilt_model.get_iter_first()
+        _row = self.unfiltered_model.get_iter_first()
 
         while (
             _row is not None
