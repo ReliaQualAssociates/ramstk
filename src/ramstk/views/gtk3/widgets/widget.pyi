@@ -21,6 +21,7 @@ class WidgetAttributes(TypedDict, total=False):
     index: int
     label_text: str | None
     listen_topic: str | None
+    parent_id: int
     record_id: int
     send_topic: str | None
     subscribe: str

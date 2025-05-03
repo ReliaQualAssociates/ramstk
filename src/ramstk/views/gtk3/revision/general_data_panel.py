@@ -77,9 +77,9 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                 {
                     "datatype": "gchararray",
                     "default": "",
-                    "field": "revision_code",
+                    "field": "remarks",
                     "index": 20,
-                    "label_text": _("Revision Name"),
+                    "label_text": _("Remarks"),
                     "listen_topic": "mvw_editing_revision",
                     "send_topic": "wvw_editing_revision",
                 },

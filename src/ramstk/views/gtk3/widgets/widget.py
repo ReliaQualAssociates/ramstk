@@ -29,6 +29,7 @@ class WidgetAttributes(TypedDict, total=False):
     index: int
     label_text: Optional[str]
     listen_topic: Optional[str]
+    parent_id: int
     record_id: int
     send_topic: Optional[str]
     subscribe: str
@@ -138,6 +139,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
         self.index: int = -1
         self.label_text: str = ""
         self.listen_topic: str = ""
+        self.parent_id: int = -1
         self.record_id: int = -1
         self.send_topic: str = ""
         self.width: int = -1
@@ -160,6 +162,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
             "format": self.format,
             "index": self.index,
             "label_text": self.label_text,
+            "parent_id": self.parent_id,
             "record_id": self.record_id,
             "listen_topic": self.listen_topic,
             "send_topic": self.send_topic,
@@ -179,6 +182,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
         self.format = str(attributes.get("format", "{}"))
         self.index = int(attributes.get("index", -1))
         self.label_text = str(attributes.get("label_text", ""))
+        self.parent_id = int(attributes.get("parent_id", -1))
         self.record_id = int(attributes.get("record_id", -1))
         self.listen_topic = str(attributes.get("listen_topic", ""))
         self.send_topic = str(attributes.get("send_topic", ""))

@@ -247,9 +247,8 @@ class RAMSTKTreePanel(RAMSTKBasePanel):
             _position = _widget["widget"].index
             _attributes[_field] = _model.get_value(_row, _position)
 
-        for _widget in self._lst_widget_configuration:
-            _widget["widget"].record_id = _attributes[f"{self._tag}_id"]
-            _widget["widget"].parent_id = _attributes["parent_id"]
+        _widget["widget"].record_id = _attributes[f"{self._tag}_id"]
+        _widget["widget"].parent_id = _attributes.get("parent_id", -1)
 
         pub.sendMessage(
             f"selected_{self._tag}",
