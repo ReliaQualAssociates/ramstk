@@ -553,8 +553,12 @@ class ValidationTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["validation_id"])
-            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["validation_id"]
+            )
+            _name = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["name"]
+            )
             _title = _(f"Analyzing Validation Task {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
@@ -639,10 +643,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
         :param package: the key: value for the data being updated.
         """
         for _key, _value in package.items():
-            # FIXME: We can't use the RAMSTKTreeView position attribute.  We need to use
-            #  the RAMSTKTreeView's dic_field_position_map.  Fix this in every
-            #  TreePanel.
-            _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+            _column = self.tvwTreeView.get_column(
+                self.tvwTreeView.dic_field_position_map[_key]
+            )
             _cell = _column.get_cells()[-1]
 
             if isinstance(_cell, Gtk.CellRendererCombo) and isinstance(_value, int):

@@ -1064,11 +1064,31 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _model = self.tvwTreeView.get_model()
 
-        _model.set_value(row, self.tvwTreeView.position["function_1"], function[0])
-        _model.set_value(row, self.tvwTreeView.position["function_2"], function[1])
-        _model.set_value(row, self.tvwTreeView.position["function_3"], function[2])
-        _model.set_value(row, self.tvwTreeView.position["function_4"], function[3])
-        _model.set_value(row, self.tvwTreeView.position["function_5"], function[4])
+        _model.set_value(
+            row,
+            self.tvwTreeView.dic_field_position_map["function_1"],
+            function[0],
+        )
+        _model.set_value(
+            row,
+            self.tvwTreeView.dic_field_position_map["function_2"],
+            function[1],
+        )
+        _model.set_value(
+            row,
+            self.tvwTreeView.dic_field_position_map["function_3"],
+            function[2],
+        )
+        _model.set_value(
+            row,
+            self.tvwTreeView.dic_field_position_map["function_4"],
+            function[3],
+        )
+        _model.set_value(
+            row,
+            self.tvwTreeView.dic_field_position_map["function_5"],
+            function[4],
+        )
 
     def _do_load_environments(self) -> None:
         """Load Similar Item analysis environment RAMSTKComboBox."""

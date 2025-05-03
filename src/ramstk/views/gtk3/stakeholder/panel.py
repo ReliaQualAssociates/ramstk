@@ -377,7 +377,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         :param tree: the treelib.Tree containing the Stakeholder data records.
         """
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["requirement_id"]
+            self.tvwTreeView.dic_field_position_map["requirement_id"]
         ).get_cells()[0]
         _model = _cell.get_property("model")
         _model.clear()
@@ -407,8 +407,12 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["stakeholder_id"])
-            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["stakeholder_id"]
+            )
+            _name = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["description"]
+            )
             _title = _(f"Analyzing Stakeholder {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)

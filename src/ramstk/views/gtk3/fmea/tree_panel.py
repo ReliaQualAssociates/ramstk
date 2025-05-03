@@ -1284,7 +1284,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.__do_load_mission_phases(new_text)
 
         _model = self.tvwTreeView.get_model()
-        _model[path][self.tvwTreeView.position["mission_phase"]] = ""
+        _model[path][self.tvwTreeView.dic_field_position_map["mission_phase"]] = ""
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the FMEA Work View RAMSTKTreeView().
@@ -1785,20 +1785,17 @@ class FMEATreePanel(RAMSTKTreePanel):
         """Load the mission and mission phase dicts.
 
         :param tree: the treelib usage profile treelib.Tree().
-        :param node_id: unused in this function. Required so this method compatible with
-            other listeners for the 'succeed_retrieve_usage_profile' message.
-        :param row: unused in this function. Required so this method compatible with
+        :param node_id: unused in this function. Required so this method is compatible
+            with other listeners for the 'succeed_retrieve_usage_profile' message.
+        :param row: unused in this function. Required so this method is compatible with
             other listeners for the 'succeed_retrieve_usage_profile' message.
         """
-        _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["mission"])
+        self._lst_missions = [""]
 
-        self._lst_missions = []
-        _model.append([""])
         for _node in tree.children(tree.root):
             _lst_phases: List[str] = [""]
 
             _mission = _node.data["usage_profile"].get_attributes()["description"]
-            _model.append([_mission])
             self._lst_missions.append(_mission)
 
             for _node2 in tree.children(_node.identifier):
@@ -1808,13 +1805,18 @@ class FMEATreePanel(RAMSTKTreePanel):
                 _lst_phases.append(_mission_phase)
             self._dic_mission_phases[_mission] = _lst_phases
 
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "mission",
+            self._lst_missions,
+        )
+
     def __do_load_mission_phases(self, mission: str) -> None:
         """Load the mission phase RAMSTKCellRendererCombo.
 
         :param mission: the mission that was selected.
         """
         _model = self.tvwTreeView.get_cell_model(
-            self.tvwTreeView.position["mission_phase"]
+            self.tvwTreeView.dic_field_position_map["mission_phase"]
         )
         _model.clear()
         _model.append([""])

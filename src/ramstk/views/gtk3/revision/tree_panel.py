@@ -274,7 +274,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
             make_widget_config(
                 RAMSTKCellRendererText(),
                 {
-                    "datatype": "gfloat",
+                    "datatype": "gchararray",
                     "default": 0.0,
                     "field": "name",
                     "index": 17,
@@ -316,7 +316,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
             make_widget_config(
                 RAMSTKCellRendererText(),
                 {
-                    "datatype": "gfloat",
+                    "datatype": "gchararray",
                     "default": 0.0,
                     "field": "remarks",
                     "index": 20,
@@ -431,8 +431,12 @@ class RevisionTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["revision_code"])
-            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["revision_code"]
+            )
+            _name = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["name"]
+            )
             _title = _(f"Analyzing Revision {_code}: {_name}")
             super().do_set_title(_title)
 

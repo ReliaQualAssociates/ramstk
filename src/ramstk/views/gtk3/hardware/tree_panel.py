@@ -627,9 +627,11 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
         if module == self._tag and _row is not None:
             _comprefdes = _model.get_value(
-                _row, self.tvwTreeView.position["comp_ref_des"]
+                _row, self.tvwTreeView.dic_field_position_map["comp_ref_des"]
             )
-            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _name = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["name"]
+            )
             _title = _(f"Analyzing Hardware item {_comprefdes}: {_name}")
 
             pub.sendMessage(
@@ -704,14 +706,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
             self.lst_categories.append(categories[_category][0])
             self.do_load_subcategories(_category, subcategories)
 
-        self.tvwTreeView.do_load_cellrenderercombo("category_id", self.lst_categories)
+        self.tvwTreeView.do_load_cellrenderercombo(
+            "category_id",
+            self.lst_categories,
+        )
 
-        # FIXME: Need to use something other than the RAMSTKTreeView.position to find
-        #  the correct index.
-        # _cell = self.tvwTreeView.get_column(
-        #    self.tvwTreeView.position["category_id"]
-        # ).get_cells()
-        # _cell[0].connect("edited", self._on_category_change)
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.dic_field_position_map["category_id"]
+        ).get_cells()[0]
+        _cell.connect("edited", self._on_category_change)
 
     def do_load_cost_types(self) -> None:
         """Load the cost types into the RAMSTKTreeView."""
@@ -762,7 +765,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
         :param package: the key:value for the data being updated.
         """
         for _key, _value in package.items():
-            _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+            _column = self.tvwTreeView.get_column(
+                self.tvwTreeView.dic_field_position_map[_key]
+            )
             _cell = _column.get_cells()[-1]
 
             if isinstance(_cell, RAMSTKCellRendererCombo) and isinstance(_value, int):
@@ -790,7 +795,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         self.__do_load_subcategories(new_text)
 
         _model = self.tvwTreeView.get_model()
-        _model[path][self.tvwTreeView.position["subcategory_id"]] = ""
+        _model[path][self.tvwTreeView.dic_field_position_map["subcategory_id"]] = ""
 
     def __do_load_hardware(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a hardware item into the RAMSTKTreeView().

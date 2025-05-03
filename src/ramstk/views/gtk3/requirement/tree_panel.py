@@ -280,9 +280,13 @@ class RequirementTreePanel(RAMSTKTreePanel):
 
         if module == self._tag and _row is not None:
             _code = _model.get_value(
-                _row, self.tvwTreeView.position["requirement_code"]
+                _row,
+                self.tvwTreeView.dic_field_position_map["requirement_code"],
             )
-            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _name = _model.get_value(
+                _row,
+                self.tvwTreeView.dic_field_position_map["description"],
+            )
             _title = _(f"Analyzing Requirement {_code}: {_name}")
             super().do_set_title(_title)
 
@@ -352,7 +356,9 @@ class RequirementTreePanel(RAMSTKTreePanel):
         :param package: the key:value for the data being updated.
         """
         for _key, _value in package.items():
-            _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+            _column = self.tvwTreeView.get_column(
+                self.tvwTreeView.dic_field_position_map[_key]
+            )
             _cell = _column.get_cells()[-1]
 
             if isinstance(_cell, Gtk.CellRendererCombo) and isinstance(_value, int):

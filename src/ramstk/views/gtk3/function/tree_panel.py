@@ -382,13 +382,15 @@ class FunctionTreePanel(RAMSTKTreePanel):
 
         :param module: the name of the module that was just selected.
         """
-        # FIXME: This method needs to use something other than the position dict of
-        #  the RAMSTKTreeView class to get the column numbers.
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["function_code"])
-            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["function_code"]
+            )
+            _name = _model.get_value(
+                _row, self.tvwTreeView.dic_field_position_map["name"]
+            )
             _title = _(f"Analyzing Function {_code}: {_name}")
             super().do_set_title(_title)
 
