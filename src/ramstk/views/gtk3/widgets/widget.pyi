@@ -1,9 +1,7 @@
 # Standard Library Imports
 from datetime import date
-from typing import List, TypedDict
-
-# Third Party Imports
-from _typeshed import Incomplete
+from types import EllipsisType
+from typing import Dict, List, TypedDict, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk as Gdk
@@ -13,7 +11,7 @@ from ramstk.views.gtk3 import Pango as Pango
 from ramstk.views.gtk3 import _ as _
 
 class WidgetAttributes(TypedDict, total=False):
-    column_types: List[GObject.GType]
+    column_types: Union[List[EllipsisType], List[GObject.GType]]
     datatype: bool | date | float | int | str | None
     default: bool | date | float | int | str | None
     field: str
@@ -108,6 +106,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
     index: int
     label_text: str
     listen_topic: str
+    parent_id: int
     record_id: int
     send_topic: str
     width: int
@@ -121,6 +120,9 @@ class RAMSTKBaseWidget(Gtk.Widget):
     def do_set_callbacks(self) -> None: ...
     def do_set_properties(self, properties: WidgetProperties) -> None: ...
     def do_subscribe_to_messages(self) -> None: ...
+    def do_update(
+        self, package: Dict[str, Union[bool, date, float, int, str, None]]
+    ) -> None: ...
 
 class WidgetConfig(TypedDict):
     widget: RAMSTKBaseWidget

@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import TypedDict
+from typing import List, Tuple, TypedDict
 
 # Third Party Imports
 import matplotlib
@@ -29,6 +29,8 @@ class PlotProperties(TypedDict, total=False):
     y_pos: int
 
 class RAMSTKPlot(RAMSTKBaseWidget):
+    _lst_max: List[float]
+    _lst_min: List[float]
     figure: matplotlib.figure.Figure
     canvas: Incomplete
     axis: Incomplete
@@ -65,3 +67,28 @@ class RAMSTKPlot(RAMSTKBaseWidget):
     def do_make_title(
         self, title: str, properties: PlotProperties
     ) -> matplotlib.text.Text: ...
+    def _do_make_date_plot(
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        marker: str = "g-",
+    ) -> None: ...
+    def _do_make_histogram(
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        marker: str = "g",
+    ) -> None: ...
+    def _do_make_scatter_plot(
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        marker: str = "go",
+    ) -> None: ...
+    def _do_make_step_plot(
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        marker: str = "g-",
+    ) -> None: ...
+    def _get_minimax_ordinates(self) -> Tuple[float, float]: ...

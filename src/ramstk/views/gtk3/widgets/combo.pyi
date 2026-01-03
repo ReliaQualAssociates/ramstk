@@ -1,6 +1,7 @@
 # Standard Library Imports
 from datetime import date
-from typing import Any
+from types import EllipsisType
+from typing import Any, List, Union
 
 # RAMSTK Package Imports
 from ramstk.utilities import none_to_default as none_to_default
@@ -18,9 +19,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
     _index: int
     _n_items: int
     _simple: bool
-    def __init__(
-        self, index: int = 0, simple: bool = True, n_items: int = 2
-    ) -> None: ...
+    def __init__(self, index: int = 0, simple: bool = True, n_items: int = 2) -> None:
+        self.column_types: Union[List[EllipsisType], List[GObject.GType]] = [
+            GObject.TYPE_STRING
+        ]
+        ...
+
     def do_set_properties(self, properties: WidgetProperties) -> None: ...
     def do_update(
         self, package: dict[str, bool | date | float | int | str | None]
