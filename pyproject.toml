@@ -46,6 +46,7 @@ Source = "https://github.com/ReliaQualAssociates/ramstk"
 ramstk = "ramstk.__main__:the_one_ring"
 
 [tool.hatch.envs.default]
+python = "3.12"
 dependencies = [
 	"lifelines>=0.27,<0.30",
 	"matplotlib>=3.3.4",
@@ -146,6 +147,7 @@ cov-report = [
 ]
 
 [tool.hatch.envs.lint]
+python = "3.12"
 dependencies = [
 	"bandit>=1.7.5",
 	"black>=24.8.0",

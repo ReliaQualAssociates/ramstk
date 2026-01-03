@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from datetime import date
+from types import EllipsisType
 from typing import Dict, List, Optional, TypedDict, Union
 
 # Third Party Imports
@@ -21,7 +22,7 @@ from ramstk.views.gtk3 import Gdk, GObject, Gtk, Pango, _
 class WidgetAttributes(TypedDict, total=False):
     """Type for the widget attributes."""
 
-    column_types: List[GObject.GType]
+    column_types: Union[List[EllipsisType], List[GObject.GType]]
     datatype: Union[bool, date, float, int, str, None]
     default: Union[bool, date, float, int, str, None]
     field: str
@@ -116,7 +117,7 @@ class RAMSTKBaseWidget(Gtk.Widget):
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTKBaseWidget widget."""
-        GObject.GObject.__init__(self)
+        Gtk.Widget.__init__(self)
 
         # Initialize public attributes.
         self.dic_handler_id: Dict[str, int] = {}
@@ -259,6 +260,16 @@ class RAMSTKBaseWidget(Gtk.Widget):
     def do_subscribe_to_messages(self) -> None:
         """Subscribe the RAMSTKBaseWidget to PyPubSub messages."""
         pub.subscribe(self.do_update, self.listen_topic)
+
+    def do_update(
+        self, package: Dict[str, Union[bool, date, float, int, str, None]]
+    ) -> None:
+        """Update data displayed by the widget.
+
+        This is a stub function for the base class.  Each specific widget class will
+        have it's own update methods to update their displayed data.
+        """
+        pass
 
 
 class WidgetConfig(TypedDict):
