@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from datetime import date
+from types import EllipsisType
 from typing import Any, Dict, List, Union
 
 # Third Party Imports
@@ -53,7 +54,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         self._simple: bool = simple
 
         # Initialize public attributes.
-        self.column_types: List[GObject.GType] = [GObject.TYPE_STRING]
+        self.column_types: Union[List[EllipsisType], List[GObject.GType]] = [
+            GObject.TYPE_STRING
+        ]
 
         _cell = Gtk.CellRendererText()
         self.pack_start(_cell, True)
@@ -82,8 +85,8 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
 
         self.dic_properties["model"] = properties.get("model", Gtk.ListStore())
         if self.dic_properties["model"]:
-            self.dic_properties["model"].set_column_types(  # type: ignore[union-attr] # noqa
-                self.column_types
+            self.dic_properties["model"].set_column_types(
+                self.column_types  # type: ignore[arg-type]
             )
             self.set_model(self.dic_properties["model"])
 
@@ -97,19 +100,17 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
     ) -> None:
         """Update the RAMSTKComboBox with a new value.
 
-        :param package: the date package to use to update the RAMSTKComboBox.
+        :param package: the data package to use to update the RAMSTKComboBox.
         """
         _field, _value = next(iter(package.items()))
-
-        if _field != self.field:
-            return
-
         _value = none_to_default(_value, self.default)
 
+        if _field != self.field or not isinstance(_value, int):
+            return
+
         try:
-            self.handler_block(self.dic_handler_id[self._edit_signal])
-            self.set_active(_value)
-            self.handler_unblock(self.dic_handler_id[self._edit_signal])
+            with self.handler_block(self.dic_handler_id[self._edit_signal]):
+                self.set_active(_value)
         except KeyError:
             self.set_active(_value)
 
@@ -123,9 +124,8 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
             satisfy the Gtk.ComboBox() callback method structure.
         """
         try:
-            self.handler_block(self.dic_handler_id[self._edit_signal])
-            _package = {self.field: self.get_value()}
-            self.handler_unblock(self.dic_handler_id[self._edit_signal])
+            with self.handler_block(self.dic_handler_id[self._edit_signal]):
+                _package = {self.field: self.get_value()}
         except KeyError:
             _package = {self.field: self.get_value()}
 
@@ -141,6 +141,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         _options = {}
 
         _model = self.get_model()
+        if _model is None:
+            return {}
+
         _iter = _model.get_iter_first()
 
         i = 0
@@ -163,20 +166,20 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         :raises: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()
+        if _model is None or not isinstance(_model, Gtk.ListStore):
+            return
+
         _model.clear()
 
-        self.handler_block(self.dic_handler_id[self._edit_signal])
-
-        if not self._simple:
-            _model.append([None] * self._n_items)
-            for _entry in entries:
-                _model.append(list(_entry))
-        else:
-            _model.append([None])
-            for _entry in entries:
-                _model.append([_entry[self._index]])
-
-        self.handler_unblock(self.dic_handler_id[self._edit_signal])
+        with self.handler_block(self.dic_handler_id[self._edit_signal]):
+            if not self._simple:
+                _model.append([None] * self._n_items)
+                for _entry in entries:
+                    _model.append(list(_entry))
+            else:
+                _model.append([None])
+                for _entry in entries:
+                    _model.append([_entry[self._index]])
 
     def get_value(self, index: int = 0) -> str:
         """Return the value in the RAMSTKComboBox model found at <index> position.
@@ -188,6 +191,11 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKBaseWidget):
         :rtype: str
         """
         _model = self.get_model()
-        _row = self.get_active_iter()
+        if _model is None or not isinstance(_model, Gtk.ListStore):
+            return ""
 
-        return _model.get_value(_row, index)
+        _row = self.get_active_iter()
+        if isinstance(_row, Gtk.TreeIter):
+            return _model.get_value(_row, index)
+
+        return ""

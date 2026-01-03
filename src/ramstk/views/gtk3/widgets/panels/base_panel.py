@@ -73,8 +73,7 @@ class RAMSTKBasePanel(RAMSTKFrame):
     def do_set_widget_attributes(self) -> None:
         """Set the attributes of the RAMSTKBasePanel widgets."""
         for _widget in self._lst_widget_configuration:
-            _config: WidgetConfig = _widget
-            _config["widget"].do_set_attributes(_config["attributes"])
+            _widget["widget"].do_set_attributes(_widget["attributes"])
 
     def do_set_widget_callbacks(self) -> None:
         """Set the callbacks for the RAMSTKBasePanel widgets."""

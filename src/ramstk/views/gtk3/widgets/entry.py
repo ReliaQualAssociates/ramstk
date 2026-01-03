@@ -64,7 +64,7 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKBaseWidget):
     def do_update(self, package: Dict[str, Union[bool, date, float, int, str]]) -> None:
         """Update the RAMSTKEntry with a new value.
 
-        :param package: the date package to use to update the RAMSTKEntry.
+        :param package: the data package to use to update the RAMSTKEntry.
         """
         _field, _value = next(iter(package.items()))
 

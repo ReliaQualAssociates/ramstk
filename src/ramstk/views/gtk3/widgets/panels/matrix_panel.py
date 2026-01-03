@@ -112,7 +112,7 @@ class RAMSTKMatrixPanel(RAMSTKBasePanel):
             return combo_obj.get_active()
         except (KeyError, ValueError):
             _frame = inspect.currentframe()
-            _method_name = _frame.f_code.co_name if _frame else ("unknown_method")
+            _method_name = _frame.f_code.co_name if _frame else "unknown_method"
             do_log_message(
                 _method_name,
                 "do_log_debug_msg",

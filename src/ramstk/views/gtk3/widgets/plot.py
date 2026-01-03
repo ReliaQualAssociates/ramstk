@@ -109,6 +109,7 @@ class RAMSTKPlot(RAMSTKBaseWidget):
         :param x_values: list of the x-values to plot.
         :param y_values: list of the y-values to plot or list of bin edges if plotting a
             histogram.
+        :param marker: the marker style for the plot.
         :param plot_type: the type of plot to produce. Options are 'date', 'histogram',
             'scatter' (default), and 'step'.
         """

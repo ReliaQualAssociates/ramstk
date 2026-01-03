@@ -12,7 +12,7 @@ from datetime import date
 from typing import Dict, List, Tuple, Union
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3 import Gtk, Pango
 
 # RAMSTK Local Imports
 from .widget import RAMSTKBaseWidget, WidgetProperties
@@ -36,7 +36,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
         self.dic_properties["label"] = "<span>" + text + "</span>"
 
         self.set_markup(self.dic_properties["label"])
-        self.show_all()
+        self.show()
 
     # ----- ----- Standard widget methods. ----- ----- #
     def do_set_properties(self, properties: WidgetProperties) -> None:
@@ -49,7 +49,9 @@ class RAMSTKLabel(Gtk.Label, RAMSTKBaseWidget):
 
         self.dic_properties["angle"] = properties.get("angle", 0.0)
         self.dic_properties["bold"] = properties.get("bold", True)
-        self.dic_properties["ellipsize"] = properties.get("ellipsize", True)
+        self.dic_properties["ellipsize"] = properties.get(
+            "ellipsize", Pango.EllipsizeMode.NONE
+        )
         self.dic_properties["label"] = (
             "<span>" + properties.get("label", "") + "</span>"
         )

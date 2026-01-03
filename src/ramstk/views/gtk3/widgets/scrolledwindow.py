@@ -8,7 +8,7 @@
 """The RAMSTKScrolledWindow module."""
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import GObject, Gtk
+from ramstk.views.gtk3 import Gtk
 
 
 class RAMSTKScrolledWindow(Gtk.ScrolledWindow):
@@ -19,9 +19,9 @@ class RAMSTKScrolledWindow(Gtk.ScrolledWindow):
 
         :param child: the Gtk.Widget to add to the RAMSTKScrolledWindow.
         """
-        GObject.GObject.__init__(self)
+        Gtk.ScrolledWindow.__init__(self)
 
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         if child is not None:
-            self.add(child)
+            self.add(child)  # type: ignore[attr-defined]
